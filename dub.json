@@ -1,0 +1,43 @@
+{
+	"name" : "btl",
+	"authors" : [
+		"Adam Búš"
+	],
+	
+	
+	"dependencies": {
+		"btl:autoptr":"*",
+		"btl:string":"*",
+		"btl:vector":"*"
+	},
+	
+	"sourceFiles": ["source/btl/package.d"],
+	
+	"subPackages": [
+		{
+			"name": "autoptr",
+			"description": "Smart pointers.",
+			"targetType": "library",
+			"importPaths": ["source/"],
+			"sourcePaths": ["source/btl/autoptr", "source/btl/internal"],
+		},
+		{
+			"name": "string",
+			"description": "Mutable @nogc string struct using `std.experimental.allocator` for allocations.",
+			"targetType": "library",
+			"importPaths": ["source/"],
+			"sourcePaths": ["source/btl/string", "source/btl/internal"],
+		},
+		{
+			"name": "vector",
+			"description": "TODO",
+			"targetType": "library",
+			"importPaths": ["source/"],
+			"sourcePaths": ["source/btl/vector", "source/btl/internal"],
+		},
+	
+	],
+	"copyright" : "Copyright © 2022, Adam Búš",
+	"description" : "Smart pointers.",
+	"license" : "Boost Software License - Version 1.0"
+}
