@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Function sharedPtr</title>
+		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../btl.html">btl</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../btl/autoptr.html">autoptr</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/string.html">string</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/vector.html">vector</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Function sharedPtr</h1><p>Create <code class="lang-d"><a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"><span class="typ">SharedPtr</span></a></code> from parameter <code class="lang-d"><a href="../../../btl/autoptr/shared_ptr/sharedPtr.html#ptr"><span class="pln">ptr</span></a></code> of type <code class="lang-d"><a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"><span class="typ">SharedPtr</span></a></code>, <code class="lang-d"><span class="typ">RcPtr</span></code> or <code class="lang-d"><span class="typ">IntrusivePtr</span></code>.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">auto</span> <span class="pln">sharedPtr</span>(Ptr)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">auto scope ref </span><span class="typ">Ptr</span> <span class="pln">ptr</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">@trusted</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pun">!</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Ptr </span><span class="pun">== </span><span class="kwd">shared</span><span class="pun">) &amp;&amp; </span><span class="pln">isSmartPtr</span><span class="pun">!</span><span class="typ">Ptr</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			
+			<section><h2>Example</h2>
+
+<pre class="code"><code class="lang-d"><span class="kwd">import <a href="../../../btl/autoptr/rc_ptr.html"></span><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">autoptr<wbr/></span><span class="pun">.</span><span class="pln">rc_ptr</span></a><span class="pun">;
+</span><span class="kwd">import <a href="../../../btl/autoptr/intrusive_ptr.html"></span><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">autoptr<wbr/></span><span class="pun">.</span><span class="pln">intrusive_ptr</span></a><span class="pun">;
+
+</span><span class="kwd">import </span><span class="pln">core<wbr/></span><span class="pun">.</span><span class="pln">lifetime </span><span class="pun">: </span><span class="pln">move</span><span class="pun">;
+</span><span class="com">//RcPtr -&gt; SharedPtr:
+</span><span class="pun">{
+	</span><span class="kwd">auto </span><span class="pln">x </span><span class="pun">= </span><span class="typ">RcPtr</span><span class="pun">!</span><span class="typ">long<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">42</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">x </span><span class="pun">== </span><span class="lit">42</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+
+	</span><span class="kwd">auto </span><span class="pln">s </span><span class="pun">= </span><span class="pln">sharedPtr</span><span class="pun">(</span><span class="pln">x</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
+
+	</span><span class="kwd">import <a href="../../../btl/autoptr/shared_ptr.html"></span><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">autoptr<wbr/></span><span class="pun">.</span><span class="pln">shared_ptr</span></a><span class="pln"> </span><span class="pun">: <a href="../../../btl/autoptr/shared_ptr/isSharedPtr.html"></span><span class="pln">isSharedPtr</span></a><span class="pun">;
+	</span><span class="kwd">static assert</span><span class="pun">(<a href="../../../btl/autoptr/shared_ptr/isSharedPtr.html"></span><span class="pln">isSharedPtr</span></a><span class="pun">!(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">s</span><span class="pun">)));
+
+	</span><span class="kwd">auto </span><span class="pln">s2 </span><span class="pun">= </span><span class="pln">sharedPtr</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">move</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">s<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
+
+	</span><span class="kwd">auto </span><span class="pln">y </span><span class="pun">= </span><span class="pln">sharedPtr</span><span class="pun">(</span><span class="typ">RcPtr</span><span class="pun">!</span><span class="typ">long<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">y </span><span class="pun">== </span><span class="kwd">null</span><span class="pun">);
+}
+
+</span><span class="com">//IntrusivePtr -&gt; SharedPtr:
+</span><span class="pun">{
+	</span><span class="kwd">static class </span><span class="typ">Foo</span><span class="pun">{
+		</span><span class="typ">ControlBlock</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">) </span><span class="pln">c</span><span class="pun">;
+		</span><span class="typ">int </span><span class="pln">i</span><span class="pun">;
+
+		</span><span class="kwd">this</span><span class="pun">(</span><span class="typ">int </span><span class="pln">i</span><span class="pun">)</span><span class="kwd">pure nothrow @safe @nogc</span><span class="pun">{
+			</span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">= </span><span class="pln">i</span><span class="pun">;
+		}
+	}
+
+	</span><span class="kwd">auto </span><span class="pln">x </span><span class="pun">= </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Foo<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">42</span><span class="pun">);
+	</span><span class="com">//assert(x.get.i == 42);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+
+	</span><span class="kwd">auto </span><span class="pln">s </span><span class="pun">= </span><span class="pln">sharedPtr</span><span class="pun">(</span><span class="pln">x</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
+
+	</span><span class="kwd">import <a href="../../../btl/autoptr/shared_ptr.html"></span><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">autoptr<wbr/></span><span class="pun">.</span><span class="pln">shared_ptr</span></a><span class="pln"> </span><span class="pun">: <a href="../../../btl/autoptr/shared_ptr/isSharedPtr.html"></span><span class="pln">isSharedPtr</span></a><span class="pun">;
+	</span><span class="kwd">static assert</span><span class="pun">(<a href="../../../btl/autoptr/shared_ptr/isSharedPtr.html"></span><span class="pln">isSharedPtr</span></a><span class="pun">!(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">s</span><span class="pun">)));
+
+	</span><span class="kwd">auto </span><span class="pln">s2 </span><span class="pun">= </span><span class="pln">sharedPtr</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">move</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">s<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
+
+	</span><span class="kwd">auto </span><span class="pln">y </span><span class="pun">= </span><span class="pln">sharedPtr</span><span class="pun">(</span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Foo<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">y </span><span class="pun">== </span><span class="kwd">null</span><span class="pun">);
+}
+
+</span><span class="com">//SharedPtr -&gt; SharedPtr:
+</span><span class="pun">{
+	</span><span class="kwd">auto </span><span class="pln">a </span><span class="pun">= <a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">long<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">1</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+
+	</span><span class="kwd">auto </span><span class="pln">b </span><span class="pun">= </span><span class="pln">sharedPtr</span><span class="pun">(</span><span class="pln">a</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
+
+	</span><span class="kwd">auto </span><span class="pln">c </span><span class="pun">= </span><span class="pln">sharedPtr</span><span class="pun">(<a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">long<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">2</span><span class="pun">));
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">c<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+}
+</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>github.com/submada/basic_string, Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

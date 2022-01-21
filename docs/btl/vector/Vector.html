@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Struct Vector</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../btl.html">btl</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../btl/autoptr.html">autoptr</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/string.html">string</a>
+					</div>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../btl/vector.html">vector</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Struct Vector</h1><p><code class="lang-d"><span class="typ">Vector</span></code>s are sequence containers representing arrays that can change in size.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">struct</span> <span class="typ">Vector</span>(_Type, <span class="typ">ulong</span> N<span class="pln"> </span><span class="pun">= </span><span class="lit">0</span>, _Allocator, <span class="typ">bool</span> _supportGC<span class="pln"> </span><span class="pun">= </span><span class="pln">platformSupportGC</span>)
+			<span class="pun">;</span>
+					</div>
+					<div class="single-prototype">
+			<span class="kwd">alias</span> <span class="pln">Vector</span>(_Type, _Allocator, <span class="typ">bool</span> _supportGC<span class="pln"> </span><span class="pun">= </span><span class="pln">platformSupportGC</span>)
+			 <span class="pun">=</span> <a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a>!(_Type,0,_Allocator,_supportGC)<span class="pun">;</span>
+					</div>
+				</code>
+			</div>
+			<section><p>Just like arrays, vectors use contiguous storage locations for their elements, which means that their elements can also be accessed using offsets on regular pointers to its elements, and just as efficiently as in arrays. But unlike arrays, their size can change dynamically, with their storage being handled automatically by the container.
+</p>
+
+<p>    Instead, vector containers may allocate some extra storage to accommodate for possible growth, and thus the container may have an actual capacity greater than the storage strictly needed to contain its elements (i.e., its size). Libraries can implement different strategies for growth to balance between memory usage and reallocations, but in any case, reallocations should only happen at logarithmically growing intervals of size so that the insertion of individual elements at the end of the vector can be provided with amortized constant time complexity (see push_back).
+</p>
+
+<p>    Therefore, compared to arrays, vectors consume more memory in exchange for the ability to manage storage and grow dynamically in an efficient way.
+</p>
+
+<p>    <code class="lang-d"><span class="typ">Vector</span></code> can have preallocated (stack) space for <code class="lang-d"><span class="pln">N</span></code> elements.
+</p>
+
+<p>    Template parameters:
+</p>
+
+<p>        <code class="lang-d"><span class="pln">_Type</span></code> element type.
+</p>
+
+<p>        <code class="lang-d"><span class="pln">N</span></code> Number of preallocated space for elements.
+</p>
+
+<p>        <code class="lang-d"><span class="pln">_Allocator</span></code> Type of the allocator object used to define the storage allocation model. By default Mallocator is used.
+</p>
+
+
+<p>    @safe:
+</p>
+
+<p> Inserting element to <code class="lang-d"><span class="typ">Vector</span></code> pointer is @safe if constructor of element is @safe (assumption is that constructor doesn't leak <code class="lang-d"><span class="kwd">this</span></code> pointer).
+</p>
+
+<p> <code class="lang-d"><span class="typ">Vector</span></code> assume that deallocation with custom allocator is @safe if allocation is @safe even if method <code class="lang-d"><span class="pln">deallcoate</span></code> is @system.
+</p>
+
+<p> Methods returning reference/pointer/slice (<code class="lang-d"><a href="../../btl/vector/Vector.front.html"><span class="pln">front</span></a><span class="pun">()</span></code>, <code class="lang-d"><a href="../../btl/vector/Vector.back.html"><span class="pln">back</span></a><span class="pun">()</span></code>, <code class="lang-d"><a href="../../btl/vector/Vector.ptr.html"><span class="pln">ptr</span></a><span class="pun">()</span></code>, <code class="lang-d"><a href="../../btl/vector/Vector.elements.html"><span class="pln">elements</span></a><span class="pun">()</span></code>, <code class="lang-d"><a href="../../btl/vector/Vector.opSlice.html"><span class="pln">opSlice</span></a><span class="pun">()</span></code>, ...) to vector elements are all @system because increasing capacity of vector can realocate all elements to new memory location and invalidate external references to old location.
+</p>
+
+
+<p>    <code class="lang-d"><span class="kwd">scope</span></code> and -dip1000:
+</p>
+
+<p> <code class="lang-d"><span class="typ">Vector</span></code> assume that managed object have global lifetime (scope can be ignored).
+</p>
+
+<p> Functions for inserting elements to vector have  non <code class="lang-d"><span class="kwd">scope</span></code> parameters (global lifetime).
+</p>
+</section>
+<h2>Struct Vector</h2>
+			<section><h3>Constructors</h3>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(a)</span>
+						</td>
+						<td>Constructs a empty <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> with allocator <code class="lang-d"><a href="../../btl/vector/Vector.this.html#a"><span class="pln">a</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(nil)</span>
+						</td>
+						<td>Constructs a empty <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code>
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(rhs)</span>
+						</td>
+						<td>Constructs a <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> object from other vector.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(range)</span>
+						</td>
+						<td>Constructs a <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> object from range of elements.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section><h3>Properties</h3>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.allocator.html" class="public property"><code>allocator</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="typ">CopyTypeQualifiers</span>!(This,AllocatorType)</code></td><td>Returns copy of allocator.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.capacity.html" class="public property"><code>capacity</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="pln">size_t</span></code></td><td>Returns the size of the storage space currently allocated for the <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.elements.html" class="public property"><code>elements</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">inout</span><span class="pun">(</span><a href="../../btl/vector/Vector.ElementType.html"><span class="typ">Vector<wbr/></span><span class="pun">.<wbr/></span><span class="typ">ElementType</span></a><span class="pun">)</span><span class="pun">[]</span></code></td><td>Return slice of all elements (same as <code class="lang-d"><a href="../../btl/vector/Vector.opSlice.html"><span class="pln">opSlice</span></a><span class="pun">()</span></code>).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.empty.html" class="public property"><code>empty</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="typ">bool</span></code></td><td>Returns whether the vector is empty (i.e. whether its length is 0).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.length.html" class="public property"><code>length</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="pln">size_t</span></code></td><td>Returns the length of the vector, in terms of number of elements.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.ptr.html" class="public property"><code>ptr</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">inout</span><span class="pun">(</span><a href="../../btl/vector/Vector.ElementType.html"><span class="typ">Vector<wbr/></span><span class="pun">.<wbr/></span><span class="typ">ElementType</span></a><span class="pun">)</span><span class="pun">*</span></code></td><td>Return pointer to the first element.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.small.html" class="public property"><code>small</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="typ">bool</span></code></td><td>Return <code class="lang-d"><span class="kwd">true</span></code> if vector is small (capacity == minimalCapacity)
+</td>
+					</tr>
+				</table>
+			</section>
+			<section><h3>Methods</h3>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.append.html" class="public">
+								<code>append</code>
+							</a>
+							<span class="tableEntryAnnotation">(range)</span>
+						</td>
+						<td>Extends the <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> by appending additional elements at the end of vector.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.at.html" class="public">
+								<code>at</code>
+							</a>
+							<span class="tableEntryAnnotation">(pos)</span>
+						</td>
+						<td>Returns a copy to the element at position <code class="lang-d"><a href="../../btl/vector/Vector.at.html#pos"><span class="pln">pos</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.back.html" class="public">
+								<code>back</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Returns a reference to the last element in the vector.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.build.html" class="public">
+								<code>build</code>
+							</a>
+							<span class="tableEntryAnnotation">(args)</span>
+						</td>
+						<td>Static function which return <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> construct from arguments <code class="lang-d"><a href="../../btl/vector/Vector.build.html#args"><span class="pln">args</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.clear.html" class="public">
+								<code>clear</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Erases the contents of the <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code>, which becomes an empty vector (with a length of 0 elements).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.downsize.html" class="public">
+								<code>downsize</code>
+							</a>
+							<span class="tableEntryAnnotation">(n)</span>
+						</td>
+						<td>Downsizes the vector to a length of <code class="lang-d"><a href="../../btl/vector/Vector.downsize.html#n"><span class="pln">n</span></a></code> elements.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.emplace.html" class="public">
+								<code>emplace</code>
+							</a>
+							<span class="tableEntryAnnotation">(pos, args)</span>
+						</td>
+						<td>Inserts a new element into the container directly before <code class="lang-d"><a href="../../btl/vector/Vector.emplace.html#pos"><span class="pln">pos</span></a></code> or <code class="lang-d"><a href="../../btl/vector/Vector.ptr.html"><span class="pln">ptr</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.emplaceBack.html" class="public">
+								<code>emplaceBack</code>
+							</a>
+							<span class="tableEntryAnnotation">(args)</span>
+						</td>
+						<td>Appends a new element to the end of the container. The element is constructed through <code class="lang-d"><a href="../../btl/vector/Vector.emplace.html"><span class="pln">emplace</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.erase.html" class="public">
+								<code>erase</code>
+							</a>
+							<span class="tableEntryAnnotation">(pos)</span>
+						</td>
+						<td>Removes specified element from the vector.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.first.html" class="public">
+								<code>first</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Returns a copy of the first element in the vector.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.front.html" class="public">
+								<code>front</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Returns a reference to the first element in the vector.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.insert.html" class="public">
+								<code>insert</code>
+							</a>
+							<span class="tableEntryAnnotation">(pos, range)</span>
+						</td>
+						<td>Inserts additional elements into the <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> right before the element indicated by <code class="lang-d"><a href="../../btl/vector/Vector.insert.html#pos"><span class="pln">pos</span></a></code> or <code class="lang-d"><a href="../../btl/vector/Vector.ptr.html"><span class="pln">ptr</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.last.html" class="public">
+								<code>last</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Returns a copy to the last element in the vector.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.opAssign.html" class="public">
+								<code>opAssign</code>
+							</a>
+							<span class="tableEntryAnnotation">(rhs)</span>
+						</td>
+						<td>Assigns a new value <code class="lang-d"><a href="../../btl/vector/Vector.opAssign.html#rhs"><span class="pln">rhs</span></a></code> to the vector, replacing its current contents.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.opCmp.html" class="public">
+								<code>opCmp</code>
+							</a>
+							<span class="tableEntryAnnotation">(rhs)</span>
+						</td>
+						<td>Compares the contents of a vector with another vector or range.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.opDollar.html" class="public">
+								<code>opDollar</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Returns the length of the vector, in terms of number of elements.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.opEquals.html" class="public">
+								<code>opEquals</code>
+							</a>
+							<span class="tableEntryAnnotation">(nil)</span>
+						</td>
+						<td>Compares the contents of a vector with another vector, range or null.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.opIndex.html" class="public">
+								<code>opIndex</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Return slice of all elements (same as <code class="lang-d"><a href="../../btl/vector/Vector.elements.html"><span class="typ">Vector<wbr/></span><span class="pun">.</span><span class="pln">elements</span></a></code>).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.opIndex.html" class="public">
+								<code>opIndex</code>
+							</a>
+							<span class="tableEntryAnnotation">(pos)</span>
+						</td>
+						<td>Returns reference to element at specified location <code class="lang-d"><a href="../../btl/vector/Vector.opIndex.html#pos"><span class="pln">pos</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.opSlice.html" class="public">
+								<code>opSlice</code>
+							</a>
+							<span class="tableEntryAnnotation">(begin, end)</span>
+						</td>
+						<td>Returns a slice [begin .. end]. If the requested slice extends past the end of the vector, the returned slice is invalid.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.pop.html" class="public">
+								<code>pop</code>
+							</a>
+							<span class="tableEntryAnnotation">(pos, def)</span>
+						</td>
+						<td>Move the element at position <code class="lang-d"><a href="../../btl/vector/Vector.pop.html#pos"><span class="pln">pos</span></a></code> out of vector, effectively reducing its length by 1.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.popBack.html" class="public">
+								<code>popBack</code>
+							</a>
+							<span class="tableEntryAnnotation">(def)</span>
+						</td>
+						<td>Move the last element of the vector, effectively reducing its length by 1.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.proxySwap.html" class="public">
+								<code>proxySwap</code>
+							</a>
+							<span class="tableEntryAnnotation">(rhs)</span>
+						</td>
+						<td>Swaps the contents of <code class="lang-d"><span class="kwd">this</span></code> and <code class="lang-d"><a href="../../btl/vector/Vector.proxySwap.html#rhs"><span class="pln">rhs</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.release.html" class="public">
+								<code>release</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Erases and deallocate the contents of the <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code>, which becomes an empty vector (with a length of 0 characters).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.replace.html" class="public">
+								<code>replace</code>
+							</a>
+							<span class="tableEntryAnnotation">(pos, len, val, count)</span>
+						</td>
+						<td>Replaces the portion of the vector that begins at element <code class="lang-d"><a href="../../btl/vector/Vector.replace.html#pos"><span class="pln">pos</span></a></code> and spans <code class="lang-d"><a href="../../btl/vector/Vector.replace.html#len"><span class="pln">len</span></a></code> characters (or the part of the vector in the slice <code class="lang-d"><a href="../../btl/vector/Vector.replace.html#slice"><span class="pln">slice</span></a></code>) by new contents.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.reserve.html" class="public">
+								<code>reserve</code>
+							</a>
+							<span class="tableEntryAnnotation">(n)</span>
+						</td>
+						<td>Requests that the vector capacity be adapted to a planned change in size to a length of up to <code class="lang-d"><a href="../../btl/vector/Vector.reserve.html#n"><span class="pln">n</span></a></code> elements.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.resize.html" class="public">
+								<code>resize</code>
+							</a>
+							<span class="tableEntryAnnotation">(n, args)</span>
+						</td>
+						<td>Resizes the vector to a length of <code class="lang-d"><a href="../../btl/vector/Vector.resize.html#n"><span class="pln">n</span></a></code> elements.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.shrinkToFit.html" class="public">
+								<code>shrinkToFit</code>
+							</a>
+							<span class="tableEntryAnnotation">(reallocate)</span>
+						</td>
+						<td>Requests the <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> to reduce its capacity to fit its length.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.upsize.html" class="public">
+								<code>upsize</code>
+							</a>
+							<span class="tableEntryAnnotation">(n, args)</span>
+						</td>
+						<td>Upsize the vector to a length of <code class="lang-d"><a href="../../btl/vector/Vector.upsize.html#n"><span class="pln">n</span></a></code> elements.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section><h3>Aliases</h3>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.AllocatorType.html" class="public">
+								<code>AllocatorType</code>
+							</a>
+						</td>
+						<td>Type of the allocator object used to define the storage allocation model. By default Mallocator is used.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.allowHeap.html" class="public">
+								<code>allowHeap</code>
+							</a>
+						</td>
+						<td>Allow heap (<code class="lang-d"><span class="kwd">false</span></code> only if <code class="lang-d"><span class="typ">Allcoator</span></code> is void)
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.ElementReferenceType.html" class="public">
+								<code>ElementReferenceType</code>
+							</a>
+						</td>
+						<td>Type of reference to elements.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.ElementType.html" class="public">
+								<code>ElementType</code>
+							</a>
+						</td>
+						<td>Type of elements.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.hasStatelessAllocator.html" class="public">
+								<code>hasStatelessAllocator</code>
+							</a>
+						</td>
+						<td>True if allocator doesn't have state.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.maximalCapacity.html" class="public">
+								<code>maximalCapacity</code>
+							</a>
+						</td>
+						<td>Maximal capacity of vector, in terms of number of elements.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.minimalCapacity.html" class="public">
+								<code>minimalCapacity</code>
+							</a>
+						</td>
+						<td>Minimal capacity of vector, in terms of number of elements.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.opOpAssign.html" class="public">
+								<code>opOpAssign</code>
+							</a>
+						</td>
+						<td>Operator <code class="lang-d"><span class="pun">~=</span></code> and <code class="lang-d"><span class="pun">+=</span></code> is same as append
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.put.html" class="public">
+								<code>put</code>
+							</a>
+						</td>
+						<td>Alias to append.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.supportGC.html" class="public">
+								<code>supportGC</code>
+							</a>
+						</td>
+						<td></td>
+					</tr>
+				</table>
+			</section><h2>Alias Vector</h2>
+			
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>github.com/submada/basic_string, Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

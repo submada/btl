@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Module btl.autoptr.intrusive_ptr</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../btl.html">btl</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../btl/autoptr.html">autoptr</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/string.html">string</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/vector.html">vector</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Module btl.autoptr.intrusive_ptr</h1><p>Implementation of intrusive reference counted pointer <code class="lang-d"><a href="../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"><span class="typ">IntrusivePtr</span></a></code> (similar to c++ <code class="lang-d"><span class="pln">std</span><span class="pun">::</span><span class="pln">enable_shared_from_this</span></code>).
+</p><section></section>
+
+			<section></section>
+			<section>
+				<h2>Functions</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="dynCast" class="public" href="../../btl/autoptr/intrusive_ptr/dynCast.html">dynCast</a><span class="tableEntryAnnotation">()</span>
+							</code>
+						</td>
+						<td>Dynamic cast for shared pointers if <code class="lang-d"><span class="typ">ElementType</span></code> is class with D linkage.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="dynCastMove" class="public" href="../../btl/autoptr/intrusive_ptr/dynCastMove.html">dynCastMove</a><span class="tableEntryAnnotation">()</span>
+							</code>
+						</td>
+						<td>Dynamic cast for shared pointers if <code class="lang-d"><span class="typ">ElementType</span></code> is class with D linkage.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="intrusivePtr" class="public" href="../../btl/autoptr/intrusive_ptr/intrusivePtr.html">intrusivePtr</a><span class="tableEntryAnnotation">(elm)</span>
+							</code>
+						</td>
+						<td>Create <code class="lang-d"><a href="../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"><span class="typ">IntrusivePtr</span></a></code> instance from class reference <code class="lang-d"><span class="typ">Elm</span></code> or struct pointer element <code class="lang-d"><span class="typ">Elm</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="share" class="public" href="../../btl/autoptr/intrusive_ptr/share.html">share</a><span class="tableEntryAnnotation">(ptr)</span>
+							</code>
+						</td>
+						<td>Return <code class="lang-d"><span class="kwd">shared <a href="../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a></code> pointing to same managed object like parameter <code class="lang-d"><a href="../../btl/autoptr/intrusive_ptr/share.html#ptr"><span class="pln">ptr</span></a></code>.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Structs</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="IntrusivePtr" class="public" href="../../btl/autoptr/intrusive_ptr/IntrusivePtr.html">IntrusivePtr</a>
+							</code>
+						</td>
+						<td>Implementation of a ref counted pointer that points to an object with an embedded reference counter <code class="lang-d"><a href="../../btl/autoptr/common/ControlBlock.html" title="btl.autoptr.common.ControlBlock"><span class="typ">ControlBlock</span></a></code>.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Manifest constants</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a id="isIntrusivePtr" class="public" href="../../btl/autoptr/intrusive_ptr/isIntrusivePtr.html">
+								<code>isIntrusivePtr</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Check if type <code class="lang-d"><span class="pln">T</span></code> is <code class="lang-d"><a href="../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"><span class="typ">IntrusivePtr</span></a></code>.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Aliases</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a id="IntrusivePtr" class="public" href="../../btl/autoptr/intrusive_ptr/IntrusivePtr.html">
+								<code>IntrusivePtr</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><a href="../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"><span class="typ">IntrusivePtr</span></a>!(_Type,_weakPtr)</code>
+						</td>
+						<td>Alias to <code class="lang-d"><a href="../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"><span class="typ">IntrusivePtr</span></a></code> with additional template parameters for same interface as <code class="lang-d"><span class="typ">SharedPtr</span></code> and <code class="lang-d"><span class="typ">RcPtr</span></code>
+</td>
+					</tr>
+				</table>
+			</section>
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>github.com/submada/basic_string, Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

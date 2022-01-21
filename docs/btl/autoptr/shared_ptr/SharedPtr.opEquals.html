@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Function SharedPtr.opEquals</title>
+		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../btl.html">btl</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../btl/autoptr.html">autoptr</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/string.html">string</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/vector.html">vector</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Function SharedPtr.opEquals</h1><p>Operator == and != .
+			Compare pointers.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="typ">bool</span> <span class="pln">opEquals</span>
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">null</span><span class="pun">)</span> <span class="pln">nil</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">const pure nothrow @nogc scope @safe</span><span class="pun">;</span>
+			<br/>
+			<br/>
+			<span class="typ">bool</span> <span class="pln">opEquals</span>(Rhs)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">auto scope const ref </span><span class="typ">Rhs</span> <span class="pln">rhs</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">const pure nothrow @nogc scope @safe</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isSharedPtr</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; !</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Rhs </span><span class="pun">== </span><span class="kwd">shared</span><span class="pun">)</span><span class="pun">);</span>
+			<br/>
+			<br/>
+			<span class="typ">bool</span> <span class="pln">opEquals</span>(Elm)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">scope const </span><span class="typ">Elm</span> <span class="pln">elm</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">const pure nothrow @nogc scope @safe</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Elm </span><span class="pun">: </span><span class="typ">GetElementReferenceType</span><span class="pun">!(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)))</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			<section></section>
+
+			<section><h2>Examples</h2>
+<pre class="code"><code class="lang-d"><span class="pun">{
+	<a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">long </span><span class="pln">x </span><span class="pun">= <a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">long<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">0</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x </span><span class="pun">!= </span><span class="kwd">null</span><span class="pun">);
+	</span><span class="pln">x </span><span class="pun">= </span><span class="kwd">null</span><span class="pun">;
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x </span><span class="pun">== </span><span class="kwd">null</span><span class="pun">);
+}
+
+{
+	<a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">long </span><span class="pln">x </span><span class="pun">= <a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">long<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">123</span><span class="pun">);
+	<a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">long </span><span class="pln">y </span><span class="pun">= <a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">long<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">123</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x </span><span class="pun">== </span><span class="pln">x</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">y </span><span class="pun">== </span><span class="pln">y</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x </span><span class="pun">!= </span><span class="pln">y</span><span class="pun">);
+}
+
+{
+	<a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">long </span><span class="pln">x</span><span class="pun">;
+	<a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!(</span><span class="kwd">const </span><span class="typ">long</span><span class="pun">) </span><span class="pln">y</span><span class="pun">;
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x </span><span class="pun">== </span><span class="pln">x</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">y </span><span class="pun">== </span><span class="pln">y</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x </span><span class="pun">== </span><span class="pln">y</span><span class="pun">);
+}
+
+{
+	<a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">long </span><span class="pln">x </span><span class="pun">= <a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">long<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">123</span><span class="pun">);
+	<a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">long </span><span class="pln">y </span><span class="pun">= <a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">long<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">123</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x </span><span class="pun">== </span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">element</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">y<wbr/></span><span class="pun">.</span><span class="pln">element </span><span class="pun">== </span><span class="pln">y</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x </span><span class="pun">!= </span><span class="pln">y<wbr/></span><span class="pun">.</span><span class="pln">element</span><span class="pun">);
+}</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>github.com/submada/basic_string, Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

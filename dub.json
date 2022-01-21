@@ -37,7 +37,7 @@
 		},
 	
 	],
+	"description" : "Basic Template Library",
 	"copyright" : "Copyright © 2022, Adam Búš",
-	"description" : "Smart pointers.",
 	"license" : "Boost Software License - Version 1.0"
 }

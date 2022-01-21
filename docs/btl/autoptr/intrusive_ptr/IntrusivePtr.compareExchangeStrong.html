@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Function IntrusivePtr.compareExchangeStrong</title>
+		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../btl.html">btl</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../btl/autoptr.html">autoptr</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/string.html">string</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/vector.html">vector</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Function IntrusivePtr.compareExchangeStrong</h1><p>Compares the <code class="lang-d"><a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"><span class="typ">IntrusivePtr</span></a></code> pointers pointed-to by <code class="lang-d"><span class="kwd">this</span></code> and <code class="lang-d"><a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.compareExchangeStrong.html#expected"><span class="pln">expected</span></a></code>.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="typ">bool</span> <span class="pln">compareExchangeStrong</span>(<span class="typ">MemoryOrder</span> success<span class="pln"> </span><span class="pun">= </span><span class="typ">MemoryOrder<wbr/></span><span class="pun">.</span><span class="pln">seq</span>, <span class="typ">MemoryOrder</span> failure<span class="pln"> </span><span class="pun">= </span><span class="pln">success</span>, E, D, This)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">scope ref </span><span class="pln">E</span> <span class="pln">expected</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">scope </span><span class="pln">D</span> <span class="pln">desired</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isIntrusivePtr</span><span class="pun">!</span><span class="pln">E </span><span class="pun">&amp;&amp; !</span><span class="kwd">is</span><span class="pun">(</span><span class="pln">E </span><span class="pun">== </span><span class="kwd">shared</span><span class="pun">) &amp;&amp; </span><span class="pln">isIntrusivePtr</span><span class="pun">!</span><span class="pln">D </span><span class="pun">&amp;&amp; !</span><span class="kwd">is</span><span class="pun">(</span><span class="pln">D </span><span class="pun">== </span><span class="kwd">shared</span><span class="pun">) &amp;&amp; (</span><span class="pln">isMoveConstructable</span><span class="pun">!(</span><span class="pln">D</span><span class="pun">, </span><span class="typ">This</span><span class="pun">) &amp;&amp; </span><span class="pln">isMutable</span><span class="pun">!</span><span class="typ">This</span><span class="pun">) &amp;&amp; (</span><span class="pln">isCopyConstructable</span><span class="pun">!(</span><span class="typ">This</span><span class="pun">, </span><span class="pln">E</span><span class="pun">) &amp;&amp; </span><span class="pln">isMutable</span><span class="pun">!</span><span class="pln">E</span><span class="pun">) &amp;&amp; (</span><span class="typ">This<wbr/></span><span class="pun">.</span><span class="pln">isWeak </span><span class="pun">== </span><span class="pln">D<wbr/></span><span class="pun">.</span><span class="pln">isWeak</span><span class="pun">) &amp;&amp; (</span><span class="typ">This<wbr/></span><span class="pun">.</span><span class="pln">isWeak </span><span class="pun">== </span><span class="pln">E<wbr/></span><span class="pun">.</span><span class="pln">isWeak</span><span class="pun">)</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			<section><p>If they are equivalent (store the same pointer value, and either share ownership of the same object or are both empty), assigns <code class="lang-d"><a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.compareExchangeStrong.html#desired"><span class="pln">desired</span></a></code> into <code class="lang-d"><span class="kwd">this</span></code> using the memory ordering constraints specified by <code class="lang-d"><span class="pln">success</span></code> and returns <code class="lang-d"><span class="kwd">true</span></code>.
+            If they are not equivalent, assigns <code class="lang-d"><span class="kwd">this</span></code> into <code class="lang-d"><a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.compareExchangeStrong.html#expected"><span class="pln">expected</span></a></code> using the memory ordering constraints specified by <code class="lang-d"><span class="pln">failure</span></code> and returns <code class="lang-d"><span class="kwd">false</span></code>.
+</p>
+
+<p>            More info in c++ std::atomic<std::shared_ptr>.
+</p>
+</section>
+
+			<section><h2>Examples</h2>
+<pre class="code"><code class="lang-d"><span class="kwd">static class </span><span class="typ">Foo</span><span class="pun">{
+    </span><span class="typ">long </span><span class="pln">i</span><span class="pun">;
+    </span><span class="typ">MutableControlBlock</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">) </span><span class="pln">c</span><span class="pun">;
+
+    </span><span class="kwd">this</span><span class="pun">(</span><span class="typ">long </span><span class="pln">i</span><span class="pun">)</span><span class="kwd">pure nothrow @safe @nogc</span><span class="pun">{
+        </span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">= </span><span class="pln">i</span><span class="pun">;
+    }
+
+    </span><span class="typ">bool <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.opEquals.html"></span><span class="pln">opEquals</span></a><span class="pun">(</span><span class="kwd">this </span><span class="typ">This</span><span class="pun">)(</span><span class="typ">long </span><span class="pln">i</span><span class="pun">)</span><span class="kwd">const @trusted</span><span class="pun">{
+        </span><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">traits </span><span class="pun">: </span><span class="typ">Unqual</span><span class="pun">;
+        </span><span class="kwd">auto </span><span class="pln">self </span><span class="pun">= </span><span class="kwd">cast</span><span class="pun">(</span><span class="typ">Unqual</span><span class="pun">!</span><span class="typ">This</span><span class="pun">)</span><span class="kwd">this</span><span class="pun">;
+        </span><span class="kwd">return </span><span class="pun">(</span><span class="pln">self<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">== </span><span class="pln">i</span><span class="pun">);
+    }
+}
+
+</span><span class="kwd">alias </span><span class="typ">Type </span><span class="pun">= </span><span class="kwd">const </span><span class="typ">Foo</span><span class="pun">;
+
+</span><span class="kwd">static foreach</span><span class="pun">(</span><span class="kwd">enum </span><span class="typ">bool <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.weak.html"></span><span class="pln">weak</span></a><span class="pun">; [</span><span class="kwd">true</span><span class="pun">, </span><span class="kwd">false</span><span class="pun">]){
+    </span><span class="com">//fail
+    </span><span class="pun">{
+        <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Type </span><span class="pln">a </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Type<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">123</span><span class="pun">);
+        <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Type </span><span class="pln">b </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Type<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">42</span><span class="pun">);
+        <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Type </span><span class="pln">c </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Type<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">666</span><span class="pun">);
+
+        </span><span class="kwd">static if</span><span class="pun">(<a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.weak.html"></span><span class="pln">weak</span></a><span class="pun">)</span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">compareExchangeWeak</span><span class="pun">(</span><span class="pln">b</span><span class="pun">, </span><span class="pln">c</span><span class="pun">);
+        </span><span class="kwd">else </span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">compareExchangeStrong</span><span class="pun">(</span><span class="pln">b</span><span class="pun">, </span><span class="pln">c</span><span class="pun">);
+
+        </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">a </span><span class="pun">== </span><span class="lit">123</span><span class="pun">);
+        </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">b </span><span class="pun">== </span><span class="lit">123</span><span class="pun">);
+        </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">c </span><span class="pun">== </span><span class="lit">666</span><span class="pun">);
+
+    }
+
+    </span><span class="com">//success
+    </span><span class="pun">{
+        <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Type </span><span class="pln">a </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Type<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">123</span><span class="pun">);
+        <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Type </span><span class="pln">b </span><span class="pun">= </span><span class="pln">a</span><span class="pun">;
+        <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Type </span><span class="pln">c </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Type<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">666</span><span class="pun">);
+
+        </span><span class="kwd">static if</span><span class="pun">(<a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.weak.html"></span><span class="pln">weak</span></a><span class="pun">)</span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">compareExchangeWeak</span><span class="pun">(</span><span class="pln">b</span><span class="pun">, </span><span class="pln">c</span><span class="pun">);
+        </span><span class="kwd">else </span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">compareExchangeStrong</span><span class="pun">(</span><span class="pln">b</span><span class="pun">, </span><span class="pln">c</span><span class="pun">);
+
+        </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">a </span><span class="pun">== </span><span class="lit">666</span><span class="pun">);
+        </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">b </span><span class="pun">== </span><span class="lit">123</span><span class="pun">);
+        </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">c </span><span class="pun">== </span><span class="lit">666</span><span class="pun">);
+    }
+
+    </span><span class="com">//shared fail
+    </span><span class="pun">{
+        </span><span class="kwd">shared <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="kwd">shared </span><span class="typ">Type</span><span class="pun">) </span><span class="pln">a </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="kwd">shared </span><span class="typ">Type</span><span class="pun">)<wbr/>.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">123</span><span class="pun">);
+        <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="kwd">shared </span><span class="typ">Type</span><span class="pun">) </span><span class="pln">b </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="kwd">shared </span><span class="typ">Type</span><span class="pun">)<wbr/>.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">42</span><span class="pun">);
+        <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="kwd">shared </span><span class="typ">Type</span><span class="pun">) </span><span class="pln">c </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="kwd">shared </span><span class="typ">Type</span><span class="pun">)<wbr/>.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">666</span><span class="pun">);
+
+        </span><span class="kwd">static if</span><span class="pun">(<a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.weak.html"></span><span class="pln">weak</span></a><span class="pun">)</span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">compareExchangeWeak</span><span class="pun">(</span><span class="pln">b</span><span class="pun">, </span><span class="pln">c</span><span class="pun">);
+        </span><span class="kwd">else </span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">compareExchangeStrong</span><span class="pun">(</span><span class="pln">b</span><span class="pun">, </span><span class="pln">c</span><span class="pun">);
+
+        </span><span class="kwd">auto </span><span class="pln">tmp </span><span class="pun">= </span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">exchange</span><span class="pun">(</span><span class="kwd">null</span><span class="pun">);
+        </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">tmp </span><span class="pun">== </span><span class="lit">123</span><span class="pun">);
+        </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">b </span><span class="pun">== </span><span class="lit">123</span><span class="pun">);
+        </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">c </span><span class="pun">== </span><span class="lit">666</span><span class="pun">);
+    }
+
+    </span><span class="com">//shared success
+    </span><span class="pun">{
+        <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="kwd">shared </span><span class="typ">Type</span><span class="pun">) </span><span class="pln">b </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="kwd">shared </span><span class="typ">Type</span><span class="pun">)<wbr/>.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">123</span><span class="pun">);
+        </span><span class="kwd">shared <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="kwd">shared </span><span class="typ">Type</span><span class="pun">) </span><span class="pln">a </span><span class="pun">= </span><span class="pln">b</span><span class="pun">;
+        <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="kwd">shared </span><span class="typ">Type</span><span class="pun">) </span><span class="pln">c </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="kwd">shared </span><span class="typ">Type</span><span class="pun">)<wbr/>.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">666</span><span class="pun">);
+
+        </span><span class="kwd">static if</span><span class="pun">(<a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.weak.html"></span><span class="pln">weak</span></a><span class="pun">)</span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">compareExchangeWeak</span><span class="pun">(</span><span class="pln">b</span><span class="pun">, </span><span class="pln">c</span><span class="pun">);
+        </span><span class="kwd">else </span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">compareExchangeStrong</span><span class="pun">(</span><span class="pln">b</span><span class="pun">, </span><span class="pln">c</span><span class="pun">);
+
+        </span><span class="kwd">auto </span><span class="pln">tmp </span><span class="pun">= </span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">exchange</span><span class="pun">(</span><span class="kwd">null</span><span class="pun">);
+        </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">tmp </span><span class="pun">== </span><span class="lit">666</span><span class="pun">);
+        </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">b </span><span class="pun">== </span><span class="lit">123</span><span class="pun">);
+        </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">c </span><span class="pun">== </span><span class="lit">666</span><span class="pun">);
+    }
+}</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>github.com/submada/basic_string, Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

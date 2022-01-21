@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>IntrusivePtr.this - multiple declarations</title>
+		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../btl.html">btl</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../../btl/autoptr.html">autoptr</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/string.html">string</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/vector.html">vector</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>IntrusivePtr.this - multiple declarations</h1>
+			<nav class="page-nav">
+				<ul>
+					<li>
+						<a href="#0">
+							Function <code>IntrusivePtr.this</code>
+						</a>
+					</li>
+					<li>
+						<a href="#1">
+							Function <code>IntrusivePtr.this</code>
+						</a>
+					</li>
+				</ul>
+			</nav><h2 id="0">Function IntrusivePtr.this</h2><p>Constructs a <code class="lang-d"><a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"><span class="typ">IntrusivePtr</span></a></code> without managed object. Same as <code class="lang-d"><span class="typ">IntrusivePtr<wbr/></span><span class="pun">.</span><span class="pln">init</span></code>
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="pln">this</span>(This)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">null</span><span class="pun">)</span> <span class="pln">nil</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">pure nothrow @nogc @safe</span><span class="pun">;</span>
+					</div>
+				</code>
+			</div>
+			<section></section>
+
+			<section><h3>Examples</h3>
+<pre class="code"><code class="lang-d"><span class="kwd">static struct </span><span class="typ">Foo</span><span class="pun">{
+    </span><span class="typ">ControlBlock</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">) </span><span class="pln">c</span><span class="pun">;
+}
+
+{
+    <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Foo </span><span class="pln">x </span><span class="pun">= </span><span class="kwd">null</span><span class="pun">;
+
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x </span><span class="pun">== </span><span class="kwd">null</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x </span><span class="pun">== <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Foo<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
+}</span></code></pre>
+</section>
+<h2 id="1">Function IntrusivePtr.this</h2><p>Constructs a <code class="lang-d"><a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"><span class="typ">IntrusivePtr</span></a></code> which shares ownership of the object managed by <code class="lang-d"><a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.this.html#rhs"><span class="pln">rhs</span></a></code>.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="pln">this</span>(Rhs, This)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">auto scope ref </span><span class="typ">Rhs</span> <span class="pln">rhs</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">@trusted</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isIntrusivePtr</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; </span><span class="pln">isConstructable</span><span class="pun">!(</span><span class="pln">rhs</span><span class="pun">, </span><span class="typ">This</span><span class="pun">) &amp;&amp; !</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Rhs </span><span class="pun">== </span><span class="kwd">shared</span><span class="pun">) &amp;&amp; !</span><span class="pln">isMoveCtor</span><span class="pun">!(</span><span class="typ">This</span><span class="pun">, </span><span class="pln">rhs</span><span class="pun">)</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			<section><p>If rhs manages no object, this manages no object too.
+            If rhs if rvalue then ownership is moved.
+            The template overload doesn't participate in overload resolution if ElementType of <code class="lang-d"><span class="kwd">typeof</span><span class="pun">(<a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.this.html#rhs"></span><span class="pln">rhs</span></a><span class="pun">)</span></code> is not implicitly convertible to <code class="lang-d"><a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.ElementType.html"><span class="typ">ElementType</span></a></code>.
+            If rhs if <code class="lang-d"><a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.WeakType.html"><span class="typ">WeakType</span></a></code> then this ctor is equivalent to <code class="lang-d"><span class="kwd">this</span><span class="pun">(</span><span class="pln">rhs<wbr/></span><span class="pun">.</span><span class="pln">lock</span><span class="pun">())</span></code>.
+</p>
+</section>
+
+			<section><h3>Examples</h3>
+<pre class="code"><code class="lang-d"><span class="kwd">static struct </span><span class="typ">Foo</span><span class="pun">{
+    </span><span class="typ">MutableControlBlock</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">) </span><span class="pln">c</span><span class="pun">;
+    </span><span class="typ">int </span><span class="pln">i</span><span class="pun">;
+
+    </span><span class="kwd">this</span><span class="pun">(</span><span class="typ">int </span><span class="pln">i</span><span class="pun">)</span><span class="kwd">pure nothrow @safe @nogc</span><span class="pun">{
+        </span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">= </span><span class="pln">i</span><span class="pun">;
+    }
+}
+
+{
+    <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Foo </span><span class="pln">x </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Foo<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">123</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+
+    <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Foo </span><span class="pln">a </span><span class="pun">= </span><span class="pln">x</span><span class="pun">;         </span><span class="com">//lvalue copy ctor
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">a </span><span class="pun">== </span><span class="pln">x</span><span class="pun">);
+
+    </span><span class="kwd">const <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Foo </span><span class="pln">b </span><span class="pun">= </span><span class="pln">x</span><span class="pun">;   </span><span class="com">//lvalue copy ctor
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">b </span><span class="pun">== </span><span class="pln">x</span><span class="pun">);
+
+    <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Foo </span><span class="pln">c </span><span class="pun">= </span><span class="pln">x</span><span class="pun">; </span><span class="com">//lvalue ctor
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">c </span><span class="pun">== </span><span class="pln">x</span><span class="pun">);
+
+    </span><span class="kwd">const <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Foo </span><span class="pln">d </span><span class="pun">= </span><span class="pln">b</span><span class="pun">;   </span><span class="com">//lvalue ctor
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">d </span><span class="pun">== </span><span class="pln">x</span><span class="pun">);
+
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">5</span><span class="pun">);
+}
+
+{
+    </span><span class="kwd">import </span><span class="pln">core<wbr/></span><span class="pun">.</span><span class="pln">lifetime </span><span class="pun">: </span><span class="pln">move</span><span class="pun">;
+    <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Foo </span><span class="pln">x </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Foo<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">123</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+
+    <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Foo </span><span class="pln">a </span><span class="pun">= </span><span class="pln">move</span><span class="pun">(</span><span class="pln">x</span><span class="pun">);        </span><span class="com">//rvalue copy ctor
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+
+    </span><span class="kwd">const <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Foo </span><span class="pln">b </span><span class="pun">= </span><span class="pln">move</span><span class="pun">(</span><span class="pln">a</span><span class="pun">);  </span><span class="com">//rvalue copy ctor
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">b<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+
+    <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="kwd">const </span><span class="typ">Foo</span><span class="pun">) </span><span class="pln">c </span><span class="pun">= </span><span class="pln">b<wbr/></span><span class="pun">.</span><span class="pln">load</span><span class="pun">;  </span><span class="com">//rvalue ctor
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">c<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
+
+    </span><span class="kwd">const <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!</span><span class="typ">Foo </span><span class="pln">d </span><span class="pun">= </span><span class="pln">move</span><span class="pun">(</span><span class="pln">c</span><span class="pun">);  </span><span class="com">//rvalue ctor
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">d<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
+}</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>github.com/submada/basic_string, Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

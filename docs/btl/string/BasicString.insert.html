@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Function BasicString.insert</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">
+						<a href="../../btl.html">btl</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../btl/autoptr.html">autoptr</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../btl/string.html">string</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/vector.html">vector</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Function BasicString.insert</h1><p>Inserts additional characters into the <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> right before the character indicated by <code class="lang-d"><a href="../../btl/string/BasicString.insert.html#pos"><span class="pln">pos</span></a></code> or <code class="lang-d"><a href="../../btl/string/BasicString.ptr.html"><span class="pln">ptr</span></a></code>.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="pln">size_t</span> <span class="pln">insert</span>
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">size_t</span> <span class="pln">pos</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">scope const </span><a href="../../btl/string/BasicString.CharType.html"><span class="typ">BasicString<wbr/></span><span class="pun">.<wbr/></span><span class="typ">CharType</span></a><span class="pun">[]</span> <span class="pln">val</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">size_t</span> <span class="pln">count</span> <span class="pun">=</span> <span class="lit">1</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span><span class="pun">;</span>
+			<br/>
+			<br/>
+			<span class="pln">size_t</span> <span class="pln">insert</span>(Val)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">size_t</span> <span class="pln">pos</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">auto scope const ref </span><span class="typ">Val</span> <span class="pln">val</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">size_t</span> <span class="pln">count</span> <span class="pun">=</span> <span class="lit">1</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isBasicString</span><span class="pun">!</span><span class="typ">Val </span><span class="pun">|| </span><span class="pln">isSomeChar</span><span class="pun">!</span><span class="typ">Val </span><span class="pun">|| </span><span class="pln">isSomeString</span><span class="pun">!</span><span class="typ">Val </span><span class="pun">|| </span><span class="pln">isIntegral</span><span class="pun">!</span><span class="typ">Val</span><span class="pun">);</span>
+			<br/>
+			<br/>
+			<span class="pln">size_t</span> <span class="pln">insert</span>
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">const </span><a href="../../btl/string/BasicString.CharType.html"><span class="typ">BasicString<wbr/></span><span class="pun">.<wbr/></span><span class="typ">CharType</span></a><span class="pun">*</span> <span class="pln">ptr</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">scope const </span><a href="../../btl/string/BasicString.CharType.html"><span class="typ">BasicString<wbr/></span><span class="pun">.<wbr/></span><span class="typ">CharType</span></a><span class="pun">[]</span> <span class="pln">val</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">size_t</span> <span class="pln">count</span> <span class="pun">=</span> <span class="lit">1</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span><span class="pun">;</span>
+			<br/>
+			<br/>
+			<span class="pln">size_t</span> <span class="pln">insert</span>(Val)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">const </span><a href="../../btl/string/BasicString.CharType.html"><span class="typ">BasicString<wbr/></span><span class="pun">.<wbr/></span><span class="typ">CharType</span></a><span class="pun">*</span> <span class="pln">ptr</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">auto scope const ref </span><span class="typ">Val</span> <span class="pln">val</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">size_t</span> <span class="pln">count</span> <span class="pun">=</span> <span class="lit">1</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isBasicString</span><span class="pun">!</span><span class="typ">Val </span><span class="pun">|| </span><span class="pln">isSomeChar</span><span class="pun">!</span><span class="typ">Val </span><span class="pun">|| </span><span class="pln">isSomeString</span><span class="pun">!</span><span class="typ">Val </span><span class="pun">|| </span><span class="pln">isIntegral</span><span class="pun">!</span><span class="typ">Val</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			<section><p>Return number of inserted characters.
+</p>
+
+<p>			If parameters are out of range then there is no inserted value and in debug mode assert throw error.
+</p>
+
+<p>			Parameters are out of range if <code class="lang-d"><a href="../../btl/string/BasicString.insert.html#pos"><span class="pln">pos</span></a></code> is larger then <code class="lang-d"><wbr/><span class="pun">.</span><span class="pln">length</span></code> or <code class="lang-d"><a href="../../btl/string/BasicString.ptr.html"><span class="pln">ptr</span></a></code> is smaller then <code class="lang-d"><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">ptr</span></code> or <code class="lang-d"><a href="../../btl/string/BasicString.ptr.html"><span class="pln">ptr</span></a></code> point to address larger then <code class="lang-d"><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="pun">+ </span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">length</span></code>
+</p>
+</section>
+
+			<section><h2>Parameters</h2>
+<p><code class="lang-d"><a href="../../btl/string/BasicString.insert.html#pos"><span class="pln">pos</span></a></code> Insertion point, the new contents are inserted before the character at position <code class="lang-d"><a href="../../btl/string/BasicString.insert.html#pos"><span class="pln">pos</span></a></code>.
+</p>
+
+<p>				<code class="lang-d"><a href="../../btl/string/BasicString.ptr.html"><span class="pln">ptr</span></a></code> Pointer pointing to the insertion point, the new contents are inserted before the character pointed by ptr.
+</p>
+
+<p>				<code class="lang-d"><a href="../../btl/string/BasicString.insert.html#val"><span class="pln">val</span></a></code> Value inserted before insertion point <code class="lang-d"><a href="../../btl/string/BasicString.insert.html#pos"><span class="pln">pos</span></a></code> or <code class="lang-d"><a href="../../btl/string/BasicString.ptr.html"><span class="pln">ptr</span></a></code>.
+</p>
+
+<p>				<code class="lang-d"><a href="../../btl/string/BasicString.insert.html#count"><span class="pln">count</span></a></code> Number of times <code class="lang-d"><a href="../../btl/string/BasicString.insert.html#val"><span class="pln">val</span></a></code> is inserted.
+</p>
+</section>
+<section><h2>Examples</h2>
+<pre class="code"><code class="lang-d"><span class="pun">{
+	<a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">char </span><span class="pln">str </span><span class="pun">= </span><span class="str">"123456"</span><span class="pun">;
+
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="lit">2</span><span class="pun">, </span><span class="str">'x'</span><span class="pun">, </span><span class="lit">2</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"12xx3456"</span><span class="pun">);
+}
+
+{
+	<a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">char </span><span class="pln">str </span><span class="pun">= </span><span class="str">"123456"</span><span class="pun">;
+
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="lit">2</span><span class="pun">, </span><span class="str">"abc"</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"12abc3456"</span><span class="pun">);
+}
+
+{
+	<a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">char </span><span class="pln">str </span><span class="pun">= </span><span class="str">"123456"</span><span class="pun">;
+	<a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">char </span><span class="pln">str2 </span><span class="pun">= </span><span class="str">"abc"</span><span class="pun">;
+
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="lit">2</span><span class="pun">, </span><span class="pln">str2</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"12abc3456"</span><span class="pun">);
+}
+
+{
+	<a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">char </span><span class="pln">str </span><span class="pun">= </span><span class="str">"123456"</span><span class="pun">;
+
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="pun">+ </span><span class="lit">2</span><span class="pun">, </span><span class="str">'x'</span><span class="pun">, </span><span class="lit">2</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"12xx3456"</span><span class="pun">);
+}
+
+{
+	<a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">char </span><span class="pln">str </span><span class="pun">= </span><span class="str">"123456"</span><span class="pun">;
+
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="pun">+ </span><span class="lit">2</span><span class="pun">, </span><span class="str">"abc"</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"12abc3456"</span><span class="pun">);
+}
+
+{
+	<a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">char </span><span class="pln">str </span><span class="pun">= </span><span class="str">"123456"</span><span class="pun">;
+	<a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">char </span><span class="pln">str2 </span><span class="pun">= </span><span class="str">"abc"</span><span class="pun">;
+
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="pun">+ </span><span class="lit">2</span><span class="pun">, </span><span class="pln">str2</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"12abc3456"</span><span class="pun">);
+}</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>github.com/submada/btl.string, Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>
