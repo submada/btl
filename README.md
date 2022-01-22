@@ -1,7 +1,7 @@
 # Autoptr
 
 ## Documentation
-https://submada.github.io/autoptr
+https://submada.github.io/btl
 
 ## C++-style smart pointers for D.
 
