@@ -80,6 +80,107 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 }
 
 ///
+unittest{
+    static class Foo{
+        int i;
+
+        this(int i)pure nothrow @safe @nogc{
+            this.i = i;
+        }
+    }
+
+    static class Bar : Foo{
+        double d;
+
+        this(int i, double d)pure nothrow @safe @nogc{
+            super(i);
+            this.d = d;
+        }
+    }
+
+    static class Zee : Bar{
+        bool b;
+
+        this(int i, double d, bool b)pure nothrow @safe @nogc{
+            super(i, d);
+            this.b = b;
+        }
+
+        ~this()nothrow @system{
+        }
+    }
+
+    import core.lifetime : move;
+    ///simple:
+    {
+        UniquePtr!long a = UniquePtr!long.make(42);
+        UniquePtr!(const long) b = move(a);
+        assert(a == null);
+
+        assert(*b == 42);
+        assert(b.get == 42);
+    }
+
+    ///polymorphism:
+    {
+        ///create UniquePtr
+        UniquePtr!Foo foo = UniquePtr!Bar.make(42, 3.14);
+        UniquePtr!Zee zee = UniquePtr!Zee.make(42, 3.14, false);
+
+        ///dynamic cast:
+        UniquePtr!Bar bar = dynCastMove!Bar(foo);
+        assert(foo == null);
+        assert(bar != null);
+
+        ///this doesnt work because Foo destructor attributes are more restrictive then Zee's:
+        //UniquePtr!Foo x = move(zee);
+
+        ///this does work:
+        UniquePtr!(Foo, DestructorType!(Foo, Zee)) x = move(zee);
+        assert(zee == null);
+    }
+
+
+    ///multi threading:
+    {
+        ///create SharedPtr with atomic ref counting
+        UniquePtr!(shared Foo) foo = UniquePtr!(shared Bar).make(42, 3.14);
+
+        ///this doesnt work:
+        //foo.get.i += 1;
+
+        import core.atomic : atomicFetchAdd;
+        atomicFetchAdd(foo.get.i, 1);
+        assert(foo.get.i == 43);
+
+
+        ///creating `shared(UniquePtr)`:
+        shared UniquePtr!(shared Bar) bar = share(dynCastMove!Bar(foo));
+
+        ///`shared(UniquePtr)` is lock free.
+        static assert(typeof(bar).isLockFree == true);
+
+        ///multi thread operations (`store`, `exchange`):
+        UniquePtr!(shared Bar) bar2 = bar.exchange(null);
+    }
+
+    ///dynamic array:
+    {
+        import std.algorithm : all, equal;
+
+        UniquePtr!(long[]) a = UniquePtr!(long[]).make(10, -1);
+        assert(a.length == 10);
+        assert(a.get.length == 10);
+        assert(a.get.all!(x => x == -1));
+
+        for(long i = 0; i < a.length; ++i){
+            a.get[i] = i;
+        }
+        assert(a.get[] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    }
+}
+
+//old
 pure nothrow @nogc unittest{
 
     static class Foo{

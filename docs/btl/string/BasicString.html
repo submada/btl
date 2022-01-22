@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Struct BasicString</title>
+		<title>BasicString - multiple declarations</title>
 		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
@@ -72,7 +72,21 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Struct BasicString</h1><p>The <code class="lang-d"><span class="typ">BasicString</span></code> is the generalization of struct string for character of type <code class="lang-d"><span class="typ">char</span></code>, <code class="lang-d"><span class="typ">wchar</span></code> or <code class="lang-d"><span class="typ">dchar</span></code>.
+			<h1>BasicString - multiple declarations</h1>
+			<nav class="page-nav">
+				<ul>
+					<li>
+						<a href="#0">
+							Struct <code>BasicString</code>
+						</a>
+					</li>
+					<li>
+						<a href="#1">
+							Alias <code>BasicString</code>
+						</a>
+					</li>
+				</ul>
+			</nav><h2 id="0">Struct BasicString</h2><p>The <code class="lang-d"><span class="typ">BasicString</span></code> is the generalization of struct string for character of type <code class="lang-d"><span class="typ">char</span></code>, <code class="lang-d"><span class="typ">wchar</span></code> or <code class="lang-d"><span class="typ">dchar</span></code>.
 </p>
 			<div class="prototype">
 				<code class="lang-d">
@@ -82,10 +96,6 @@ $('#symbolSearchPane').show();</script>
 			&nbsp;&nbsp;
 			<br/>
 			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isSomeChar</span><span class="pun">!</span><span class="pln">_Char </span><span class="pun">&amp;&amp; </span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Unqual</span><span class="pun">!</span><span class="pln">_Char </span><span class="pun">== </span><span class="pln">_Char</span><span class="pun">)</span><span class="pun">);</span>
-					</div>
-					<div class="single-prototype">
-			<span class="kwd">alias</span> <span class="pln">BasicString</span>(_Char, <span class="typ">ulong</span> _Padding, _Allocator)
-			 <span class="pun">=</span> <a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(_Char,_Allocator,_Padding)<span class="pun">;</span>
 					</div>
 				</code>
 			</div>
@@ -107,7 +117,7 @@ $('#symbolSearchPane').show();</script>
 <p>		<code class="lang-d"><span class="pln">_Padding</span></code> Additional size of struct <code class="lang-d"><span class="typ">BasicString</span></code>, increase max length of small string.
 </p>
 </section>
-<h2>Struct BasicString</h2>
+
 			<section><h3>Constructors</h3>
 				<table>
 					<col class="caption"/>
@@ -658,8 +668,94 @@ $('#symbolSearchPane').show();</script>
 </td>
 					</tr>
 				</table>
-			</section><h2>Alias BasicString</h2>
+			</section>
+			<h2 id="1">Alias BasicString</h2><p>Alias to <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> with different order of template parameters
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">alias</span> <span class="pln">BasicString</span>(_Char, <span class="typ">ulong</span> _Padding, _Allocator)
+			 <span class="pun">=</span> <a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(_Char,_Allocator,_Padding)<span class="pun">;</span>
+					</div>
+				</code>
+			</div>
 			
+			<section><h3>Example</h3>
+
+<pre class="code"><code class="lang-d"><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">experimental<wbr/></span><span class="pun">.</span><span class="pln">allocator<wbr/></span><span class="pun">.</span><span class="pln">mallocator </span><span class="pun">: </span><span class="typ">Mallocator</span><span class="pun">;
+
+</span><span class="kwd">alias <a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> </span><span class="pun">= <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(
+	</span><span class="typ">char</span><span class="pun">,               </span><span class="com">//character type
+	</span><span class="typ">Mallocator</span><span class="pun">,         </span><span class="com">//allocator type (can be stateless or with state)
+	</span><span class="lit">32                  </span><span class="com">//additional padding to increas max size of small string (small string does not allocate memory).
+</span><span class="pun">);
+
+</span><span class="com">//copy:
+</span><span class="pun">{
+	<a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> a </span><span class="pun">= </span><span class="str">"123"</span><span class="pun">;
+	<a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> b </span><span class="pun">= </span><span class="pln">a</span><span class="pun">;
+
+	</span><span class="pln">a </span><span class="pun">= </span><span class="str">"456"d</span><span class="pun">;
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">a </span><span class="pun">== </span><span class="str">"456"</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">b </span><span class="pun">== </span><span class="str">"123"</span><span class="pun">);
+}
+
+
+</span><span class="com">//append:
+</span><span class="pun">{
+	<a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> str </span><span class="pun">= </span><span class="str">"12"</span><span class="pun">;
+
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">append</span><span class="pun">(</span><span class="str">"34"</span><span class="pun">);   </span><span class="com">//same as str += "34"
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">append</span><span class="pun">(</span><span class="str">"56"w</span><span class="pun">);  </span><span class="com">//same as str += "56"w
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">append</span><span class="pun">(</span><span class="lit">7</span><span class="pun">);      </span><span class="com">//same as str += 7;
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">append</span><span class="pun">(</span><span class="str">'8'</span><span class="pun">);
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"12345678"</span><span class="pun">);
+
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">clear</span><span class="pun">();
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">empty</span><span class="pun">);
+}
+
+</span><span class="com">//erase:
+</span><span class="pun">{
+	<a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> str </span><span class="pun">= </span><span class="str">"123456789"</span><span class="pun">;
+
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">erase</span><span class="pun">(</span><span class="lit">2</span><span class="pun">, </span><span class="lit">2</span><span class="pun">);
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"1256789"</span><span class="pun">);
+}
+
+</span><span class="com">//insert:
+</span><span class="pun">{
+	<a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> str </span><span class="pun">= </span><span class="str">"123456789"</span><span class="pun">;
+
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="str">"xyz"</span><span class="pun">);
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"1xyz23456789"</span><span class="pun">);
+}
+
+</span><span class="com">//replace:
+</span><span class="pun">{
+	<a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> str </span><span class="pun">= </span><span class="str">"123456789"</span><span class="pun">;
+
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">replace</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="str">"xyz"</span><span class="pun">);
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"1xyz456789"</span><span class="pun">);
+}
+
+</span><span class="com">//slice to string:
+</span><span class="pun">()</span><span class="kwd">@trusted</span><span class="pun">{
+	<a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> str </span><span class="pun">= </span><span class="str">"123456789"</span><span class="pun">;
+
+	</span><span class="kwd">const</span><span class="pun">(</span><span class="typ">char</span><span class="pun">)[] </span><span class="pln">dstr </span><span class="pun">= </span><span class="pln">str</span><span class="pun">[];
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="pln">dstr</span><span class="pun">);
+}();
+</span></code></pre>
+</section>
+
 			<footer>
 				<table class="license-info">
 					<tr>

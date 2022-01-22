@@ -476,9 +476,8 @@ $('#symbolSearchPane').show();</script>
 			</section>
 			<section><h3>Example</h3>
 
-<pre class="code"><code class="lang-d"><span class="pln">
-</span><span class="kwd">static class </span><span class="typ">Foo</span><span class="pun">{
-    </span><span class="typ">ControlBlock</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">) </span><span class="pln">c</span><span class="pun">;   </span><span class="com">//or MutableControlBlock!(ControlBlock!(int, int)) c;
+<pre class="code"><code class="lang-d"><span class="kwd">static struct </span><span class="typ">Struct</span><span class="pun">{
+    </span><span class="typ">ControlBlock</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">) </span><span class="pln">control</span><span class="pun">;
     </span><span class="typ">int </span><span class="pln">i</span><span class="pun">;
 
     </span><span class="kwd">this</span><span class="pun">(</span><span class="typ">int </span><span class="pln">i</span><span class="pun">)</span><span class="kwd">pure nothrow @safe @nogc</span><span class="pun">{
@@ -486,7 +485,15 @@ $('#symbolSearchPane').show();</script>
     }
 }
 
-</span><span class="kwd">static class </span><span class="typ">Bar </span><span class="pun">: </span><span class="typ">Foo</span><span class="pun">{
+</span><span class="kwd">static class </span><span class="typ">Base</span><span class="pun">{
+    </span><span class="typ">int </span><span class="pln">i</span><span class="pun">;
+    </span><span class="typ">ControlBlock</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">) </span><span class="pln">control</span><span class="pun">;
+
+    </span><span class="kwd">this</span><span class="pun">(</span><span class="typ">int </span><span class="pln">i</span><span class="pun">)</span><span class="kwd">pure nothrow @safe @nogc</span><span class="pun">{
+        </span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">= </span><span class="pln">i</span><span class="pun">;
+    }
+}
+</span><span class="kwd">static class </span><span class="typ">Derived </span><span class="pun">: </span><span class="typ">Base</span><span class="pun">{
     </span><span class="typ">double </span><span class="pln">d</span><span class="pun">;
 
     </span><span class="kwd">this</span><span class="pun">(</span><span class="typ">int </span><span class="pln">i</span><span class="pun">, </span><span class="typ">double </span><span class="pln">d</span><span class="pun">)</span><span class="kwd">pure nothrow @safe @nogc</span><span class="pun">{
@@ -494,57 +501,82 @@ $('#symbolSearchPane').show();</script>
         </span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">d </span><span class="pun">= </span><span class="pln">d</span><span class="pun">;
     }
 }
-
-</span><span class="com">//implicit qualifier cast
-</span><span class="pun">{
-    </span><span class="typ">IntrusivePtr</span><span class="pun">!(</span><span class="kwd">const </span><span class="typ">Foo</span><span class="pun">) </span><span class="pln">foo </span><span class="pun">=  </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Foo<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">42</span><span class="pun">);
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">foo<wbr/></span><span class="pun">.</span><span class="pln">get<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">== </span><span class="lit">42</span><span class="pun">);
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">foo<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
-
-    </span><span class="kwd">import </span><span class="pln">core<wbr/></span><span class="pun">.</span><span class="pln">lifetime </span><span class="pun">: </span><span class="pln">move</span><span class="pun">;
-    </span><span class="kwd">const </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Foo </span><span class="pln">foo2 </span><span class="pun">= </span><span class="pln">foo<wbr/></span><span class="pun">.</span><span class="pln">move</span><span class="pun">;
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">foo2<wbr/></span><span class="pun">.</span><span class="pln">get<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">== </span><span class="lit">42</span><span class="pun">);
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">foo2<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
-
-}
-
-</span><span class="com">//polymorphic classes:
-</span><span class="pun">{
-    </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Foo </span><span class="pln">foo </span><span class="pun">= </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Bar<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">42</span><span class="pun">, </span><span class="lit">3.14</span><span class="pun">);
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">foo </span><span class="pun">!= </span><span class="kwd">null</span><span class="pun">);
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">foo<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">foo<wbr/></span><span class="pun">.</span><span class="pln">get<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">== </span><span class="lit">42</span><span class="pun">);
-
-    </span><span class="com">//dynamic cast:
-    </span><span class="pun">{
-        </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Bar </span><span class="pln">bar </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/dynCast.html"></span><span class="pln">dynCast</span></a><span class="pun">!</span><span class="typ">Bar</span><span class="pun">(</span><span class="pln">foo</span><span class="pun">);
-        </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">foo<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
-
-        </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">bar<wbr/></span><span class="pun">.</span><span class="pln">get<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">== </span><span class="lit">42</span><span class="pun">);
-        </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">bar<wbr/></span><span class="pun">.</span><span class="pln">get<wbr/></span><span class="pun">.</span><span class="pln">d </span><span class="pun">== </span><span class="lit">3.14</span><span class="pun">);
+</span><span class="kwd">static class </span><span class="typ">Class </span><span class="pun">: </span><span class="typ">Derived</span><span class="pun">{
+    </span><span class="typ">bool </span><span class="pln">b</span><span class="pun">;
+    </span><span class="kwd">this</span><span class="pun">(</span><span class="typ">int </span><span class="pln">i</span><span class="pun">, </span><span class="typ">double </span><span class="pln">d</span><span class="pun">, </span><span class="typ">bool </span><span class="pln">b</span><span class="pun">)</span><span class="kwd">pure nothrow @safe @nogc</span><span class="pun">{
+        </span><span class="kwd">super</span><span class="pun">(</span><span class="pln">i</span><span class="pun">, </span><span class="pln">d</span><span class="pun">);
+        </span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">b </span><span class="pun">= </span><span class="pln">b</span><span class="pun">;
     }
-
 }
 
-</span><span class="com">//weak references:
+</span><span class="com">///simple:
 </span><span class="pun">{
-    </span><span class="kwd">auto </span><span class="pln">x </span><span class="pun">= </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Foo<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">314</span><span class="pun">);
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">weakCount </span><span class="pun">== </span><span class="lit">0</span><span class="pun">);
+    </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Struct </span><span class="pln">a </span><span class="pun">= </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Struct<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">42</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
 
-    </span><span class="kwd">auto </span><span class="pln">w </span><span class="pun">= </span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">weak</span><span class="pun">();  </span><span class="com">//weak pointer
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">weakCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">w<wbr/></span><span class="pun">.</span><span class="pln">lock<wbr/></span><span class="pun">.</span><span class="pln">get<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">== </span><span class="lit">314</span><span class="pun">);
+    </span><span class="typ">IntrusivePtr</span><span class="pun">!(</span><span class="kwd">const </span><span class="typ">Struct</span><span class="pun">) </span><span class="pln">b </span><span class="pun">= </span><span class="pln">a</span><span class="pun">;
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
 
-    </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Foo<wbr/></span><span class="pun">.</span><span class="typ">WeakType </span><span class="pln">w2 </span><span class="pun">= </span><span class="pln">x</span><span class="pun">;
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">weakCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
+    </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Struct<wbr/></span><span class="pun">.</span><span class="typ">WeakType </span><span class="pln">w </span><span class="pun">= </span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">weak</span><span class="pun">;
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">weakCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
 
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">w2<wbr/></span><span class="pun">.</span><span class="pln">expired </span><span class="pun">== </span><span class="kwd">false</span><span class="pun">);
-    </span><span class="pln">x </span><span class="pun">= </span><span class="kwd">null</span><span class="pun">;
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">w2<wbr/></span><span class="pun">.</span><span class="pln">expired </span><span class="pun">== </span><span class="kwd">true</span><span class="pun">);
+    </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Struct </span><span class="pln">c </span><span class="pun">= </span><span class="pln">w<wbr/></span><span class="pun">.</span><span class="pln">lock</span><span class="pun">;
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">3</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">weakCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">c<wbr/></span><span class="pun">.</span><span class="pln">get<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">== </span><span class="lit">42</span><span class="pun">);
 }
+
+</span><span class="com">///polymorphism and aliasing:
+</span><span class="pun">{
+    </span><span class="com">///create IntrusivePtr
+    </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Base </span><span class="pln">foo </span><span class="pun">= </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Derived<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">42</span><span class="pun">, </span><span class="lit">3.14</span><span class="pun">);
+    </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Class </span><span class="pln">zee </span><span class="pun">= </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Class<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">42</span><span class="pun">, </span><span class="lit">3.14</span><span class="pun">, </span><span class="kwd">false</span><span class="pun">);
+
+    </span><span class="com">///dynamic cast:
+    </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Derived </span><span class="pln">bar </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/dynCast.html"></span><span class="pln">dynCast</span></a><span class="pun">!</span><span class="typ">Derived</span><span class="pun">(</span><span class="pln">foo</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">bar </span><span class="pun">!= </span><span class="kwd">null</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">foo<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
+
+    </span><span class="com">///this doesnt work because Foo destructor attributes are more restrictive then Class's:
+    //IntrusivePtr!Class x = zee;
+
+    ///this does work:
+    </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Base </span><span class="pln">x </span><span class="pun">= </span><span class="pln">zee</span><span class="pun">;
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">zee<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
+}
+
+
+</span><span class="com">///multi threading:
+</span><span class="pun">{
+    </span><span class="com">///create IntrusivePtr with atomic ref counting
+    </span><span class="typ">IntrusivePtr</span><span class="pun">!(</span><span class="kwd">shared </span><span class="typ">Base</span><span class="pun">) </span><span class="pln">foo </span><span class="pun">= </span><span class="typ">IntrusivePtr</span><span class="pun">!(</span><span class="kwd">shared </span><span class="typ">Derived</span><span class="pun">)<wbr/>.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">42</span><span class="pun">, </span><span class="lit">3.14</span><span class="pun">);
+
+    </span><span class="com">///this doesnt work:
+    //foo.get.i += 1;
+
+    </span><span class="kwd">import </span><span class="pln">core<wbr/></span><span class="pun">.</span><span class="pln">atomic </span><span class="pun">: </span><span class="pln">atomicFetchAdd</span><span class="pun">;
+    </span><span class="pln">atomicFetchAdd</span><span class="pun">(</span><span class="pln">foo<wbr/></span><span class="pun">.</span><span class="pln">get<wbr/></span><span class="pun">.</span><span class="pln">i</span><span class="pun">, </span><span class="lit">1</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">foo<wbr/></span><span class="pun">.</span><span class="pln">get<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">== </span><span class="lit">43</span><span class="pun">);
+
+
+    </span><span class="com">///creating `shared(IntrusivePtr)`:
+    </span><span class="kwd">shared </span><span class="typ">IntrusivePtr</span><span class="pun">!(</span><span class="kwd">shared </span><span class="typ">Derived</span><span class="pun">) </span><span class="pln">bar </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/share.html"></span><span class="pln">share</span></a><span class="pun">(<a href="../../../btl/autoptr/intrusive_ptr/dynCast.html"></span><span class="pln">dynCast</span></a><span class="pun">!</span><span class="typ">Derived</span><span class="pun">(</span><span class="pln">foo</span><span class="pun">));
+
+    </span><span class="com">///`shared(IntrusivePtr)` is lock free (except `load` and `useCount`/`weakCount`).
+    </span><span class="kwd">static assert</span><span class="pun">(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">bar</span><span class="pun">)<wbr/>.</span><span class="pln">isLockFree </span><span class="pun">== </span><span class="kwd">true</span><span class="pun">);
+
+    </span><span class="com">///multi thread operations (`load`, `store`, `exchange` and `compareExchange`):
+    </span><span class="typ">IntrusivePtr</span><span class="pun">!(</span><span class="kwd">shared </span><span class="typ">Derived</span><span class="pun">) </span><span class="pln">bar2 </span><span class="pun">= </span><span class="pln">bar<wbr/></span><span class="pun">.</span><span class="pln">load</span><span class="pun">();
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">bar2 </span><span class="pun">!= </span><span class="kwd">null</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">bar2<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">3</span><span class="pun">);
+
+    </span><span class="typ">IntrusivePtr</span><span class="pun">!(</span><span class="kwd">shared </span><span class="typ">Derived</span><span class="pun">) </span><span class="pln">bar3 </span><span class="pun">= </span><span class="pln">bar<wbr/></span><span class="pun">.</span><span class="pln">exchange</span><span class="pun">(</span><span class="kwd">null</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">bar3 </span><span class="pun">!= </span><span class="kwd">null</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">bar3<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">3</span><span class="pun">);
+}
+
 </span></code></pre>
 </section>
 <section><h3>Example</h3>

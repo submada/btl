@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Struct Vector</title>
+		<title>Vector - multiple declarations</title>
 		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
@@ -72,17 +72,27 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Struct Vector</h1><p><code class="lang-d"><span class="typ">Vector</span></code>s are sequence containers representing arrays that can change in size.
+			<h1>Vector - multiple declarations</h1>
+			<nav class="page-nav">
+				<ul>
+					<li>
+						<a href="#0">
+							Struct <code>Vector</code>
+						</a>
+					</li>
+					<li>
+						<a href="#1">
+							Alias <code>Vector</code>
+						</a>
+					</li>
+				</ul>
+			</nav><h2 id="0">Struct Vector</h2><p><code class="lang-d"><span class="typ">Vector</span></code>s are sequence containers representing arrays that can change in size.
 </p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
 			<span class="kwd">struct</span> <span class="typ">Vector</span>(_Type, <span class="typ">ulong</span> N<span class="pln"> </span><span class="pun">= </span><span class="lit">0</span>, _Allocator, <span class="typ">bool</span> _supportGC<span class="pln"> </span><span class="pun">= </span><span class="pln">platformSupportGC</span>)
 			<span class="pun">;</span>
-					</div>
-					<div class="single-prototype">
-			<span class="kwd">alias</span> <span class="pln">Vector</span>(_Type, _Allocator, <span class="typ">bool</span> _supportGC<span class="pln"> </span><span class="pun">= </span><span class="pln">platformSupportGC</span>)
-			 <span class="pun">=</span> <a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a>!(_Type,0,_Allocator,_supportGC)<span class="pun">;</span>
 					</div>
 				</code>
 			</div>
@@ -133,7 +143,7 @@ $('#symbolSearchPane').show();</script>
 <p> Functions for inserting elements to vector have  non <code class="lang-d"><span class="kwd">scope</span></code> parameters (global lifetime).
 </p>
 </section>
-<h2>Struct Vector</h2>
+
 			<section><h3>Constructors</h3>
 				<table>
 					<col class="caption"/>
@@ -633,8 +643,68 @@ $('#symbolSearchPane').show();</script>
 						<td></td>
 					</tr>
 				</table>
-			</section><h2>Alias Vector</h2>
+			</section>
+			<h2 id="1">Alias Vector</h2><p>Alias to <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> with different order of template parameters
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">alias</span> <span class="pln">Vector</span>(_Type, _Allocator, <span class="typ">bool</span> _supportGC<span class="pln"> </span><span class="pun">= </span><span class="pln">platformSupportGC</span>)
+			 <span class="pun">=</span> <a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a>!(_Type,0,_Allocator,_supportGC)<span class="pun">;</span>
+					</div>
+				</code>
+			</div>
 			
+			<section><h3>Example</h3>
+
+<pre class="code"><code class="lang-d"><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">range </span><span class="pun">: </span><span class="pln">only</span><span class="pun">;
+</span><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">algorithm </span><span class="pun">: </span><span class="pln">map</span><span class="pun">, </span><span class="pln">equal</span><span class="pun">;
+
+</span><span class="kwd">static struct </span><span class="typ">Foo</span><span class="pun">{
+    </span><span class="typ">int </span><span class="pln">i</span><span class="pun">;
+    </span><span class="typ">string </span><span class="pln">str</span><span class="pun">;
+}
+
+<a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">Foo</span><span class="pun">, </span><span class="lit">4</span><span class="pun">) </span><span class="pln">vec</span><span class="pun">;
+
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">empty</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">capacity </span><span class="pun">== </span><span class="lit">4</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">vec</span><span class="pun">)<wbr/>.</span><span class="pln">minimalCapacity </span><span class="pun">== </span><span class="lit">4</span><span class="pun">);
+
+</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">append</span><span class="pun">(</span><span class="typ">Foo</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="str">"A"</span><span class="pun">));
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+
+</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">append</span><span class="pun">(</span><span class="pln">only</span><span class="pun">(</span><span class="typ">Foo</span><span class="pun">(</span><span class="lit">2</span><span class="pun">, </span><span class="str">"B"</span><span class="pun">), </span><span class="typ">Foo</span><span class="pun">(</span><span class="lit">3</span><span class="pun">, </span><span class="str">"C"</span><span class="pun">)));
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">3</span><span class="pun">);
+
+</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">emplaceBack</span><span class="pun">(</span><span class="lit">4</span><span class="pun">, </span><span class="str">"D"</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">4</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">capacity </span><span class="pun">== </span><span class="lit">4</span><span class="pun">);
+
+</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="typ">Foo</span><span class="pun">(</span><span class="lit">5</span><span class="pun">, </span><span class="str">"E"</span><span class="pun">));
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">5</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">capacity </span><span class="pun">&gt; </span><span class="lit">4</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">equal</span><span class="pun">(</span><span class="pln">vec</span><span class="pun">[]<wbr/>.</span><span class="pln">map</span><span class="pun">!(</span><span class="pln">e </span><span class="pun">=&gt; </span><span class="pln">e<wbr/></span><span class="pun">.</span><span class="pln">str</span><span class="pun">), </span><span class="pln">only</span><span class="pun">(</span><span class="str">"A"</span><span class="pun">, </span><span class="str">"E"</span><span class="pun">, </span><span class="str">"B"</span><span class="pun">, </span><span class="str">"C"</span><span class="pun">, </span><span class="str">"D"</span><span class="pun">)));
+
+</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">erase</span><span class="pun">(</span><span class="pln">vec</span><span class="pun">[</span><span class="lit">1 </span><span class="pun">.. $-</span><span class="lit">1</span><span class="pun">]);   </span><span class="com">//same as vec.erase(1, 3);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec </span><span class="pun">== </span><span class="pln">only</span><span class="pun">(</span><span class="typ">Foo</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="str">"A"</span><span class="pun">), </span><span class="typ">Foo</span><span class="pun">(</span><span class="lit">4</span><span class="pun">, </span><span class="str">"D"</span><span class="pun">)));
+
+
+</span><span class="pln">vec </span><span class="pun">= <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">Foo</span><span class="pun">, </span><span class="lit">2</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="typ">Foo</span><span class="pun">(-</span><span class="lit">1</span><span class="pun">, </span><span class="str">"X"</span><span class="pun">), </span><span class="typ">Foo</span><span class="pun">(-</span><span class="lit">2</span><span class="pun">, </span><span class="str">"Y"</span><span class="pun">));
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">equal</span><span class="pun">(</span><span class="pln">vec</span><span class="pun">[]<wbr/>.</span><span class="pln">map</span><span class="pun">!(</span><span class="pln">e </span><span class="pun">=&gt; </span><span class="pln">e<wbr/></span><span class="pun">.</span><span class="pln">str</span><span class="pun">), </span><span class="pln">only</span><span class="pun">(</span><span class="str">"X"</span><span class="pun">, </span><span class="str">"Y"</span><span class="pun">)));
+
+
+</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">clear</span><span class="pun">();
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">0</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">capacity </span><span class="pun">&gt; </span><span class="lit">4</span><span class="pun">);
+
+</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">release</span><span class="pun">();
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">0</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">capacity </span><span class="pun">== </span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">vec</span><span class="pun">)<wbr/>.</span><span class="pln">minimalCapacity</span><span class="pun">);
+
+</span></code></pre>
+</section>
+
 			<footer>
 				<table class="license-info">
 					<tr>

@@ -2602,7 +2602,7 @@ template Vector(
     }
 }
 
-/// ditto
+/// Alias to `Vector` with different order of template parameters
 template Vector(
     _Type,
     _Allocator,
@@ -2611,8 +2611,57 @@ template Vector(
     alias Vector = .Vector!(_Type, 0, _Allocator, _supportGC);
 }
 
-/**
-*/
+///
+pure nothrow @nogc unittest{
+    import std.range : only;
+    import std.algorithm : map, equal;
+
+    static struct Foo{
+        int i;
+        string str;
+    }
+
+    Vector!(Foo, 4) vec;
+
+    assert(vec.empty);
+    assert(vec.capacity == 4);
+    assert(typeof(vec).minimalCapacity == 4);
+
+    vec.append(Foo(1, "A"));
+    assert(vec.length == 1);
+
+    vec.append(only(Foo(2, "B"), Foo(3, "C")));
+    assert(vec.length == 3);
+
+    vec.emplaceBack(4, "D");
+    assert(vec.length == 4);
+    assert(vec.capacity == 4);
+
+    vec.insert(1, Foo(5, "E"));
+    assert(vec.length == 5);
+    assert(vec.capacity > 4);
+    assert(equal(vec[].map!(e => e.str), only("A", "E", "B", "C", "D")));
+
+    vec.erase(vec[1 .. $-1]);   //same as vec.erase(1, 3);
+    assert(vec == only(Foo(1, "A"), Foo(4, "D")));
+
+
+    vec = Vector!(Foo, 2).build(Foo(-1, "X"), Foo(-2, "Y"));
+    assert(equal(vec[].map!(e => e.str), only("X", "Y")));
+
+
+    vec.clear();
+    assert(vec.length == 0);
+    assert(vec.capacity > 4);
+
+    vec.release();
+    assert(vec.length == 0);
+    assert(vec.capacity == typeof(vec).minimalCapacity);
+
+}
+
+
+/// Alias to `Vector` with `void` allcoator
 template FixedVector(
     _Type,
     size_t N ,
@@ -2622,8 +2671,8 @@ if(N > 0){
     alias FixedVector = .Vector!(_Type, N, void, _supportGC);
 }
 
-/**
-*/
+
+/// Alias to `Vector` with with `N > 0`
 template SmallVector(
     _Type,
     size_t N ,

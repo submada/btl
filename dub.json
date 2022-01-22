@@ -4,7 +4,6 @@
 		"Adam Búš"
 	],
 	
-	
 	"dependencies": {
 		"btl:autoptr":"*",
 		"btl:string":"*",
@@ -35,8 +34,8 @@
 			"importPaths": ["source/"],
 			"sourcePaths": ["source/btl/vector", "source/btl/internal"],
 		},
-	
 	],
+	
 	"description" : "Basic Template Library",
 	"copyright" : "Copyright © 2022, Adam Búš",
 	"license" : "Boost Software License - Version 1.0"

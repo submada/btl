@@ -1884,6 +1884,122 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 }
 
 ///
+unittest{
+    static class Foo{
+        int i;
+
+        this(int i)pure nothrow @safe @nogc{
+            this.i = i;
+        }
+    }
+
+    static class Bar : Foo{
+        double d;
+
+        this(int i, double d)pure nothrow @safe @nogc{
+            super(i);
+            this.d = d;
+        }
+    }
+
+    static class Zee : Bar{
+        bool b;
+
+        this(int i, double d, bool b)pure nothrow @safe @nogc{
+            super(i, d);
+            this.b = b;
+        }
+
+        ~this()nothrow @system{
+        }
+    }
+
+    ///simple:
+    {
+        RcPtr!long a = RcPtr!long.make(42);
+        assert(a.useCount == 1);
+
+        RcPtr!(const long) b = a;
+        assert(a.useCount == 2);
+
+        RcPtr!long.WeakType w = a.weak; //or WeakRcPtr!long
+        assert(a.useCount == 2);
+        assert(a.weakCount == 1);
+
+        RcPtr!long c = w.lock;
+        assert(a.useCount == 3);
+        assert(a.weakCount == 1);
+
+        assert(*c == 42);
+        assert(c.get == 42);
+    }
+
+    ///polymorphism and aliasing:
+    {
+        ///create RcPtr
+        RcPtr!Foo foo = RcPtr!Bar.make(42, 3.14);
+        RcPtr!Zee zee = RcPtr!Zee.make(42, 3.14, false);
+
+        ///dynamic cast:
+        RcPtr!Bar bar = dynCast!Bar(foo);
+        assert(bar != null);
+        assert(foo.useCount == 2);
+
+        ///this doesnt work because Foo destructor attributes are more restrictive then Zee's:
+        //RcPtr!Foo x = zee;
+
+        ///this does work:
+        RcPtr!(Foo, DestructorType!(Foo, Zee)) x = zee;
+        assert(zee.useCount == 2);
+    }
+
+
+    ///multi threading:
+    {
+        ///create RcPtr with atomic ref counting
+        RcPtr!(shared Foo) foo = RcPtr!(shared Bar).make(42, 3.14);
+
+        ///this doesnt work:
+        //foo.get.i += 1;
+
+        import core.atomic : atomicFetchAdd;
+        atomicFetchAdd(foo.get.i, 1);
+        assert(foo.get.i == 43);
+
+
+        ///creating `shared(RcPtr)`:
+        shared RcPtr!(shared Bar) bar = share(dynCast!Bar(foo));
+
+        ///`shared(RcPtr)` is lock free (except `load` and `useCount`/`weakCount`).
+        static assert(typeof(bar).isLockFree == true);
+
+        ///multi thread operations (`load`, `store`, `exchange` and `compareExchange`):
+        RcPtr!(shared Bar) bar2 = bar.load();
+        assert(bar2 != null);
+        assert(bar2.useCount == 3);
+
+        RcPtr!(shared Bar) bar3 = bar.exchange(null);
+        assert(bar3 != null);
+        assert(bar3.useCount == 3);
+    }
+
+    ///dynamic array:
+    {
+        import std.algorithm : all, equal;
+
+        RcPtr!(long[]) a = RcPtr!(long[]).make(10, -1);
+        assert(a.length == 10);
+        assert(a.get.length == 10);
+        assert(a.get.all!(x => x == -1));
+
+        for(long i = 0; i < a.length; ++i){
+            a.get[i] = i;
+        }
+        assert(a.get[] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    }
+}
+
+//old:
 pure nothrow @nogc unittest{
 
     static class Foo{

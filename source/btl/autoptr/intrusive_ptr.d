@@ -1931,6 +1931,111 @@ public template IntrusivePtr(
 }
 
 ///
+nothrow unittest{
+    static struct Struct{
+        ControlBlock!(int, int) control;
+        int i;
+
+        this(int i)pure nothrow @safe @nogc{
+            this.i = i;
+        }
+    }
+
+    static class Base{
+        int i;
+        ControlBlock!(int, int) control;
+
+        this(int i)pure nothrow @safe @nogc{
+            this.i = i;
+        }
+    }
+    static class Derived : Base{
+        double d;
+
+        this(int i, double d)pure nothrow @safe @nogc{
+            super(i);
+            this.d = d;
+        }
+    }
+    static class Class : Derived{
+        bool b;
+        this(int i, double d, bool b)pure nothrow @safe @nogc{
+            super(i, d);
+            this.b = b;
+        }
+    }
+
+    ///simple:
+    {
+        IntrusivePtr!Struct a = IntrusivePtr!Struct.make(42);
+        assert(a.useCount == 1);
+
+        IntrusivePtr!(const Struct) b = a;
+        assert(a.useCount == 2);
+
+        IntrusivePtr!Struct.WeakType w = a.weak;
+        assert(a.useCount == 2);
+        assert(a.weakCount == 1);
+
+        IntrusivePtr!Struct c = w.lock;
+        assert(a.useCount == 3);
+        assert(a.weakCount == 1);
+
+        assert(c.get.i == 42);
+    }
+
+    ///polymorphism and aliasing:
+    {
+        ///create IntrusivePtr
+        IntrusivePtr!Base foo = IntrusivePtr!Derived.make(42, 3.14);
+        IntrusivePtr!Class zee = IntrusivePtr!Class.make(42, 3.14, false);
+
+        ///dynamic cast:
+        IntrusivePtr!Derived bar = dynCast!Derived(foo);
+        assert(bar != null);
+        assert(foo.useCount == 2);
+
+        ///this doesnt work because Foo destructor attributes are more restrictive then Class's:
+        //IntrusivePtr!Class x = zee;
+
+        ///this does work:
+        IntrusivePtr!Base x = zee;
+        assert(zee.useCount == 2);
+    }
+
+
+    ///multi threading:
+    {
+        ///create IntrusivePtr with atomic ref counting
+        IntrusivePtr!(shared Base) foo = IntrusivePtr!(shared Derived).make(42, 3.14);
+
+        ///this doesnt work:
+        //foo.get.i += 1;
+
+        import core.atomic : atomicFetchAdd;
+        atomicFetchAdd(foo.get.i, 1);
+        assert(foo.get.i == 43);
+
+
+        ///creating `shared(IntrusivePtr)`:
+        shared IntrusivePtr!(shared Derived) bar = share(dynCast!Derived(foo));
+
+        ///`shared(IntrusivePtr)` is lock free (except `load` and `useCount`/`weakCount`).
+        static assert(typeof(bar).isLockFree == true);
+
+        ///multi thread operations (`load`, `store`, `exchange` and `compareExchange`):
+        IntrusivePtr!(shared Derived) bar2 = bar.load();
+        assert(bar2 != null);
+        assert(bar2.useCount == 3);
+
+        IntrusivePtr!(shared Derived) bar3 = bar.exchange(null);
+        assert(bar3 != null);
+        assert(bar3.useCount == 3);
+    }
+
+}
+
+//old:
 pure nothrow @nogc unittest{
 
     static class Foo{
