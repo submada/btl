@@ -1,0 +1,937 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>btl.autoptr.unique_ptr</title>
+    <style type="text/css" media="screen">
+      html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p,
+      blockquote, pre, a, abbr, address, cite, code, del, dfn, em, figure,
+      img, ins, kbd, q, s, samp, small, strong, sub, sup, var, b, u, i, dl,
+      dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption,
+      tbody, tfoot, thead, tr, th, td {
+        background: transparent none repeat scroll 0 0;
+        border: 0 none;
+        font-size: 100%;
+        margin: 0;
+        outline: 0 none;
+        padding: 0;
+        vertical-align: baseline;
+      }
+
+      h1 { font-size: 200%; }
+      h2 { font-size: 160%; }
+      h3 { font-size: 120%; }
+      h4 { font-size: 100%; }
+      h5 { font-size: 80%; }
+      h6 { font-size: 80%; font-weight: normal; }
+
+      ul, ol {
+        margin: 1.4em 0;
+      }
+      ul ul, ol ol, ul ol, ol ul {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+      ul, ol {
+        margin-left: 2.8em;
+      }
+
+      ol {
+        list-style: decimal;
+      }
+      ol ol {
+        list-style: lower-alpha;
+      }
+      ol ol ol {
+        list-style: lower-roman;
+      }
+      ol ol ol ol {
+        list-style: decimal;
+      }
+
+      blockquote {
+        margin: 0.1em;
+        margin-left: 1em;
+        border-left: 2px solid #cccccc;
+        padding-left: 0.7em;
+      }
+
+      .color_red { color: #dc322f; }
+      .color_blue { color: #268bd2; }
+      .color_green { color: #859901; }
+      .color_yellow { color: #b58901; }
+      .color_black { color: black; }
+      .color_white { color: white; }
+
+      .font_big {
+        font-size: 1.2em;
+      }
+
+      .ddoc_section_h {
+        font-weight: bold;
+        font-size: 13px;
+        line-height: 19.5px;
+        margin-top: 11px;
+        display: block;
+      }
+
+      body.dlang .dlang {
+        display: inline-block;
+      }
+
+      body.dlang .declaration .dlang {
+          display: block;
+      }
+
+      body.dlang .ddoc_header_anchor a.dlang {
+        display: block;
+        color: rgba(0, 136, 204, 1);
+        text-decoration: none;
+      }
+
+      body.dlang .ddoc_header_anchor .code {
+        color: rgba(0, 136, 204, 1);
+      }
+
+      #ddoc_main .module {
+          border-color: currentColor rgba(233, 233, 233, 1) rgba(233, 233, 233, 1);
+          border-style: none solid solid;
+          border-width: 0 1px 1px;
+          overflow-x: hidden;
+          padding: 15px;
+      }
+
+      #ddoc_main .section .section {
+        margin-top: 0;
+      }
+
+      #ddoc_main .ddoc_module_members_section {
+          padding: 1px 0 0;
+          transition: transform 0.3s ease 0s;
+      }
+
+      #ddoc_main .ddoc_member, #ddoc_main .ddoc_module_members section.intro {
+          background: #fff none repeat scroll 0 0;
+          list-style-type: none;
+          width: 100%;
+      }
+
+      #ddoc_main .ddoc_header_anchor {
+          font-size: 1.4em;
+          transition: transform 0.3s ease 0s;
+      }
+
+      #ddoc_main .ddoc_header_anchor > .code {
+          display: inline-block;
+
+      }
+
+      #ddoc_main .ddoc_decl {
+        background-color: transparent;
+        height: 100%;
+        left: 0;
+        top: 0;
+        padding: 0;
+        padding-left: 15px;
+      }
+
+      #ddoc_main .ddoc_decl .section, #ddoc_main .section.ddoc_sections {
+        background: white none repeat scroll 0 0;
+        margin: 0;
+        padding: 5px;
+        position: relative;
+        border-radius: 5px;
+      }
+
+      #ddoc_main .ddoc_decl .section h4:first-of-type, #ddoc_main .section.ddoc_sections h4:first-of-type {
+        font-size: 13px;
+        line-height: 1.5;
+        margin-top: 21px;
+      }
+
+      #ddoc_main .section .declaration {
+          margin-top: 21px;
+      }
+
+      #ddoc_main .section .declaration .code {
+          color: rgba(0, 0, 0, 1);
+          margin-bottom: 15px;
+          padding-bottom: 6px;
+      }
+
+      #ddoc_main .declaration div .para {
+          margin-bottom: 0;
+      }
+
+      #ddoc_main .ddoc_params .graybox tr td:first-of-type {
+        padding: 7px;
+        text-align: right;
+        vertical-align: top;
+        word-break: normal;
+        white-space: nowrap;
+      }
+
+      #ddoc_main .ddoc_params .graybox {
+        border: 0 none;
+      }
+
+      #ddoc_main .ddoc_params .graybox td {
+        border-color: rgba(214, 214, 214, 1);
+      }
+
+      #ddoc_main .ddoc_params .graybox tr:first-child > td {
+        border-top: 0 none;
+      }
+
+      #ddoc_main .ddoc_params .graybox tr:last-child > td {
+        border-bottom: 0 none;
+      }
+
+      #ddoc_main .ddoc_params .graybox tr > td:first-child {
+        border-left: 0 none;
+      }
+
+      #ddoc_main .ddoc_params .graybox tr > td:last-child {
+        border-right: 0 none;
+        width: 100%;
+      }
+
+      #ddoc_main em.term, #ddoc_main em.term .code {
+        color: rgba(65, 65, 65, 1);
+        font-size: 12px;
+        font-style: italic;
+        line-height: 1.5;
+      }
+
+      #ddoc_main .see-also {
+        cursor: pointer;
+        font-family: Menlo,monospace;
+      }
+
+      #ddoc_main .ddoc_decl .section > div:last-of-type {
+        margin-bottom: 15px;
+      }
+
+      #ddoc_main .ddoc_member, #ddoc_main .ddoc_module_members {
+          transition: transform 0.3s ease 0s;
+      }
+
+      #ddoc_main .code_sample {
+        background: inherit;
+      }
+
+      #ddoc_main .declaration .code-line {
+          display: block;
+          font: 1em Menlo,monospace;
+      }
+
+      #ddoc_main a[name] {
+        margin: -112px 0 0;
+        padding-top: 112px;
+      }
+
+      #ddoc_main .ddoc_decl td {
+        max-width: inherit;
+      }
+
+      #ddoc_main .declaration a {
+        color: inherit;
+      }
+
+      #ddoc_main .declaration a:hover {
+          color: rgba(0, 136, 204, 1);
+          text-decoration: underline;
+      }
+
+      body.ddoc {
+        background-color: transparent;
+        color: rgba(0, 0, 0, 1);
+        font-family: Helvetica,Arial,sans-serif;
+        font-size: 62.5%;
+        margin: 0;
+        border: 0;
+        left: 0;
+        top: 0;
+        padding: 0;
+      }
+
+      .ddoc a[name] {
+        display: block;
+        height: 0;
+        margin: -85px 0 0;
+        padding-top: 85px;
+        width: 0;
+      }
+
+      .ddoc .module {
+          border-color: transparent;
+          background-color: rgba(255, 255, 255, 1);
+          border-color: currentColor rgba(233, 233, 233, 1) rgba(233, 233, 233, 1);
+          border-image: none;
+          border-style: none solid solid;
+          border-width: 0 1px 1px;
+          box-shadow: 0 0 1px rgba(0, 0, 0, 0.07);
+          display: block;
+          margin-left: 0;
+          min-height: calc(100% - 173px);
+          overflow: auto;
+          padding-bottom: 100px;
+      }
+
+      .ddoc .content_wrapper {
+          background-color: rgba(242, 242, 242, 1);
+          margin: 0 auto;
+          max-width: 980px;
+      }
+
+      .ddoc .section {
+        padding: 15px 25px 30px;
+      }
+
+      .ddoc .section .section {
+        margin: 30px 0 0;
+        padding: 0;
+      }
+
+      .ddoc .para {
+        color: rgba(65, 65, 65, 1);
+        font-size: 1.4em;
+        line-height: 145%;
+        margin-bottom: 15px;
+      }
+
+      .ddoc .ddoc_examples .para {
+        margin-bottom: 0;
+      }
+
+      .ddoc .module_name {
+          color: rgba(0, 0, 0, 1);
+          display: block;
+          font-family: Helvetica;
+          font-size: 2.8em;
+          font-weight: 100;
+          margin-bottom: 0;
+          padding: 15px 0;
+      }
+
+      .ddoc .module a {
+          color: rgba(0, 136, 204, 1);
+          text-decoration: none;
+      }
+
+      .ddoc .code {
+        color: rgba(128, 128, 128, 1);
+        font-family: Menlo,monospace;
+        font-size: 0.85em;
+        word-wrap: break-word;
+      }
+
+      .ddoc .code i {
+        font-style: normal;
+      }
+
+      .ddoc .code .code {
+        font-size: 1em;
+      }
+
+      .ddoc .code_sample {
+        background-clip: padding-box;
+        margin: 1px 0;
+        text-align: left;
+      }
+
+      .ddoc .code_sample {
+        display: block;
+        font-size: 1.4em;
+        margin-left: 21px;
+      }
+
+      .ddoc ol .code_sample {
+        font-size: 1em;
+      }
+
+      .ddoc .code_lines {
+        counter-reset: li;
+        line-height: 1.6em;
+        list-style: outside none none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .ddoc .code_listing .code_sample div {
+        margin-left: 13px;
+        width: 93%;
+      }
+
+      .ddoc .code_listing .code_sample div .code_lines li {
+        list-style-type: none;
+        margin: 0;
+        padding-right: 10px;
+      }
+
+      .ddoc .code_sample div .code_lines li::before {
+        margin-left: -33px;
+        margin-right: 25px;
+      }
+
+      .ddoc .code_sample div .code_lines li:nth-child(n+10)::before {
+        margin-left: -39px;
+        margin-right: 25px;
+      }
+
+      .ddoc .code_sample div .code_lines li:nth-child(n+100)::before {
+        margin-left: -46px;
+        margin-right: 25px;
+      }
+
+      .ddoc .code_sample .code_lines .code {
+        color: #000;
+      }
+
+      .ddoc div.dlang {
+        margin: 10px 0 21px;
+        padding: 4px 0 2px 10px;
+      }
+
+      .ddoc div.dlang {
+          margin: 10px 0 21px;
+          padding: 4px 0 2px 10px;
+      }
+
+      .ddoc div.dlang {
+        border-left: 5px solid rgba(0, 155, 51, 0.2);
+      }
+
+      .ddoc .code_lines li::before {
+        color: rgba(128, 128, 128, 1);
+        content: counter(li, decimal);
+        counter-increment: li;
+        font-family: Menlo,monospace;
+        font-size: 0.9em;
+        margin-right: 16px;
+      }
+
+      .ddoc .code_lines li {
+        padding-left: 0;
+        white-space: pre-wrap;
+      }
+
+      .ddoc .code_lines li:only-of-type::before {
+        color: rgba(255, 255, 255, 1);
+        content: " ";
+      }
+
+      .ddoc .code_lines li:only-of-type {
+        color: rgba(255, 255, 255, 1);
+        content: " ";
+      }
+
+      .ddoc .code_lines li:nth-child(n+10) {
+        text-indent: -17px;
+      }
+
+      .ddoc .code_lines li:nth-child(n+10)::before {
+        margin-right: 12px;
+      }
+
+      .ddoc .graybox {
+        border: 1px solid rgba(233, 233, 233, 1);
+        border-collapse: collapse;
+        border-spacing: 0;
+        empty-cells: hide;
+        margin: 20px 0 36px;
+        text-align: left;
+      }
+
+      .ddoc .graybox p {
+        margin: 0;
+        min-width: 50px;
+      }
+
+      .ddoc th {
+        margin: 0;
+        max-width: 260px;
+        padding: 5px 10px 5px 10px;
+        vertical-align: bottom;
+      }
+
+      .ddoc td {
+        border: 1px solid rgba(233, 233, 233, 1);
+        margin: 0;
+        max-width: 260px;
+        padding: 5px 10px 5px 10px;
+        vertical-align: middle;
+      }
+
+      .punctuation {
+        color: rgba(0, 0, 0, 1);
+      }
+
+      .comment {
+        color: rgba(0, 131, 18, 1);
+      }
+
+      .operator {
+        color: #000;
+      }
+
+      .keyword {
+        color: rgba(170, 13, 145, 1);
+      }
+
+      .keyword_type {
+        color: rgba(170, 51, 145, 1);
+      }
+
+      .string_literal {
+        color: rgba(196, 26, 22, 1);
+      }
+
+      .ddoc_psuper_symbol {
+        color: rgba(92, 38, 153, 1);
+      }
+
+      .param {
+        color: rgba(0, 0, 0, 1);
+      }
+
+      .psymbol {
+        color: rgba(0, 0, 0, 1);
+      }
+
+      .ddoc_member_header .ddoc_header_anchor .code {
+        font-size: 1em;
+      }
+    </style>
+  </head>
+  <body id="ddoc_main" class="ddoc dlang">
+    <div class="content_wrapper">
+      <article class="module">
+        <h1 class="module_name">btl.autoptr.unique_ptr</h1>
+        <section id="module_content"><section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Implementation of unique pointer <code class="code">UniquePtr</code> (alias to <code class="code">btl.autoptr.rc_ptr.RcPtr</code> with immutable control block).
+
+  </p>
+</div>
+<div class="ddoc_license">
+  <h4>License</h4>
+  <p class="para">
+    .
+
+  </p>
+</div>
+<div class="ddoc_authors">
+  <h4>Authors</h4>
+  <p class="para">
+    
+  </p>
+</div>
+
+</section>
+<section class="section ddoc_module_members_section">
+  <div class="ddoc_module_members">
+    <ul class="ddoc_members">
+  <li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#dynCast" id="dynCast"><code class="code">dynCast</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="dynCast"></span>alias <code class="code">dynCast</code> = btl.autoptr.rc_ptr.<code class="code">dynCast</code>(T, Ptr)(ref scope Ptr ptr) if (isRcPtr!Ptr &amp;&amp; !is(Ptr == shared) &amp;&amp; !Ptr.isWeak &amp;&amp; isReferenceType!T &amp;&amp; (__traits(getLinkage, T) == "D") &amp;&amp; isReferenceType!(Ptr.ElementType) &amp;&amp; (__traits(getLinkage, Ptr.ElementType) == "D"));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Alias to <code class="code">btl.autoptr.rc_ptr.<code class="code">dynCast</code></code>.
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#dynCastMove" id="dynCastMove"><code class="code">dynCastMove</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="dynCastMove"></span>alias <code class="code">dynCastMove</code> = btl.autoptr.rc_ptr.<code class="code">dynCastMove</code>(T, Ptr)(auto ref scope Ptr ptr) if (isRcPtr!Ptr &amp;&amp; !is(Ptr == shared) &amp;&amp; !Ptr.isWeak &amp;&amp; isReferenceType!T &amp;&amp; (__traits(getLinkage, T) == "D") &amp;&amp; isReferenceType!(Ptr.ElementType) &amp;&amp; (__traits(getLinkage, Ptr.ElementType) == "D"));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Alias to <code class="code">btl.autoptr.rc_ptr.<code class="code">dynCastMove</code></code>.
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#first" id="first"><code class="code">first</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="first"></span>alias <code class="code">first</code> = btl.autoptr.rc_ptr.<code class="code">first</code>(Ptr)(ref scope Ptr ptr) if (isRcPtr!Ptr &amp;&amp; is(Ptr.ElementType : T[], T));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Alias to <code class="code">btl.autoptr.rc_ptr.<code class="code">first</code></code>.
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#share" id="share"><code class="code">share</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="share"></span>alias <code class="code">share</code> = btl.autoptr.rc_ptr.<code class="code">share</code>(Ptr)(auto ref scope Ptr ptr) if (isRcPtr!Ptr);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Alias to <code class="code">btl.autoptr.rc_ptr.<code class="code">share</code></code>.
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#UniquePtr" id="UniquePtr"><code class="code">UniquePtr</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="UniquePtr"></span>template <code class="code">UniquePtr</code>(_Type, _DestructorType = DestructorType!_Type, _ControlType = immutable(UniqueControlBlock)) if (isControlBlock!_ControlType &amp;&amp; isDestructorType!_DestructorType)<br>
+template <code class="code">UniquePtr</code>(_Type, _ControlType, _DestructorType = DestructorType!_Type) if (isControlBlock!_ControlType &amp;&amp; isDestructorType!_DestructorType)
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    <code class="code"><code class="code">UniquePtr</code></code> is a smart pointer that owns and manages object through a pointer and disposes of that object when the <code class="code"><code class="code">UniquePtr</code></code> goes out of scope.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    <code class="code"><code class="code">UniquePtr</code></code> is alias to <code class="code">btl.autoptr.rc_ptr.RcPtr</code> with immutable <code class="code">_ControlType</code>.
+<br><br>
+    The object is destroyed and its memory deallocated when either of the following happens:
+
+<ol><li>the managing <code class="code"><code class="code">UniquePtr</code></code> object is destroyed
+</li>
+<li>the managing <code class="code"><code class="code">UniquePtr</code></code> object is assigned another pointer via various methods like <code class="code">opAssign</code> and <code class="code">store</code>.
+</li>
+</ol>
+    The object is destroyed using delete-expression or a custom deleter that is supplied to <code class="code"><code class="code">UniquePtr</code></code> during construction.
+<br><br>
+    A <code class="code"><code class="code">UniquePtr</code></code> may alternatively own no object, in which case it is called empty.
+<br><br>
+    Template parameters:
+<br><br>
+        <code class="code">_Type</code> type of managed object
+<br><br>
+        <code class="code">_DestructorType</code> function pointer with attributes of destructor, to get attributes of destructor from type use <code class="code">btl.autoptr.common.DestructorType!T</code>. Destructor of type <code class="code">_Type</code> must be compatible with <code class="code">_DestructorType</code>
+<br><br>
+        <code class="code">_ControlType</code> represent type of counter, must by of type immutable <code class="code">btl.autoptr.common.ControlBlock</code>.
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="keyword">static</span> <span class="keyword">class</span> Foo{
+    <span class="keyword">int</span> i;
+
+    <span class="keyword">this</span>(<span class="keyword">int</span> i)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+        <span class="keyword">this</span>.i = i;
+    }
+}
+
+<span class="keyword">static</span> <span class="keyword">class</span> Bar : Foo{
+    <span class="keyword">double</span> d;
+
+    <span class="keyword">this</span>(<span class="keyword">int</span> i, <span class="keyword">double</span> d)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+        <span class="keyword">super</span>(i);
+        <span class="keyword">this</span>.d = d;
+    }
+}
+
+<span class="keyword">static</span> <span class="keyword">class</span> Zee : Bar{
+    <span class="keyword">bool</span> b;
+
+    <span class="keyword">this</span>(<span class="keyword">int</span> i, <span class="keyword">double</span> d, <span class="keyword">bool</span> b)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+        <span class="keyword">super</span>(i, d);
+        <span class="keyword">this</span>.b = b;
+    }
+
+    ~<span class="keyword">this</span>()<span class="keyword">nothrow</span> @system{
+    }
+}
+
+<span class="keyword">import</span> core.lifetime : move;
+<span class="comment">///simple:
+</span>{
+    <span class="psymbol">UniquePtr</span>!<span class="keyword">long</span> a = <span class="psymbol">UniquePtr</span>!<span class="keyword">long</span>.make(42);
+    <span class="psymbol">UniquePtr</span>!(<span class="keyword">const</span> <span class="keyword">long</span>) b = move(a);
+    <span class="keyword">assert</span>(a == <span class="keyword">null</span>);
+
+    <span class="keyword">assert</span>(*b == 42);
+    <span class="keyword">assert</span>(b.get == 42);
+}
+
+<span class="comment">///polymorphism:
+</span>{
+    <span class="comment">///create UniquePtr
+</span>    <span class="psymbol">UniquePtr</span>!Foo foo = <span class="psymbol">UniquePtr</span>!Bar.make(42, 3.14);
+    <span class="psymbol">UniquePtr</span>!Zee zee = <span class="psymbol">UniquePtr</span>!Zee.make(42, 3.14, <span class="keyword">false</span>);
+
+    <span class="comment">///dynamic cast:
+</span>    <span class="psymbol">UniquePtr</span>!Bar bar = dynCastMove!Bar(foo);
+    <span class="keyword">assert</span>(foo == <span class="keyword">null</span>);
+    <span class="keyword">assert</span>(bar != <span class="keyword">null</span>);
+
+    <span class="comment">///this doesnt work because Foo destructor attributes are more restrictive then Zee's:
+</span>    <span class="comment">//UniquePtr!Foo x = move(zee);
+</span>
+    <span class="comment">///this does work:
+</span>    <span class="psymbol">UniquePtr</span>!(Foo, DestructorType!(Foo, Zee)) x = move(zee);
+    <span class="keyword">assert</span>(zee == <span class="keyword">null</span>);
+}
+
+
+<span class="comment">///multi threading:
+</span>{
+    <span class="comment">///create SharedPtr with atomic ref counting
+</span>    <span class="psymbol">UniquePtr</span>!(<span class="keyword">shared</span> Foo) foo = <span class="psymbol">UniquePtr</span>!(<span class="keyword">shared</span> Bar).make(42, 3.14);
+
+    <span class="comment">///this doesnt work:
+</span>    <span class="comment">//foo.get.i += 1;
+</span>
+    <span class="keyword">import</span> core.atomic : atomicFetchAdd;
+    atomicFetchAdd(foo.get.i, 1);
+    <span class="keyword">assert</span>(foo.get.i == 43);
+
+
+    <span class="comment">///creating `shared(UniquePtr)`:
+</span>    <span class="keyword">shared</span> <span class="psymbol">UniquePtr</span>!(<span class="keyword">shared</span> Bar) bar = share(dynCastMove!Bar(foo));
+
+    <span class="comment">///`shared(UniquePtr)` is lock free.
+</span>    <span class="keyword">static</span> <span class="keyword">assert</span>(<span class="keyword">typeof</span>(bar).isLockFree == <span class="keyword">true</span>);
+
+    <span class="comment">///multi thread operations (`store`, `exchange`):
+</span>    <span class="psymbol">UniquePtr</span>!(<span class="keyword">shared</span> Bar) bar2 = bar.exchange(<span class="keyword">null</span>);
+}
+
+<span class="comment">///dynamic array:
+</span>{
+    <span class="keyword">import</span> std.algorithm : all, equal;
+
+    <span class="psymbol">UniquePtr</span>!(<span class="keyword">long</span>[]) a = <span class="psymbol">UniquePtr</span>!(<span class="keyword">long</span>[]).make(10, -1);
+    <span class="keyword">assert</span>(a.length == 10);
+    <span class="keyword">assert</span>(a.get.length == 10);
+    <span class="keyword">assert</span>(a.get.all!(x =&gt; x == -1));
+
+    <span class="keyword">for</span>(<span class="keyword">long</span> i = 0; i &lt; a.length; ++i){
+        a.get[i] = i;
+    }
+    <span class="keyword">assert</span>(a.get[] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div><div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="comment">//make UniquePtr object
+</span><span class="keyword">static</span> <span class="keyword">struct</span> Foo{
+    <span class="keyword">int</span> i;
+
+    <span class="keyword">this</span>(<span class="keyword">int</span> i)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+        <span class="keyword">this</span>.i = i;
+    }
+}
+
+{
+    <span class="keyword">auto</span> foo = <span class="psymbol">UniquePtr</span>!Foo.make(42);
+    <span class="keyword">auto</span> foo2 = <span class="psymbol">UniquePtr</span>!Foo.make!Mallocator(42);  <span class="comment">//explicit stateless allocator
+</span>}
+
+{
+    <span class="keyword">auto</span> arr = <span class="psymbol">UniquePtr</span>!(<span class="keyword">long</span>[]).make(10); <span class="comment">//dynamic array with length 10
+</span>    <span class="keyword">assert</span>(arr.length == 10);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div><div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="comment">//alloc UniquePtr object
+</span><span class="keyword">import</span> std.experimental.allocator : make, dispose, allocatorObject;
+
+<span class="keyword">auto</span> allocator = allocatorObject(Mallocator.instance);
+
+{
+    <span class="keyword">auto</span> x = <span class="psymbol">UniquePtr</span>!(<span class="keyword">long</span>).alloc(allocator, 42);
+}
+
+{
+    <span class="keyword">auto</span> arr = <span class="psymbol">UniquePtr</span>!(<span class="keyword">long</span>[]).alloc(allocator, 10); <span class="comment">//dynamic array with length 10
+</span>    <span class="keyword">assert</span>(arr.length == 10);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div><div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">{
+    <span class="keyword">auto</span> x = <span class="psymbol">UniquePtr</span>!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(123);
+
+    <span class="keyword">import</span> core.lifetime : move;
+    <span class="keyword">shared</span> s = share(x.move);
+    <span class="keyword">assert</span>(x == <span class="keyword">null</span>);
+
+    <span class="keyword">auto</span> y = s.exchange(<span class="keyword">null</span>);
+    <span class="keyword">assert</span>(*y == 123);
+}
+
+{
+    <span class="keyword">auto</span> x = <span class="psymbol">UniquePtr</span>!(<span class="keyword">long</span>).make(123);
+
+    <span class="comment">///error `shared UniquePtr` need shared `ControlType` and shared `ElementType`.
+</span>    <span class="comment">//shared s = share(x);
+</span>
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li>
+</ul>
+  </div>
+</section>
+</section>
+      </article>
+    </div>
+  </body>
+</html>

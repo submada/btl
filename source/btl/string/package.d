@@ -13,9 +13,19 @@ import std.meta : AliasSeq;
 
 import btl.internal.mallocator;
 import btl.internal.traits;
+import btl.internal.forward;
 
 import btl.string.encoding;
 import btl.string.core;
+
+
+
+
+/**
+	Type used in forward constructors.
+*/
+alias Forward = btl.internal.forward.Forward;
+
 
 
 /**

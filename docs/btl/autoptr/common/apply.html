@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Function apply</title>
+		<title>Template apply</title>
 		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
@@ -21,13 +21,11 @@ $('#symbolSearchPane').show();</script>
 			</div>
 			<ul class="tree-view">
 				<li class="tree-view ">
-					<div class="package ">
-						<a href="../../../btl.html">btl</a>
+					<div class="package ">btl
 					</div>
 			<ul class="tree-view">
 				<li class="tree-view ">
-					<div class="package ">
-						<a href="../../../btl/autoptr.html">autoptr</a>
+					<div class="package ">autoptr
 					</div>
 			<ul class="tree-view">
 				<li>
@@ -72,19 +70,13 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Function apply</h1><p>Sefly dereference all <code class="lang-d"><a href="../../../btl/autoptr/common/apply.html#args"><span class="pln">args</span></a></code> of types <code class="lang-d"><a href="../../../btl/autoptr/shared_ptr/SharedPtr.html" title="btl.autoptr.shared_ptr.SharedPtr"><span class="typ">SharedPtr</span></a></code>, <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.html" title="btl.autoptr.rc_ptr.RcPtr"><span class="typ">RcPtr</span></a></code> and <code class="lang-d"><a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html" title="btl.autoptr.intrusive_ptr.IntrusivePtr"><span class="typ">IntrusivePtr</span></a></code> and forward them to callable alias <code class="lang-d"><span class="pln">fn</span></code>.
+			<h1>Template apply</h1><p>Sefly dereference all <code class="lang-d"><span class="pln">args</span></code> of types <code class="lang-d"><a href="../../../btl/autoptr/shared_ptr/SharedPtr.html" title="btl.autoptr.shared_ptr.SharedPtr"><span class="typ">SharedPtr</span></a></code>, <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.html" title="btl.autoptr.rc_ptr.RcPtr"><span class="typ">RcPtr</span></a></code> and <code class="lang-d"><a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html" title="btl.autoptr.intrusive_ptr.IntrusivePtr"><span class="typ">IntrusivePtr</span></a></code> and forward them to callable alias <code class="lang-d"><span class="pln">fn</span></code>.
 </p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="kwd">auto</span> <span class="pln">apply</span>(alias fn, Args...)
-			<span class="pun">(</span>
-			<br/>
-			&nbsp;&nbsp;<span class="kwd">auto scope ref </span><span class="typ">Args</span> <span class="pln">args</span>
-			<br/>
-			<span class="pun">)</span>
-			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">allSatisfy</span><span class="pun">!(</span><span class="pln">isSmartPtr</span><span class="pun">, </span><span class="typ">Args</span><span class="pun">)</span><span class="pun">);</span>
+			<span class="kwd">template</span> <span class="pln">apply</span>(alias fn)
+			;
 					</div>
 				</code>
 			</div>
@@ -92,6 +84,20 @@ $('#symbolSearchPane').show();</script>
 </p>
 </section>
 
+			<section><h2>Contained Functions</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../btl/autoptr/common/apply.apply.html">apply</a>
+						</td>
+						<td></td>
+					</tr>
+				</table>
+			</section>
 			<section><h2>Example</h2>
 
 <pre class="code"><code class="lang-d"><span class="kwd">import <a href="../../../btl/autoptr/shared_ptr.html"></span><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">autoptr<wbr/></span><span class="pun">.</span><span class="pln">shared_ptr</span></a><span class="pun">;
@@ -101,7 +107,7 @@ $('#symbolSearchPane').show();</script>
 </span><span class="kwd">import </span><span class="pln">core<wbr/></span><span class="pun">.</span><span class="pln">lifetime </span><span class="pun">: </span><span class="pln">move</span><span class="pun">;
 
 </span><span class="kwd">static class </span><span class="typ">Foo</span><span class="pun">{
-	<a href="../../../btl/autoptr/common/ControlBlock.html"></span><span class="typ">ControlBlock</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">) </span><span class="pln">c</span><span class="pun">;   </span><span class="com">//or MutableControlBlock!(ControlBlock!(int, int)) c;
+	<a href="../../../btl/autoptr/common/ControlBlock.html"></span><span class="typ">ControlBlock</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">) </span><span class="pln">c</span><span class="pun">;
 	</span><span class="typ">int </span><span class="pln">i</span><span class="pun">;
 
 	</span><span class="kwd">this</span><span class="pun">(</span><span class="typ">int </span><span class="pln">i</span><span class="pun">)</span><span class="kwd">pure nothrow @safe @nogc</span><span class="pun">{
@@ -122,7 +128,7 @@ $('#symbolSearchPane').show();</script>
 	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">b<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
 	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">c<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
 
-	</span><span class="typ">int </span><span class="pln">i </span><span class="pun">= </span><span class="pln">apply</span><span class="pun">!((</span><span class="kwd">scope ref </span><span class="typ">long </span><span class="pln">x</span><span class="pun">, </span><span class="kwd">scope ref </span><span class="typ">float </span><span class="pln">y</span><span class="pun">, </span><span class="kwd">scope </span><span class="typ">Foo </span><span class="pln">z</span><span class="pun">){
+	</span><span class="typ">int </span><span class="pln">i </span><span class="pun">= <a href="../../../btl/autoptr/common/apply.apply.html"></span><span class="pln">apply</span></a><span class="pun">!((</span><span class="kwd">scope </span><span class="typ">long</span><span class="pun">* </span><span class="pln">x</span><span class="pun">, </span><span class="kwd">scope </span><span class="typ">float</span><span class="pun">* </span><span class="pln">y</span><span class="pun">, </span><span class="kwd">scope </span><span class="typ">Foo </span><span class="pln">z</span><span class="pun">){
 		</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
 		</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">b<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
 

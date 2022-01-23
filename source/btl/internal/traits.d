@@ -3,12 +3,6 @@ module btl.internal.traits;
 import std.traits : isFunctionPointer, isDelegate, isSomeChar, isArray;
 import std.range : ElementEncodingType, isInputRange;
 
-version(D_BetterC){
-    public enum bool platformSupportGC = false;
-}
-else{
-    public enum bool platformSupportGC = true;
-}
 
 public auto assumeNoGC(T)(T t)@trusted
 in(isFunctionPointer!T || isDelegate!T){

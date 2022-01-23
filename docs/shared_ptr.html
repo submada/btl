@@ -1,0 +1,4067 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>btl.autoptr.shared_ptr</title>
+    <style type="text/css" media="screen">
+      html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p,
+      blockquote, pre, a, abbr, address, cite, code, del, dfn, em, figure,
+      img, ins, kbd, q, s, samp, small, strong, sub, sup, var, b, u, i, dl,
+      dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption,
+      tbody, tfoot, thead, tr, th, td {
+        background: transparent none repeat scroll 0 0;
+        border: 0 none;
+        font-size: 100%;
+        margin: 0;
+        outline: 0 none;
+        padding: 0;
+        vertical-align: baseline;
+      }
+
+      h1 { font-size: 200%; }
+      h2 { font-size: 160%; }
+      h3 { font-size: 120%; }
+      h4 { font-size: 100%; }
+      h5 { font-size: 80%; }
+      h6 { font-size: 80%; font-weight: normal; }
+
+      ul, ol {
+        margin: 1.4em 0;
+      }
+      ul ul, ol ol, ul ol, ol ul {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+      ul, ol {
+        margin-left: 2.8em;
+      }
+
+      ol {
+        list-style: decimal;
+      }
+      ol ol {
+        list-style: lower-alpha;
+      }
+      ol ol ol {
+        list-style: lower-roman;
+      }
+      ol ol ol ol {
+        list-style: decimal;
+      }
+
+      blockquote {
+        margin: 0.1em;
+        margin-left: 1em;
+        border-left: 2px solid #cccccc;
+        padding-left: 0.7em;
+      }
+
+      .color_red { color: #dc322f; }
+      .color_blue { color: #268bd2; }
+      .color_green { color: #859901; }
+      .color_yellow { color: #b58901; }
+      .color_black { color: black; }
+      .color_white { color: white; }
+
+      .font_big {
+        font-size: 1.2em;
+      }
+
+      .ddoc_section_h {
+        font-weight: bold;
+        font-size: 13px;
+        line-height: 19.5px;
+        margin-top: 11px;
+        display: block;
+      }
+
+      body.dlang .dlang {
+        display: inline-block;
+      }
+
+      body.dlang .declaration .dlang {
+          display: block;
+      }
+
+      body.dlang .ddoc_header_anchor a.dlang {
+        display: block;
+        color: rgba(0, 136, 204, 1);
+        text-decoration: none;
+      }
+
+      body.dlang .ddoc_header_anchor .code {
+        color: rgba(0, 136, 204, 1);
+      }
+
+      #ddoc_main .module {
+          border-color: currentColor rgba(233, 233, 233, 1) rgba(233, 233, 233, 1);
+          border-style: none solid solid;
+          border-width: 0 1px 1px;
+          overflow-x: hidden;
+          padding: 15px;
+      }
+
+      #ddoc_main .section .section {
+        margin-top: 0;
+      }
+
+      #ddoc_main .ddoc_module_members_section {
+          padding: 1px 0 0;
+          transition: transform 0.3s ease 0s;
+      }
+
+      #ddoc_main .ddoc_member, #ddoc_main .ddoc_module_members section.intro {
+          background: #fff none repeat scroll 0 0;
+          list-style-type: none;
+          width: 100%;
+      }
+
+      #ddoc_main .ddoc_header_anchor {
+          font-size: 1.4em;
+          transition: transform 0.3s ease 0s;
+      }
+
+      #ddoc_main .ddoc_header_anchor > .code {
+          display: inline-block;
+
+      }
+
+      #ddoc_main .ddoc_decl {
+        background-color: transparent;
+        height: 100%;
+        left: 0;
+        top: 0;
+        padding: 0;
+        padding-left: 15px;
+      }
+
+      #ddoc_main .ddoc_decl .section, #ddoc_main .section.ddoc_sections {
+        background: white none repeat scroll 0 0;
+        margin: 0;
+        padding: 5px;
+        position: relative;
+        border-radius: 5px;
+      }
+
+      #ddoc_main .ddoc_decl .section h4:first-of-type, #ddoc_main .section.ddoc_sections h4:first-of-type {
+        font-size: 13px;
+        line-height: 1.5;
+        margin-top: 21px;
+      }
+
+      #ddoc_main .section .declaration {
+          margin-top: 21px;
+      }
+
+      #ddoc_main .section .declaration .code {
+          color: rgba(0, 0, 0, 1);
+          margin-bottom: 15px;
+          padding-bottom: 6px;
+      }
+
+      #ddoc_main .declaration div .para {
+          margin-bottom: 0;
+      }
+
+      #ddoc_main .ddoc_params .graybox tr td:first-of-type {
+        padding: 7px;
+        text-align: right;
+        vertical-align: top;
+        word-break: normal;
+        white-space: nowrap;
+      }
+
+      #ddoc_main .ddoc_params .graybox {
+        border: 0 none;
+      }
+
+      #ddoc_main .ddoc_params .graybox td {
+        border-color: rgba(214, 214, 214, 1);
+      }
+
+      #ddoc_main .ddoc_params .graybox tr:first-child > td {
+        border-top: 0 none;
+      }
+
+      #ddoc_main .ddoc_params .graybox tr:last-child > td {
+        border-bottom: 0 none;
+      }
+
+      #ddoc_main .ddoc_params .graybox tr > td:first-child {
+        border-left: 0 none;
+      }
+
+      #ddoc_main .ddoc_params .graybox tr > td:last-child {
+        border-right: 0 none;
+        width: 100%;
+      }
+
+      #ddoc_main em.term, #ddoc_main em.term .code {
+        color: rgba(65, 65, 65, 1);
+        font-size: 12px;
+        font-style: italic;
+        line-height: 1.5;
+      }
+
+      #ddoc_main .see-also {
+        cursor: pointer;
+        font-family: Menlo,monospace;
+      }
+
+      #ddoc_main .ddoc_decl .section > div:last-of-type {
+        margin-bottom: 15px;
+      }
+
+      #ddoc_main .ddoc_member, #ddoc_main .ddoc_module_members {
+          transition: transform 0.3s ease 0s;
+      }
+
+      #ddoc_main .code_sample {
+        background: inherit;
+      }
+
+      #ddoc_main .declaration .code-line {
+          display: block;
+          font: 1em Menlo,monospace;
+      }
+
+      #ddoc_main a[name] {
+        margin: -112px 0 0;
+        padding-top: 112px;
+      }
+
+      #ddoc_main .ddoc_decl td {
+        max-width: inherit;
+      }
+
+      #ddoc_main .declaration a {
+        color: inherit;
+      }
+
+      #ddoc_main .declaration a:hover {
+          color: rgba(0, 136, 204, 1);
+          text-decoration: underline;
+      }
+
+      body.ddoc {
+        background-color: transparent;
+        color: rgba(0, 0, 0, 1);
+        font-family: Helvetica,Arial,sans-serif;
+        font-size: 62.5%;
+        margin: 0;
+        border: 0;
+        left: 0;
+        top: 0;
+        padding: 0;
+      }
+
+      .ddoc a[name] {
+        display: block;
+        height: 0;
+        margin: -85px 0 0;
+        padding-top: 85px;
+        width: 0;
+      }
+
+      .ddoc .module {
+          border-color: transparent;
+          background-color: rgba(255, 255, 255, 1);
+          border-color: currentColor rgba(233, 233, 233, 1) rgba(233, 233, 233, 1);
+          border-image: none;
+          border-style: none solid solid;
+          border-width: 0 1px 1px;
+          box-shadow: 0 0 1px rgba(0, 0, 0, 0.07);
+          display: block;
+          margin-left: 0;
+          min-height: calc(100% - 173px);
+          overflow: auto;
+          padding-bottom: 100px;
+      }
+
+      .ddoc .content_wrapper {
+          background-color: rgba(242, 242, 242, 1);
+          margin: 0 auto;
+          max-width: 980px;
+      }
+
+      .ddoc .section {
+        padding: 15px 25px 30px;
+      }
+
+      .ddoc .section .section {
+        margin: 30px 0 0;
+        padding: 0;
+      }
+
+      .ddoc .para {
+        color: rgba(65, 65, 65, 1);
+        font-size: 1.4em;
+        line-height: 145%;
+        margin-bottom: 15px;
+      }
+
+      .ddoc .ddoc_examples .para {
+        margin-bottom: 0;
+      }
+
+      .ddoc .module_name {
+          color: rgba(0, 0, 0, 1);
+          display: block;
+          font-family: Helvetica;
+          font-size: 2.8em;
+          font-weight: 100;
+          margin-bottom: 0;
+          padding: 15px 0;
+      }
+
+      .ddoc .module a {
+          color: rgba(0, 136, 204, 1);
+          text-decoration: none;
+      }
+
+      .ddoc .code {
+        color: rgba(128, 128, 128, 1);
+        font-family: Menlo,monospace;
+        font-size: 0.85em;
+        word-wrap: break-word;
+      }
+
+      .ddoc .code i {
+        font-style: normal;
+      }
+
+      .ddoc .code .code {
+        font-size: 1em;
+      }
+
+      .ddoc .code_sample {
+        background-clip: padding-box;
+        margin: 1px 0;
+        text-align: left;
+      }
+
+      .ddoc .code_sample {
+        display: block;
+        font-size: 1.4em;
+        margin-left: 21px;
+      }
+
+      .ddoc ol .code_sample {
+        font-size: 1em;
+      }
+
+      .ddoc .code_lines {
+        counter-reset: li;
+        line-height: 1.6em;
+        list-style: outside none none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .ddoc .code_listing .code_sample div {
+        margin-left: 13px;
+        width: 93%;
+      }
+
+      .ddoc .code_listing .code_sample div .code_lines li {
+        list-style-type: none;
+        margin: 0;
+        padding-right: 10px;
+      }
+
+      .ddoc .code_sample div .code_lines li::before {
+        margin-left: -33px;
+        margin-right: 25px;
+      }
+
+      .ddoc .code_sample div .code_lines li:nth-child(n+10)::before {
+        margin-left: -39px;
+        margin-right: 25px;
+      }
+
+      .ddoc .code_sample div .code_lines li:nth-child(n+100)::before {
+        margin-left: -46px;
+        margin-right: 25px;
+      }
+
+      .ddoc .code_sample .code_lines .code {
+        color: #000;
+      }
+
+      .ddoc div.dlang {
+        margin: 10px 0 21px;
+        padding: 4px 0 2px 10px;
+      }
+
+      .ddoc div.dlang {
+          margin: 10px 0 21px;
+          padding: 4px 0 2px 10px;
+      }
+
+      .ddoc div.dlang {
+        border-left: 5px solid rgba(0, 155, 51, 0.2);
+      }
+
+      .ddoc .code_lines li::before {
+        color: rgba(128, 128, 128, 1);
+        content: counter(li, decimal);
+        counter-increment: li;
+        font-family: Menlo,monospace;
+        font-size: 0.9em;
+        margin-right: 16px;
+      }
+
+      .ddoc .code_lines li {
+        padding-left: 0;
+        white-space: pre-wrap;
+      }
+
+      .ddoc .code_lines li:only-of-type::before {
+        color: rgba(255, 255, 255, 1);
+        content: " ";
+      }
+
+      .ddoc .code_lines li:only-of-type {
+        color: rgba(255, 255, 255, 1);
+        content: " ";
+      }
+
+      .ddoc .code_lines li:nth-child(n+10) {
+        text-indent: -17px;
+      }
+
+      .ddoc .code_lines li:nth-child(n+10)::before {
+        margin-right: 12px;
+      }
+
+      .ddoc .graybox {
+        border: 1px solid rgba(233, 233, 233, 1);
+        border-collapse: collapse;
+        border-spacing: 0;
+        empty-cells: hide;
+        margin: 20px 0 36px;
+        text-align: left;
+      }
+
+      .ddoc .graybox p {
+        margin: 0;
+        min-width: 50px;
+      }
+
+      .ddoc th {
+        margin: 0;
+        max-width: 260px;
+        padding: 5px 10px 5px 10px;
+        vertical-align: bottom;
+      }
+
+      .ddoc td {
+        border: 1px solid rgba(233, 233, 233, 1);
+        margin: 0;
+        max-width: 260px;
+        padding: 5px 10px 5px 10px;
+        vertical-align: middle;
+      }
+
+      .punctuation {
+        color: rgba(0, 0, 0, 1);
+      }
+
+      .comment {
+        color: rgba(0, 131, 18, 1);
+      }
+
+      .operator {
+        color: #000;
+      }
+
+      .keyword {
+        color: rgba(170, 13, 145, 1);
+      }
+
+      .keyword_type {
+        color: rgba(170, 51, 145, 1);
+      }
+
+      .string_literal {
+        color: rgba(196, 26, 22, 1);
+      }
+
+      .ddoc_psuper_symbol {
+        color: rgba(92, 38, 153, 1);
+      }
+
+      .param {
+        color: rgba(0, 0, 0, 1);
+      }
+
+      .psymbol {
+        color: rgba(0, 0, 0, 1);
+      }
+
+      .ddoc_member_header .ddoc_header_anchor .code {
+        font-size: 1em;
+      }
+    </style>
+  </head>
+  <body id="ddoc_main" class="ddoc dlang">
+    <div class="content_wrapper">
+      <article class="module">
+        <h1 class="module_name">btl.autoptr.shared_ptr</h1>
+        <section id="module_content"><section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Implementation of reference counted pointer <code class="code">SharedPtr</code> (similar to c++ <code class="code">std::<code class="code">shared_ptr</code></code>).
+
+  </p>
+</div>
+<div class="ddoc_license">
+  <h4>License</h4>
+  <p class="para">
+    .
+
+  </p>
+</div>
+<div class="ddoc_authors">
+  <h4>Authors</h4>
+  <p class="para">
+    
+  </p>
+</div>
+
+</section>
+<section class="section ddoc_module_members_section">
+  <div class="ddoc_module_members">
+    <ul class="ddoc_members">
+  <li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#isSharedPtr" id="isSharedPtr"><code class="code">isSharedPtr</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="isSharedPtr"></span>enum bool <code class="code">isSharedPtr</code>(T);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Check if type <code class="code">T</code> is <code class="code">SharedPtr</code>.
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="keyword">static</span> <span class="keyword">assert</span>(!<span class="psymbol">isSharedPtr</span>!<span class="keyword">long</span>);
+<span class="keyword">static</span> <span class="keyword">assert</span>(!<span class="psymbol">isSharedPtr</span>!(<span class="keyword">void</span>*));
+
+<span class="keyword">static</span> <span class="keyword">assert</span>(<span class="psymbol">isSharedPtr</span>!(SharedPtr!<span class="keyword">long</span>));
+<span class="keyword">static</span> <span class="keyword">assert</span>(<span class="psymbol">isSharedPtr</span>!(SharedPtr!<span class="keyword">long</span>.WeakType));
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr" id="SharedPtr"><code class="code">SharedPtr</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr"></span>struct <code class="code">SharedPtr</code>(_Type, _DestructorType = DestructorType!_Type, _ControlType = ControlBlockDeduction!(_Type, SharedControlBlock), bool _weakPtr = false) if (isControlBlock!_ControlType &amp;&amp; isDestructorType!_DestructorType);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Implementation of a ref counted pointer with support for aliasing.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    <code class="code"><code class="code">SharedPtr</code></code> retains shared ownership of an object through a pointer.
+<br><br>
+	Several <code class="code"><code class="code">SharedPtr</code></code> objects may own the same object.
+<br><br>
+	The object is destroyed and its memory deallocated when either of the following happens:
+
+<ol><li>the last remaining <code class="code"><code class="code">SharedPtr</code></code> owning the object is destroyed.
+</li>
+<li>the last remaining <code class="code"><code class="code">SharedPtr</code></code> owning the object is assigned another pointer via various methods like <code class="code">opAssign</code> and <code class="code">store</code>.
+</li>
+</ol>
+	The object is destroyed using delete-expression or a custom deleter that is supplied to <code class="code"><code class="code">SharedPtr</code></code> during construction.
+<br><br>
+	A <code class="code"><code class="code">SharedPtr</code></code> can share ownership of an object while storing a pointer to another object.
+	This feature can be used to point to member objects while owning the object they belong to.
+	The stored pointer is the one accessed by <code class="code">get()</code>, the dereference and the comparison operators.
+	The managed pointer is the one passed to the deleter when use count reaches zero.
+<br><br>
+	A <code class="code"><code class="code">SharedPtr</code></code> may also own no objects, in which case it is called empty (an empty <code class="code"><code class="code">SharedPtr</code></code> may have a non-<code class="code">null</code> stored pointer if the aliasing constructor was used to create it).
+<br><br>
+	If template parameter <code class="code">_ControlType</code> is <code class="code">shared</code>  then all member functions (including copy constructor and copy assignment)
+	can be called by multiple threads on different instances of <code class="code"><code class="code">SharedPtr</code></code> without additional synchronization even if these instances are copies and share ownership of the same object.
+<br><br>
+	If multiple threads of execution access the same <code class="code"><code class="code">SharedPtr</code></code> (<code class="code">shared <code class="code">SharedPtr</code></code>) then only some methods can be called (<code class="code">load</code>, <code class="code">store</code>, <code class="code">exchange</code>, <code class="code">compareExchange</code>, <code class="code">useCount</code>).
+<br><br>
+	Template parameters:
+<br><br>
+		<code class="code">_Type</code> type of managed object
+<br><br>
+		<code class="code">_DestructorType</code> function pointer with attributes of destructor, to get attributes of destructor from type use <code class="code">btl.autoptr.common.DestructorType!T</code>. Destructor of type <code class="code">_Type</code> must be compatible with <code class="code">_DestructorType</code>
+<br><br>
+		<code class="code">_ControlType</code> represent type of counter, must by of type <code class="code">btl.autoptr.common.ControlBlock</code>. if is shared then ref counting is atomic.
+<br><br>
+		<code class="code">_weakPtr</code> if <code class="code">true</code> then <code class="code"><code class="code">SharedPtr</code></code> represent weak ptr
+  </p>
+</div>
+
+</section>
+<ul class="ddoc_members">
+  <li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.ElementType" id="SharedPtr.ElementType"><code class="code">ElementType</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.ElementType"></span>alias <code class="code">ElementType</code> = _Type;
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Type of element managed by <code class="code">SharedPtr</code>.
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.DestructorType" id="SharedPtr.DestructorType"><code class="code">DestructorType</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.DestructorType"></span>alias <code class="code">DestructorType</code> = _DestructorType;
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Type of destructor (<code class="code">void function(void*)@attributes</code>).
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.ControlType" id="SharedPtr.ControlType"><code class="code">ControlType</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.ControlType"></span>alias <code class="code">ControlType</code> = _ControlType;
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Type of control block.
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.isWeak" id="SharedPtr.isWeak"><code class="code">isWeak</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.isWeak"></span>alias <code class="code">isWeak</code> = _weakPtr;
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    <code class="code">true</code> if <code class="code">SharedPtr</code> is weak ptr.
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.ElementReferenceType" id="SharedPtr.ElementReferenceType"><code class="code">ElementReferenceType</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.ElementReferenceType"></span>alias <code class="code">ElementReferenceType</code> = ElementReferenceTypeImpl!ElementType;
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Same as <code class="code">ElementType*</code> or <code class="code">ElementType</code> if is class/interface/slice.
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.WeakType" id="SharedPtr.WeakType"><code class="code">WeakType</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.WeakType"></span>alias <code class="code">WeakType</code> = SharedPtr!(_Type, _DestructorType, _ControlType, true);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Weak pointer
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    <code class="code">SharedPtr.<code class="code">WeakType</code></code> is a smart pointer that holds a non-owning ("weak") reference to an object that is managed by <code class="code">SharedPtr</code>.
+			It must be converted to <code class="code">SharedPtr</code> in order to access the referenced object.
+<br><br>
+			<code class="code">SharedPtr.<code class="code">WeakType</code></code> models temporary ownership: when an object needs to be accessed only if it exists, and it may be deleted at any time by someone else,
+			<code class="code">SharedPtr.<code class="code">WeakType</code></code> is used to track the object, and it is converted to <code class="code">SharedPtr</code> to assume temporary ownership.
+			If the original <code class="code">SharedPtr</code> is destroyed at this time, the object's lifetime is extended until the temporary <code class="code">SharedPtr</code> is destroyed as well.
+<br><br>
+			Another use for <code class="code">SharedPtr.<code class="code">WeakType</code></code> is to break reference cycles formed by objects managed by <code class="code">SharedPtr</code>.
+			If such cycle is orphaned (i,e. there are no outside shared pointers into the cycle), the <code class="code">SharedPtr</code> reference counts cannot reach zero and the memory is leaked.
+			To prevent this, one of the pointers in the cycle can be made weak.
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.SharedType" id="SharedPtr.SharedType"><code class="code">SharedType</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.SharedType"></span>alias <code class="code">SharedType</code> = SharedPtr!(_Type, _DestructorType, _ControlType, false);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Type of non weak ptr.
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.isLockFree" id="SharedPtr.isLockFree"><code class="code">isLockFree</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.isLockFree"></span>alias <code class="code">isLockFree</code> = _isLockFree;
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    <code class="code">true</code> if shared <code class="code">SharedPtr</code> has lock free operations <code class="code">store</code>, <code class="code">load</code>, <code class="code">exchange</code>, <code class="code">compareExchange</code>, otherwise '<code class="code">false</code>'
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.this" id="SharedPtr.this"><code class="code">this</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.this"></span>pure nothrow @nogc @safe this(this This)(typeof(null) <code class="code">nil</code>);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Constructs a <code class="code">SharedPtr</code> without managed object. Same as <code class="code">SharedPtr.init</code>
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">SharedPtr!<span class="keyword">long</span> x = <span class="keyword">null</span>;
+
+<span class="keyword">assert</span>(x == <span class="keyword">null</span>);
+<span class="keyword">assert</span>(x == SharedPtr!<span class="keyword">long</span>.init);
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.this" id="SharedPtr.this"><code class="code">this</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.this.2"></span>@trusted this(Rhs, Elm, this This)(auto ref scope Rhs <code class="code">rhs</code>, Elm <code class="code">element</code>) if (isSharedPtr!Rhs &amp;&amp; is(Elm : GetElementReferenceType!This) &amp;&amp; isAliasable!(Rhs, This) &amp;&amp; !weakLock!(Rhs, This) &amp;&amp; !is(Rhs == shared));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Constructs a <code class="code">SharedPtr</code> which shares ownership of the object managed by <code class="code"><code class="code">rhs</code></code> and pointing to <code class="code"><code class="code">element</code></code>.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    The aliasing constructor: constructs a <code class="code">SharedPtr</code> which shares ownership information with the initial value of <code class="code"><code class="code">rhs</code></code>,
+				but holds an unrelated and unmanaged pointer ptr. If this <code class="code">SharedPtr</code> is the last of the group to go out of scope,
+				it will call the stored deleter for the object originally managed by <code class="code"><code class="code">rhs</code></code>.
+				However, calling <code class="code">get()</code> or <code class="code">ptr()</code> on this <code class="code">SharedPtr</code> will always return a copy of <code class="code"><code class="code">element</code></code>.
+				It is the responsibility of the programmer to make sure that this ptr remains valid as long as this <code class="code">SharedPtr</code> exists,
+				such as in the typical use cases where <code class="code"><code class="code">element</code></code> is a member of the object managed by <code class="code"><code class="code">rhs</code></code> or is an alias (e.g., downcast) of <code class="code"><code class="code">rhs</code>.get()</code>.
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="keyword">static</span> <span class="keyword">struct</span> Foo{
+	<span class="keyword">int</span> i;
+	<span class="keyword">double</span> d;
+}
+SharedPtr!Foo foo = SharedPtr!Foo.make(42, 3.14);
+
+<span class="keyword">auto</span> x = SharedPtr!<span class="keyword">double</span>(foo, &amp;foo.d);
+<span class="keyword">assert</span>(foo.useCount == 2);
+<span class="keyword">assert</span>(foo.get == 3.14);
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.this" id="SharedPtr.this"><code class="code">this</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.this.3"></span>@trusted this(Rhs, this This)(auto ref scope Rhs <code class="code">rhs</code>) if (isSmartPtr!Rhs &amp;&amp; isConstructable!(<code class="code">rhs</code>, This) &amp;&amp; !is(Rhs == shared) &amp;&amp; !isMoveCtor!(This, <code class="code">rhs</code>));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Constructs a <code class="code">SharedPtr</code> which shares ownership of the object managed by <code class="code"><code class="code">rhs</code></code>.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    If <code class="code">rhs</code> manages no object, this manages no object too.
+			If <code class="code">rhs</code> if rvalue then ownership is moved.
+			The template overload doesn't participate in overload resolution if ElementType of <code class="code">typeof(<code class="code">rhs</code>)</code> is not implicitly convertible to <code class="code">ElementType</code>.
+			If <code class="code">rhs</code> if <code class="code">WeakType</code> then this ctor is equivalent to <code class="code">this(<code class="code">rhs</code>.lock())</code>.
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">{
+	SharedPtr!<span class="keyword">long</span> x = SharedPtr!<span class="keyword">long</span>.make(123);
+	<span class="keyword">assert</span>(x.useCount == 1);
+
+	SharedPtr!<span class="keyword">long</span> a = x;	      <span class="comment">//lvalue copy ctor
+</span>	<span class="keyword">assert</span>(a == x);
+
+	<span class="keyword">const</span> SharedPtr!<span class="keyword">long</span> b = x;   <span class="comment">//lvalue copy ctor
+</span>	<span class="keyword">assert</span>(b == x);
+
+	SharedPtr!(<span class="keyword">const</span> <span class="keyword">long</span>) c = x; <span class="comment">//lvalue ctor
+</span>	<span class="keyword">assert</span>(c == x);
+
+	<span class="keyword">const</span> SharedPtr!<span class="keyword">long</span> d = b;   <span class="comment">//lvalue ctor
+</span>	<span class="keyword">assert</span>(d == x);
+
+	<span class="keyword">assert</span>(x.useCount == 5);
+}
+
+{
+	<span class="keyword">import</span> core.lifetime : move;
+	SharedPtr!<span class="keyword">long</span> x = SharedPtr!<span class="keyword">long</span>.make(123);
+	<span class="keyword">assert</span>(x.useCount == 1);
+
+	SharedPtr!<span class="keyword">long</span> a = move(x);        <span class="comment">//rvalue copy ctor
+</span>	<span class="keyword">assert</span>(a.useCount == 1);
+
+	<span class="keyword">const</span> SharedPtr!<span class="keyword">long</span> b = move(a);  <span class="comment">//rvalue copy ctor
+</span>	<span class="keyword">assert</span>(b.useCount == 1);
+
+	SharedPtr!(<span class="keyword">const</span> <span class="keyword">long</span>) c = b.load;  <span class="comment">//rvalue ctor
+</span>	<span class="keyword">assert</span>(c.useCount == 2);
+
+	<span class="keyword">const</span> SharedPtr!<span class="keyword">long</span> d = move(c);  <span class="comment">//rvalue ctor
+</span>	<span class="keyword">assert</span>(d.useCount == 2);
+}
+
+{
+	<span class="keyword">import</span> core.lifetime : move;
+	<span class="keyword">auto</span> u = UniquePtr!(<span class="keyword">long</span>, SharedControlBlock).make(123);
+
+	SharedPtr!<span class="keyword">long</span> s = move(u);        <span class="comment">//rvalue copy ctor
+</span>	<span class="keyword">assert</span>(s != <span class="keyword">null</span>);
+	<span class="keyword">assert</span>(s.useCount == 1);
+
+	SharedPtr!<span class="keyword">long</span> s2 = UniquePtr!(<span class="keyword">long</span>, SharedControlBlock).init;
+	<span class="keyword">assert</span>(s2 == <span class="keyword">null</span>);
+}
+
+{
+	<span class="keyword">import</span> core.lifetime : move;
+	<span class="keyword">auto</span> rc = RcPtr!(<span class="keyword">long</span>).make(123);
+	<span class="keyword">assert</span>(rc.useCount == 1);
+
+	SharedPtr!<span class="keyword">long</span> s = rc;
+	<span class="keyword">assert</span>(s != <span class="keyword">null</span>);
+	<span class="keyword">assert</span>(s.useCount == 2);
+	<span class="keyword">assert</span>(rc.useCount == 2);
+
+	SharedPtr!<span class="keyword">long</span> s2 = RcPtr!(<span class="keyword">long</span>).init;
+	<span class="keyword">assert</span>(s2 == <span class="keyword">null</span>);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.opAssign" id="SharedPtr.opAssign"><code class="code">opAssign</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.opAssign"></span>scope void <code class="code">opAssign</code>(MemoryOrder order = MemoryOrder.seq, this This)(typeof(null) <code class="code">nil</code>) if (isMutable!This);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Releases the ownership of the managed object, if any.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    After the call, this manages no object.
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">{
+	SharedPtr!<span class="keyword">long</span> x = SharedPtr!<span class="keyword">long</span>.make(1);
+
+	<span class="keyword">assert</span>(x.useCount == 1);
+	x = <span class="keyword">null</span>;
+	<span class="keyword">assert</span>(x.useCount == 0);
+	<span class="keyword">assert</span>(x == <span class="keyword">null</span>);
+}
+
+{
+	SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>) x = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(1);
+
+	<span class="keyword">assert</span>(x.useCount == 1);
+	x = <span class="keyword">null</span>;
+	<span class="keyword">assert</span>(x.useCount == 0);
+	<span class="keyword">assert</span>(x == <span class="keyword">null</span>);
+}
+
+{
+	<span class="keyword">shared</span> SharedPtr!(<span class="keyword">long</span>) x = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(1);
+
+	<span class="keyword">assert</span>(x.useCount == 1);
+	x = <span class="keyword">null</span>;
+	<span class="keyword">assert</span>(x.useCount == 0);
+	<span class="keyword">assert</span>(x == <span class="keyword">null</span>);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.opAssign" id="SharedPtr.opAssign"><code class="code">opAssign</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.opAssign.2"></span>scope void <code class="code">opAssign</code>(MemoryOrder order = MemoryOrder.seq, Rhs, this This)(auto ref scope Rhs <code class="code">desired</code>) if (isSharedPtr!Rhs &amp;&amp; isAssignable!(<code class="code">desired</code>, This) &amp;&amp; !is(Rhs == shared));
+<br>
+scope void <code class="code">opAssign</code>(MemoryOrder order = MemoryOrder.seq, Rhs, this This)(auto ref scope Rhs <code class="code">desired</code>) if (isSmartPtr!Rhs &amp;&amp; !isSharedPtr!Rhs &amp;&amp; isAssignable!(<code class="code">desired</code>, This) &amp;&amp; !is(Rhs == shared));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Shares ownership of the object managed by <code class="code">rhs</code>.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    If <code class="code">rhs</code> manages no object, <code class="code">this</code> manages no object too.
+			If <code class="code">rhs</code> is rvalue then move-assigns a <code class="code">SharedPtr</code> from <code class="code">rhs</code>
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">{
+	SharedPtr!<span class="keyword">long</span> px1 = SharedPtr!<span class="keyword">long</span>.make(1);
+	SharedPtr!<span class="keyword">long</span> px2 = SharedPtr!<span class="keyword">long</span>.make(2);
+
+	<span class="keyword">assert</span>(px2.useCount == 1);
+	px1 = px2;
+	<span class="keyword">assert</span>(*px1 == 2);
+	<span class="keyword">assert</span>(px2.useCount == 2);
+}
+
+
+{
+	SharedPtr!<span class="keyword">long</span> px = SharedPtr!<span class="keyword">long</span>.make(1);
+	SharedPtr!(<span class="keyword">const</span> <span class="keyword">long</span>) pcx = SharedPtr!<span class="keyword">long</span>.make(2);
+
+	<span class="keyword">assert</span>(px.useCount == 1);
+	pcx = px;
+	<span class="keyword">assert</span>(*pcx == 1);
+	<span class="keyword">assert</span>(pcx.useCount == 2);
+
+}
+
+
+{
+	<span class="keyword">const</span> SharedPtr!<span class="keyword">long</span> cpx = SharedPtr!<span class="keyword">long</span>.make(1);
+	SharedPtr!(<span class="keyword">const</span> <span class="keyword">long</span>) pcx = SharedPtr!<span class="keyword">long</span>.make(2);
+
+	<span class="keyword">assert</span>(pcx.useCount == 1);
+	pcx = cpx;
+	<span class="keyword">assert</span>(*pcx == 1);
+	<span class="keyword">assert</span>(pcx.useCount == 2);
+
+}
+
+{
+	SharedPtr!(<span class="keyword">immutable</span> <span class="keyword">long</span>) pix = SharedPtr!(<span class="keyword">immutable</span> <span class="keyword">long</span>).make(123);
+	SharedPtr!(<span class="keyword">const</span> <span class="keyword">long</span>) pcx = SharedPtr!<span class="keyword">long</span>.make(2);
+
+	<span class="keyword">assert</span>(pix.useCount == 1);
+	pcx = pix;
+	<span class="keyword">assert</span>(*pcx == 123);
+	<span class="keyword">assert</span>(pcx.useCount == 2);
+
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.make" id="SharedPtr.make"><code class="code">make</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.make"></span>auto <code class="code">make</code>(AllocatorType = DefaultAllocator, bool supportGC = platformSupportGC, Args...)(auto ref Args <code class="code">args</code>) if (!isDynamicArray!ElementType);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Constructs an object of type <code class="code">ElementType</code> and wraps it in a <code class="code">SharedPtr</code> using <code class="code">args</code> as the parameter list for the constructor of <code class="code">ElementType</code>.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    The object is constructed as if by the expression <code class="code">emplace!ElementType(_payload, forward!<code class="code">args</code>)</code>, where payload is an internal pointer to storage suitable to hold an object of type <code class="code">ElementType</code>.
+			The storage is typically larger than <code class="code">ElementType.sizeof</code> in order to use one allocation for both the control block and the <code class="code">ElementType</code> object.
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">{
+	SharedPtr!<span class="keyword">long</span> a = SharedPtr!<span class="keyword">long</span>.<span class="psymbol">make</span>();
+	<span class="keyword">assert</span>(a.get == 0);
+
+	SharedPtr!(<span class="keyword">const</span> <span class="keyword">long</span>) b = SharedPtr!<span class="keyword">long</span>.<span class="psymbol">make</span>(2);
+	<span class="keyword">assert</span>(b.get == 2);
+}
+
+{
+	<span class="keyword">static</span> <span class="keyword">struct</span> Struct{
+		<span class="keyword">int</span> i = 7;
+
+		<span class="keyword">this</span>(<span class="keyword">int</span> i)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+			<span class="keyword">this</span>.i = i;
+		}
+	}
+
+	SharedPtr!Struct s1 = SharedPtr!Struct.<span class="psymbol">make</span>();
+	<span class="keyword">assert</span>(s1.get.i == 7);
+
+	SharedPtr!Struct s2 = SharedPtr!Struct.<span class="psymbol">make</span>(123);
+	<span class="keyword">assert</span>(s2.get.i == 123);
+}
+
+{
+	<span class="keyword">static</span> <span class="keyword">interface</span> Interface{
+	}
+	<span class="keyword">static</span> <span class="keyword">class</span> Class : Interface{
+		<span class="keyword">int</span> i;
+
+		<span class="keyword">this</span>(<span class="keyword">int</span> i)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+			<span class="keyword">this</span>.i = i;
+		}
+	}
+
+	SharedPtr!Interface x = SharedPtr!Class.<span class="psymbol">make</span>(3);
+	<span class="comment">//assert(x.dynTo!Class.get.i == 3);
+</span>}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.make" id="SharedPtr.make"><code class="code">make</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.make.2"></span>auto <code class="code">make</code>(AllocatorType = DefaultAllocator, bool supportGC = platformSupportGC, DeleterType)(ElementReferenceType <code class="code">element</code>, DeleterType <code class="code">deleter</code>) if (isCallable!DeleterType);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Constructs a <code class="code">SharedPtr</code> with <code class="code"><code class="code">element</code></code> as the pointer to the managed object.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    Uses the specified <code class="code"><code class="code">deleter</code></code> as the <code class="code">deleter</code>. The expression <code class="code"><code class="code">deleter</code>(<code class="code">element</code>)</code> must be well formed, have well-defined behavior and not throw any exceptions.
+			The construction of <code class="code"><code class="code">deleter</code></code> and of the stored <code class="code">deleter</code> from d must not throw exceptions.
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="keyword">long</span> deleted = -1;
+<span class="keyword">auto</span> x = SharedPtr!<span class="keyword">long</span>.<span class="psymbol">make</span>(<span class="keyword">new</span> <span class="keyword">long</span>(123), (<span class="keyword">long</span>* data){
+	deleted = *data;
+});
+<span class="keyword">assert</span>(deleted == -1);
+<span class="keyword">assert</span>(*x == 123);
+
+x = <span class="keyword">null</span>;
+<span class="keyword">assert</span>(deleted == 123);
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.make" id="SharedPtr.make"><code class="code">make</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.make.3"></span>auto <code class="code">make</code>(AllocatorType = DefaultAllocator, bool supportGC = platformSupportGC, Args...)(const size_t <code class="code">n</code>, auto ref Args <code class="code">args</code>) if (isDynamicArray!ElementType);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Constructs an object of array type <code class="code">ElementType</code> including its array elements and wraps it in a <code class="code">SharedPtr</code>.
+
+  </p>
+</div>
+<div class="ddoc_section">
+  <p class="para">
+    <span class="ddoc_section_h">Parameters:</span>
+<code class="code">n</code> = Array length
+<br><br>
+				<code class="code">args</code> = parameters for constructor for each array element.
+<br><br>
+			The array elements are constructed as if by the expression <code class="code">emplace!ElementType(_payload, <code class="code">args</code>)</code>, where payload is an internal pointer to storage suitable to hold an object of type <code class="code">ElementType</code>.
+			The storage is typically larger than <code class="code">ElementType.sizeof * <code class="code">n</code></code> in order to use one allocation for both the control block and the each array element.
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="keyword">auto</span> arr = SharedPtr!(<span class="keyword">long</span>[]).<span class="psymbol">make</span>(6, -1);
+<span class="keyword">assert</span>(arr.length == 6);
+<span class="keyword">assert</span>(arr.get.length == 6);
+
+<span class="keyword">import</span> std.algorithm : all;
+<span class="keyword">assert</span>(arr.get.all!(x =&gt; x == -1));
+
+<span class="keyword">for</span>(<span class="keyword">long</span> i = 0; i &lt; 6; ++i)
+	arr.get[i] = i;
+
+<span class="keyword">assert</span>(arr.get == [0, 1, 2, 3, 4, 5]);
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.alloc" id="SharedPtr.alloc"><code class="code">alloc</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.alloc"></span>auto <code class="code">alloc</code>(bool supportGC = platformSupportGC, AllocatorType, Args...)(AllocatorType <code class="code">a</code>, auto ref Args <code class="code">args</code>) if (!isDynamicArray!ElementType);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Constructs an object of type <code class="code">ElementType</code> and wraps it in <code class="code">a</code> <code class="code">SharedPtr</code> using <code class="code">args</code> as the parameter list for the constructor of <code class="code">ElementType</code>.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    The object is constructed as if by the expression <code class="code">emplace!ElementType(_payload, forward!<code class="code">args</code>)</code>, where payload is an internal pointer to storage suitable to hold an object of type <code class="code">ElementType</code>.
+			The storage is typically larger than <code class="code">ElementType.sizeof</code> in order to use one allocation for both the control block and the <code class="code">ElementType</code> object.
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="keyword">auto</span> <span class="param">a</span> = allocatorObject(Mallocator.instance);
+{
+	<span class="keyword">auto</span> <span class="param">a</span> = SharedPtr!<span class="keyword">long</span>.<span class="psymbol">alloc</span>(<span class="param">a</span>);
+	<span class="keyword">assert</span>(<span class="param">a</span>.get == 0);
+
+	<span class="keyword">auto</span> b = SharedPtr!(<span class="keyword">const</span> <span class="keyword">long</span>).<span class="psymbol">alloc</span>(<span class="param">a</span>, 2);
+	<span class="keyword">assert</span>(b.get == 2);
+}
+
+{
+	<span class="keyword">static</span> <span class="keyword">struct</span> Struct{
+		<span class="keyword">int</span> i = 7;
+
+		<span class="keyword">this</span>(<span class="keyword">int</span> i)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+			<span class="keyword">this</span>.i = i;
+		}
+	}
+
+	<span class="keyword">auto</span> s1 = SharedPtr!Struct.<span class="psymbol">alloc</span>(<span class="param">a</span>);
+	<span class="keyword">assert</span>(s1.get.i == 7);
+
+	<span class="keyword">auto</span> s2 = SharedPtr!Struct.<span class="psymbol">alloc</span>(<span class="param">a</span>, 123);
+	<span class="keyword">assert</span>(s2.get.i == 123);
+}
+
+{
+	<span class="keyword">static</span> <span class="keyword">interface</span> Interface{
+	}
+	<span class="keyword">static</span> <span class="keyword">class</span> Class : Interface{
+		<span class="keyword">int</span> i;
+
+		<span class="keyword">this</span>(<span class="keyword">int</span> i)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+			<span class="keyword">this</span>.i = i;
+		}
+	}
+
+	SharedPtr!Interface x = SharedPtr!Class.<span class="psymbol">alloc</span>(<span class="param">a</span>, 3);
+	<span class="comment">//assert(x.dynTo!Class.get.i == 3);
+</span>}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.alloc" id="SharedPtr.alloc"><code class="code">alloc</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.alloc.2"></span>auto <code class="code">alloc</code>(bool supportGC = platformSupportGC, AllocatorType, DeleterType)(AllocatorType <code class="code">allocator</code>, ElementReferenceType <code class="code">element</code>, DeleterType <code class="code">deleter</code>) if (isCallable!DeleterType);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Constructs a <code class="code">SharedPtr</code> with <code class="code"><code class="code">element</code></code> as the pointer to the managed object using <code class="code"><code class="code">allocator</code></code> with state.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    Uses the specified <code class="code"><code class="code">deleter</code></code> as the <code class="code">deleter</code>. The expression <code class="code"><code class="code">deleter</code>(<code class="code">element</code>)</code> must be well formed, have well-defined behavior and not throw any exceptions.
+			The construction of <code class="code"><code class="code">deleter</code></code> and of the stored <code class="code">deleter</code> from d must not throw exceptions.
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="keyword">auto</span> a = allocatorObject(Mallocator.instance);
+
+<span class="keyword">long</span> deleted = -1;
+<span class="keyword">auto</span> x = SharedPtr!<span class="keyword">long</span>.make(<span class="keyword">new</span> <span class="keyword">long</span>(123), (<span class="keyword">long</span>* data){
+	deleted = *data;
+}, a);
+<span class="keyword">assert</span>(deleted == -1);
+<span class="keyword">assert</span>(*x == 123);
+
+x = <span class="keyword">null</span>;
+<span class="keyword">assert</span>(deleted == 123);
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.alloc" id="SharedPtr.alloc"><code class="code">alloc</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.alloc.3"></span>auto <code class="code">alloc</code>(bool supportGC = platformSupportGC, AllocatorType, Args...)(AllocatorType <code class="code">a</code>, const size_t <code class="code">n</code>, auto ref Args <code class="code">args</code>) if (isDynamicArray!ElementType);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Constructs an object of array type <code class="code">ElementType</code> including its array elements and wraps it in <code class="code">a</code> <code class="code">SharedPtr</code>.
+
+  </p>
+</div>
+<div class="ddoc_section">
+  <p class="para">
+    <span class="ddoc_section_h">Parameters:</span>
+<code class="code">n</code> = Array length
+<br><br>
+				<code class="code">args</code> = parameters for constructor for each array element.
+<br><br>
+			The array elements are constructed as if by the expression <code class="code">emplace!ElementType(_payload, <code class="code">args</code>)</code>, where payload is an internal pointer to storage suitable to hold an object of type <code class="code">ElementType</code>.
+			The storage is typically larger than <code class="code">ElementType.sizeof * <code class="code">n</code></code> in order to use one allocation for both the control block and the each array element.
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="keyword">auto</span> <span class="param">a</span> = allocatorObject(Mallocator.instance);
+<span class="keyword">auto</span> arr = SharedPtr!(<span class="keyword">long</span>[], DestructorType!(<span class="keyword">typeof</span>(<span class="param">a</span>))).<span class="psymbol">alloc</span>(<span class="param">a</span>, 6, -1);
+<span class="keyword">assert</span>(arr.length == 6);
+<span class="keyword">assert</span>(arr.get.length == 6);
+
+<span class="keyword">import</span> std.algorithm : all;
+<span class="keyword">assert</span>(arr.get.all!(x =&gt; x == -1));
+
+<span class="keyword">for</span>(<span class="keyword">long</span> i = 0; i &lt; 6; ++i)
+	arr.get[i] = i;
+
+<span class="keyword">assert</span>(arr.get == [0, 1, 2, 3, 4, 5]);
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.useCount" id="SharedPtr.useCount"><code class="code">useCount</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.useCount"></span>const nothrow @nogc @property scope @safe ControlType.Shared <code class="code">useCount</code>(this This)();
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Returns the number of different <code class="code">SharedPtr</code> instances
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    Returns the number of different <code class="code">SharedPtr</code> instances (<code class="code">this</code> included) managing the current object or <code class="code">0</code> if there is no managed object.
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">SharedPtr!<span class="keyword">long</span> x = <span class="keyword">null</span>;
+
+<span class="keyword">assert</span>(x.<span class="psymbol">useCount</span> == 0);
+
+x = SharedPtr!<span class="keyword">long</span>.make(123);
+<span class="keyword">assert</span>(x.<span class="psymbol">useCount</span> == 1);
+
+<span class="keyword">auto</span> y = x;
+<span class="keyword">assert</span>(x.<span class="psymbol">useCount</span> == 2);
+
+<span class="keyword">auto</span> w1 = x.weak;    <span class="comment">//weak ptr
+</span><span class="keyword">assert</span>(x.<span class="psymbol">useCount</span> == 2);
+
+SharedPtr!<span class="keyword">long</span>.WeakType w2 = x;   <span class="comment">//weak ptr
+</span><span class="keyword">assert</span>(x.<span class="psymbol">useCount</span> == 2);
+
+y = <span class="keyword">null</span>;
+<span class="keyword">assert</span>(x.<span class="psymbol">useCount</span> == 1);
+
+x = <span class="keyword">null</span>;
+<span class="keyword">assert</span>(x.<span class="psymbol">useCount</span> == 0);
+<span class="keyword">assert</span>(w1.<span class="psymbol">useCount</span> == 0);
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.weakCount" id="SharedPtr.weakCount"><code class="code">weakCount</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.weakCount"></span>const nothrow @nogc @property scope @safe ControlType.Weak <code class="code">weakCount</code>(this This)();
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Returns the number of different <code class="code">SharedPtr.WeakType</code> instances
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    Returns the number of different <code class="code">SharedPtr.WeakType</code> instances (<code class="code">this</code> included) managing the current object or <code class="code">0</code> if there is no managed object.
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">SharedPtr!<span class="keyword">long</span> x = <span class="keyword">null</span>;
+<span class="keyword">assert</span>(x.useCount == 0);
+<span class="keyword">assert</span>(x.<span class="psymbol">weakCount</span> == 0);
+
+x = SharedPtr!<span class="keyword">long</span>.make(123);
+<span class="keyword">assert</span>(x.useCount == 1);
+<span class="keyword">assert</span>(x.<span class="psymbol">weakCount</span> == 0);
+
+<span class="keyword">auto</span> w = x.weak();
+<span class="keyword">assert</span>(x.useCount == 1);
+<span class="keyword">assert</span>(x.<span class="psymbol">weakCount</span> == 1);
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.proxySwap" id="SharedPtr.proxySwap"><code class="code">proxySwap</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.proxySwap"></span>pure nothrow @nogc scope @trusted void <code class="code">proxySwap</code>(ref scope typeof(this) <code class="code">rhs</code>);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Swap <code class="code">this</code> with <code class="code"><code class="code">rhs</code></code>
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">{
+	SharedPtr!<span class="keyword">long</span> a = SharedPtr!<span class="keyword">long</span>.make(1);
+	SharedPtr!<span class="keyword">long</span> b = SharedPtr!<span class="keyword">long</span>.make(2);
+	a.<span class="psymbol">proxySwap</span>(b);
+	<span class="keyword">assert</span>(*a == 2);
+	<span class="keyword">assert</span>(*b == 1);
+	<span class="keyword">import</span> std.algorithm : swap;
+	swap(a, b);
+	<span class="keyword">assert</span>(*a == 1);
+	<span class="keyword">assert</span>(*b == 2);
+	<span class="keyword">assert</span>(a.useCount == 1);
+	<span class="keyword">assert</span>(b.useCount == 1);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.load" id="SharedPtr.load"><code class="code">load</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.load"></span>scope UnqualSmartPtr!This <code class="code">load</code>(MemoryOrder order = MemoryOrder.seq, this This)();
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Returns the non <code class="code">shared</code> <code class="code">SharedPtr</code> pointer pointed-to by <code class="code">shared</code> <code class="code">this</code>.
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="keyword">shared</span> SharedPtr!(<span class="keyword">long</span>) x = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(123);
+
+{
+	SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>) y = x.<span class="psymbol">load</span>();
+	<span class="keyword">assert</span>(y.useCount == 2);
+
+	<span class="keyword">assert</span>(y.get == 123);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.store" id="SharedPtr.store"><code class="code">store</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.store"></span>alias <code class="code">store</code> = opAssign;
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Stores the non <code class="code">shared</code> <code class="code">SharedPtr</code> parameter <code class="code">ptr</code> to <code class="code">this</code>.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    If <code class="code">this</code> is shared then operation is atomic or guarded by mutex.
+<br><br>
+			Template parameter <code class="code">order</code> has type <code class="code">core.atomic.MemoryOrder</code>.
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="comment">//null store:
+</span>{
+	<span class="keyword">shared</span> x = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(123);
+	<span class="keyword">assert</span>(x.load.get == 123);
+
+	x.<span class="psymbol">store</span>(<span class="keyword">null</span>);
+	<span class="keyword">assert</span>(x.useCount == 0);
+	<span class="keyword">assert</span>(x.load == <span class="keyword">null</span>);
+}
+
+<span class="comment">//rvalue store:
+</span>{
+	<span class="keyword">shared</span> x = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(123);
+	<span class="keyword">assert</span>(x.load.get == 123);
+
+	x.<span class="psymbol">store</span>(SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(42));
+	<span class="keyword">assert</span>(x.load.get == 42);
+}
+
+<span class="comment">//lvalue store:
+</span>{
+	<span class="keyword">shared</span> x = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(123);
+	<span class="keyword">auto</span> y = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(42);
+
+	<span class="keyword">assert</span>(x.load.get == 123);
+	<span class="keyword">assert</span>(y.load.get == 42);
+
+	x.<span class="psymbol">store</span>(y);
+	<span class="keyword">assert</span>(x.load.get == 42);
+	<span class="keyword">assert</span>(x.useCount == 2);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.exchange" id="SharedPtr.exchange"><code class="code">exchange</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.exchange"></span>scope SharedPtr <code class="code">exchange</code>(MemoryOrder order = MemoryOrder.seq, this This)(typeof(null)) if (isMutable!This);
+<br>
+scope SharedPtr <code class="code">exchange</code>(MemoryOrder order = MemoryOrder.seq, Rhs, this This)(scope Rhs <code class="code">ptr</code>) if (isSharedPtr!Rhs &amp;&amp; isMoveAssignable!(Rhs, This) &amp;&amp; !is(Rhs == shared));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Stores the non <code class="code">shared</code> <code class="code">SharedPtr</code> pointer <code class="code">ptr</code> in the <code class="code">shared(SharedPtr)</code> pointed to by <code class="code">this</code> and returns the value formerly pointed-to by this, atomically or with mutex.
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="comment">//lvalue exchange
+</span>{
+	<span class="keyword">shared</span> x = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(123);
+	<span class="keyword">auto</span> y = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(42);
+
+	<span class="keyword">auto</span> z = x.<span class="psymbol">exchange</span>(y);
+
+	<span class="keyword">assert</span>(x.load.get == 42);
+	<span class="keyword">assert</span>(y.get == 42);
+	<span class="keyword">assert</span>(z.get == 123);
+}
+
+<span class="comment">//rvalue exchange
+</span>{
+	<span class="keyword">shared</span> x = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(123);
+	<span class="keyword">auto</span> y = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(42);
+
+	<span class="keyword">import</span> core.lifetime : move;
+	<span class="keyword">auto</span> z = x.<span class="psymbol">exchange</span>(move(y));
+
+	<span class="keyword">assert</span>(x.load.get == 42);
+	<span class="keyword">assert</span>(y == <span class="keyword">null</span>);
+	<span class="keyword">assert</span>(z.get == 123);
+}
+
+<span class="comment">//null exchange (same as move)
+</span>{
+	<span class="keyword">shared</span> x = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(123);
+
+	<span class="keyword">auto</span> z = x.<span class="psymbol">exchange</span>(<span class="keyword">null</span>);
+
+	<span class="keyword">assert</span>(x.load == <span class="keyword">null</span>);
+	<span class="keyword">assert</span>(z.get == 123);
+}
+
+<span class="comment">//swap:
+</span>{
+	<span class="keyword">shared</span> x = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(123);
+	<span class="keyword">auto</span> y = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(42);
+
+	<span class="comment">//opAssign is same as store
+</span>	<span class="keyword">import</span> core.lifetime : move;
+	y = x.<span class="psymbol">exchange</span>(move(y));
+
+	<span class="keyword">assert</span>(x.load.get == 42);
+	<span class="keyword">assert</span>(y.get == 123);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.compareExchangeStrong" id="SharedPtr.compareExchangeStrong"><code class="code">compareExchangeStrong</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.compareExchangeStrong"></span>alias <code class="code">compareExchangeStrong</code> = compareExchange;
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Same as <code class="code">compareExchange</code>.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    More info in c++ <code class="code">std::atomic&lt;std::shared_ptr&gt;</code>.
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.compareExchangeWeak" id="SharedPtr.compareExchangeWeak"><code class="code">compareExchangeWeak</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.compareExchangeWeak"></span>alias <code class="code">compareExchangeWeak</code> = compareExchange;
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Same as <code class="code">compareExchange</code>.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    More info in c++ <code class="code">std::atomic&lt;std::shared_ptr&gt;</code>.
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.compareExchange" id="SharedPtr.compareExchange"><code class="code">compareExchange</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.compareExchange"></span>scope bool <code class="code">compareExchange</code>(MemoryOrder success = MemoryOrder.seq, MemoryOrder failure = success, E, D, this This)(ref scope E <code class="code">expected</code>, scope D <code class="code">desired</code>) if (isSharedPtr!E &amp;&amp; !is(E == shared) &amp;&amp; isSharedPtr!D &amp;&amp; !is(D == shared) &amp;&amp; isMoveAssignable!(D, This) &amp;&amp; isCopyAssignable!(This, E));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Compares the <code class="code">SharedPtr</code> pointers pointed-to by <code class="code">this</code> and <code class="code"><code class="code">expected</code></code>.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    If they are equivalent (store the same pointer value, and either share ownership of the same object or are both empty), assigns <code class="code"><code class="code">desired</code></code> into <code class="code">this</code> using the memory ordering constraints specified by <code class="code">success</code> and returns <code class="code">true</code>.
+			If they are not equivalent, assigns <code class="code">this</code> into <code class="code"><code class="code">expected</code></code> using the memory ordering constraints specified by <code class="code">failure</code> and returns <code class="code">false</code>.
+<br><br>
+			More info in c++ std::atomic<std::shared_ptr>.
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="comment">//fail
+</span>{
+	SharedPtr!<span class="keyword">long</span> a = SharedPtr!<span class="keyword">long</span>.make(123);
+	SharedPtr!<span class="keyword">long</span> b = SharedPtr!<span class="keyword">long</span>.make(42);
+	SharedPtr!<span class="keyword">long</span> c = SharedPtr!<span class="keyword">long</span>.make(666);
+
+	a.<span class="psymbol">compareExchange</span>(b, c);
+
+	<span class="keyword">assert</span>(*a == 123);
+	<span class="keyword">assert</span>(*b == 123);
+	<span class="keyword">assert</span>(*c == 666);
+
+}
+
+<span class="comment">//success
+</span>{
+	SharedPtr!<span class="keyword">long</span> a = SharedPtr!<span class="keyword">long</span>.make(123);
+	SharedPtr!<span class="keyword">long</span> b = a;
+	SharedPtr!<span class="keyword">long</span> c = SharedPtr!<span class="keyword">long</span>.make(666);
+
+	a.<span class="psymbol">compareExchange</span>(b, c);
+
+	<span class="keyword">assert</span>(*a == 666);
+	<span class="keyword">assert</span>(*b == 123);
+	<span class="keyword">assert</span>(*c == 666);
+}
+
+<span class="comment">//shared fail
+</span>{
+	<span class="keyword">shared</span> SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>) a = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(123);
+	SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>) b = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(42);
+	SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>) c = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(666);
+
+	a.<span class="psymbol">compareExchange</span>(b, c);
+
+	<span class="keyword">auto</span> tmp = a.exchange(<span class="keyword">null</span>);
+	<span class="keyword">assert</span>(*tmp == 123);
+	<span class="keyword">assert</span>(*b == 123);
+	<span class="keyword">assert</span>(*c == 666);
+}
+
+<span class="comment">//shared success
+</span>{
+	SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>) b = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(123);
+	<span class="keyword">shared</span> SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>) a = b;
+	SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>) c = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(666);
+
+	a.<span class="psymbol">compareExchange</span>(b, c);
+
+	<span class="keyword">auto</span> tmp = a.exchange(<span class="keyword">null</span>);
+	<span class="keyword">assert</span>(*tmp == 666);
+	<span class="keyword">assert</span>(*b == 123);
+	<span class="keyword">assert</span>(*c == 666);
+}
+
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.lock" id="SharedPtr.lock"><code class="code">lock</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.lock"></span>scope SharedType <code class="code">lock</code>()() if (isCopyConstructable!(typeof(this), SharedType));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Creates a new non weak <code class="code">SharedPtr</code> that shares ownership of the managed object (must be <code class="code">SharedPtr.WeakType</code>).
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    If there is no managed object, i.e. this is empty or this is <code class="code">expired</code>, then the returned <code class="code">SharedPtr</code> is empty.
+			Method exists only if <code class="code">SharedPtr</code> is <code class="code">isWeak</code>
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">{
+	SharedPtr!<span class="keyword">long</span> x = SharedPtr!<span class="keyword">long</span>.make(123);
+
+	<span class="keyword">auto</span> w = x.weak;    <span class="comment">//weak ptr
+</span>
+	SharedPtr!<span class="keyword">long</span> y = w.<span class="psymbol">lock</span>;
+
+	<span class="keyword">assert</span>(x == y);
+	<span class="keyword">assert</span>(x.useCount == 2);
+	<span class="keyword">assert</span>(y.get == 123);
+}
+
+{
+	SharedPtr!<span class="keyword">long</span> x = SharedPtr!<span class="keyword">long</span>.make(123);
+
+	<span class="keyword">auto</span> w = x.weak;    <span class="comment">//weak ptr
+</span>
+	<span class="keyword">assert</span>(w.expired == <span class="keyword">false</span>);
+
+	x = SharedPtr!<span class="keyword">long</span>.make(321);
+
+	<span class="keyword">assert</span>(w.expired == <span class="keyword">true</span>);
+
+	SharedPtr!<span class="keyword">long</span> y = w.<span class="psymbol">lock</span>;
+
+	<span class="keyword">assert</span>(y == <span class="keyword">null</span>);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.expired" id="SharedPtr.expired"><code class="code">expired</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.expired"></span>const nothrow @nogc @property scope @safe bool <code class="code">expired</code>(this This)();
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Equivalent to <code class="code">useCount() == 0</code> (must be <code class="code">SharedPtr.WeakType</code>).
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    Method exists only if <code class="code">SharedPtr</code> is <code class="code">isWeak</code>
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">{
+	SharedPtr!<span class="keyword">long</span> x = SharedPtr!<span class="keyword">long</span>.make(123);
+
+	<span class="keyword">auto</span> wx = x.weak;   <span class="comment">//weak pointer
+</span>
+	<span class="keyword">assert</span>(wx.<span class="psymbol">expired</span> == <span class="keyword">false</span>);
+
+	x = <span class="keyword">null</span>;
+
+	<span class="keyword">assert</span>(wx.<span class="psymbol">expired</span> == <span class="keyword">true</span>);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.opUnary" id="SharedPtr.opUnary"><code class="code">opUnary</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.opUnary"></span>template <code class="code">opUnary</code>(string op : "*") if (op == "*")
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Operator *, same as method 'get'.
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">SharedPtr!<span class="keyword">long</span> x = SharedPtr!<span class="keyword">long</span>.make(123);
+<span class="keyword">assert</span>(*x == 123);
+(*x = 321);
+<span class="keyword">assert</span>(*x == 321);
+<span class="keyword">const</span> y = x;
+<span class="keyword">assert</span>(*y == 321);
+<span class="keyword">assert</span>(*x == 321);
+<span class="keyword">static</span> <span class="keyword">assert</span>(<span class="keyword">is</span>(<span class="keyword">typeof</span>(*y) == <span class="keyword">const</span> <span class="keyword">long</span>));
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.get" id="SharedPtr.get"><code class="code">get</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.get"></span>inout pure nothrow @nogc @property @system inout(ElementType) <code class="code">get</code>() return;
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Get reference to managed object of <code class="code">ElementType</code> or value if <code class="code">ElementType</code> is reference type (class or interface) or dynamic array.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    Doesn't increment useCount, is inherently unsafe.
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">SharedPtr!<span class="keyword">long</span> x = SharedPtr!<span class="keyword">long</span>.make(123);
+<span class="keyword">assert</span>(x.<span class="psymbol">get</span> == 123);
+x.<span class="psymbol">get</span> = 321;
+<span class="keyword">assert</span>(x.<span class="psymbol">get</span> == 321);
+<span class="keyword">const</span> y = x;
+<span class="keyword">assert</span>(y.<span class="psymbol">get</span> == 321);
+<span class="keyword">assert</span>(x.<span class="psymbol">get</span> == 321);
+<span class="keyword">static</span> <span class="keyword">assert</span>(<span class="keyword">is</span>(<span class="keyword">typeof</span>(y.<span class="psymbol">get</span>) == <span class="keyword">const</span> <span class="keyword">long</span>));
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.element" id="SharedPtr.element"><code class="code">element</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.element"></span>inout pure nothrow @nogc @property @system ElementReferenceTypeImpl!(inout(ElementType)) <code class="code">element</code>() return;
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Get pointer to managed object of <code class="code">ElementType</code> or reference if <code class="code">ElementType</code> is reference type (class or interface) or dynamic array.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    If <code class="code">this</code> is weak expired pointer then return <code class="code">null</code>.
+<br><br>
+			Doesn't increment useCount, is inherently unsafe.
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">{
+	SharedPtr!<span class="keyword">long</span> x = SharedPtr!<span class="keyword">long</span>.make(123);
+	<span class="keyword">assert</span>(*x.<span class="psymbol">element</span> == 123);
+
+	x.get = 321;
+	<span class="keyword">assert</span>(*x.<span class="psymbol">element</span> == 321);
+
+	<span class="keyword">const</span> y = x;
+	<span class="keyword">assert</span>(*y.<span class="psymbol">element</span> == 321);
+	<span class="keyword">assert</span>(*x.<span class="psymbol">element</span> == 321);
+
+	<span class="keyword">static</span> <span class="keyword">assert</span>(<span class="keyword">is</span>(<span class="keyword">typeof</span>(y.<span class="psymbol">element</span>) == <span class="keyword">const</span>(<span class="keyword">long</span>)*));
+}
+
+{
+	<span class="keyword">auto</span> s = SharedPtr!<span class="keyword">long</span>.make(42);
+	<span class="keyword">const</span> w = s.weak;
+
+	<span class="keyword">assert</span>(*w.<span class="psymbol">element</span> == 42);
+
+	s = <span class="keyword">null</span>;
+	<span class="keyword">assert</span>(w.<span class="psymbol">element</span> <span class="keyword">is</span> <span class="keyword">null</span>);
+}
+
+{
+	<span class="keyword">auto</span> s = SharedPtr!<span class="keyword">long</span>.make(42);
+	<span class="keyword">auto</span> w = s.weak;
+
+	<span class="keyword">scope</span> <span class="keyword">const</span> p = w.<span class="psymbol">element</span>;
+
+	s = <span class="keyword">null</span>;
+	<span class="keyword">assert</span>(w.<span class="psymbol">element</span> <span class="keyword">is</span> <span class="keyword">null</span>);
+
+	<span class="keyword">assert</span>(p !<span class="keyword">is</span> <span class="keyword">null</span>); <span class="comment">//p is dangling pointer!
+</span>}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.length" id="SharedPtr.length"><code class="code">length</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.length"></span>const pure nothrow @nogc @property scope @safe size_t <code class="code">length</code>();
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Returns <code class="code">length</code> of dynamic array (isDynamicArray!ElementType == <code class="code">true</code>).
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="keyword">auto</span> x = SharedPtr!(<span class="keyword">int</span>[]).make(10, -1);
+<span class="keyword">assert</span>(x.<span class="psymbol">length</span> == 10);
+<span class="keyword">assert</span>(x.get.<span class="psymbol">length</span> == 10);
+
+<span class="keyword">import</span> std.algorithm : all;
+<span class="keyword">assert</span>(x.get.all!(i =&gt; i == -1));
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.weak" id="SharedPtr.weak"><code class="code">weak</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.weak"></span>scope WeakType <code class="code">weak</code>()() if (isCopyConstructable!(typeof(this), WeakType));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Returns <code class="code">weak</code> pointer (must have <code class="code">weak</code> counter).
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">SharedPtr!<span class="keyword">long</span> x = SharedPtr!<span class="keyword">long</span>.make(123);
+<span class="keyword">assert</span>(x.useCount == 1);
+
+<span class="keyword">auto</span> wx = x.<span class="psymbol">weak</span>;   <span class="comment">//weak pointer
+</span><span class="keyword">assert</span>(wx.expired == <span class="keyword">false</span>);
+<span class="keyword">assert</span>(wx.lock.get == 123);
+<span class="keyword">assert</span>(wx.useCount == 1);
+
+x = <span class="keyword">null</span>;
+<span class="keyword">assert</span>(wx.expired == <span class="keyword">true</span>);
+<span class="keyword">assert</span>(wx.useCount == 0);
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.opCastImpl" id="SharedPtr.opCastImpl"><code class="code">opCastImpl</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.opCastImpl"></span>const pure nothrow @nogc scope @safe bool <code class="code">opCastImpl</code>(To : bool)() if (is(To : bool));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Checks if <code class="code">this</code> stores a non-<code class="code">null</code> pointer, i.e. whether <code class="code">this != null</code>.
+
+  </p>
+</div>
+<div class="ddoc_section">
+  <p class="para">
+    <span class="ddoc_section_h">BUG:</span>
+qualfied variable of struct with dtor cannot be inside other struct (generated dtor will use opCast to mutable before dtor call ). opCast is renamed to <code class="code">opCastImpl</code>
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">SharedPtr!<span class="keyword">long</span> x = SharedPtr!<span class="keyword">long</span>.make(123);
+<span class="keyword">assert</span>(<span class="keyword">cast</span>(<span class="keyword">bool</span>)x);    <span class="comment">//explicit cast
+</span><span class="keyword">assert</span>(x);              <span class="comment">//implicit cast
+</span>x = <span class="keyword">null</span>;
+<span class="keyword">assert</span>(!<span class="keyword">cast</span>(<span class="keyword">bool</span>)x);   <span class="comment">//explicit cast
+</span><span class="keyword">assert</span>(!x);             <span class="comment">//implicit cast
+</span></code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.opCastImpl" id="SharedPtr.opCastImpl"><code class="code">opCastImpl</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.opCastImpl.2"></span>scope To <code class="code">opCastImpl</code>(To, this This)() if (isSharedPtr!To &amp;&amp; !is(This == shared));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Cast <code class="code">this</code> to different type <code class="code">To</code> when <code class="code">isSharedPtr!To</code>.
+
+  </p>
+</div>
+<div class="ddoc_section">
+  <p class="para">
+    <span class="ddoc_section_h">BUG:</span>
+qualfied variable of struct with dtor cannot be inside other struct (generated dtor will use opCast to mutable before dtor call ). opCast is renamed to <code class="code">opCastImpl</code>
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">SharedPtr!<span class="keyword">long</span> x = SharedPtr!<span class="keyword">long</span>.make(123);
+<span class="keyword">auto</span> y = <span class="keyword">cast</span>(SharedPtr!(<span class="keyword">const</span> <span class="keyword">long</span>))x;
+<span class="keyword">auto</span> z = <span class="keyword">cast</span>(<span class="keyword">const</span> SharedPtr!<span class="keyword">long</span>)x;
+<span class="keyword">auto</span> u = <span class="keyword">cast</span>(<span class="keyword">const</span> SharedPtr!(<span class="keyword">const</span> <span class="keyword">long</span>))x;
+<span class="keyword">assert</span>(x.useCount == 4);
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.opEquals" id="SharedPtr.opEquals"><code class="code">opEquals</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.opEquals"></span>const pure nothrow @nogc scope @safe bool <code class="code">opEquals</code>(typeof(null) <code class="code">nil</code>);
+<br>
+const pure nothrow @nogc scope @safe bool <code class="code">opEquals</code>(Rhs)(auto ref scope const Rhs <code class="code">rhs</code>) if (isSharedPtr!Rhs &amp;&amp; !is(Rhs == shared));
+<br>
+const pure nothrow @nogc scope @safe bool <code class="code">opEquals</code>(Elm)(scope const Elm <code class="code">elm</code>) if (is(Elm : GetElementReferenceType!(typeof(this))));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Operator == and != .
+			Compare pointers.
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">{
+	SharedPtr!<span class="keyword">long</span> x = SharedPtr!<span class="keyword">long</span>.make(0);
+	<span class="keyword">assert</span>(x != <span class="keyword">null</span>);
+	x = <span class="keyword">null</span>;
+	<span class="keyword">assert</span>(x == <span class="keyword">null</span>);
+}
+
+{
+	SharedPtr!<span class="keyword">long</span> x = SharedPtr!<span class="keyword">long</span>.make(123);
+	SharedPtr!<span class="keyword">long</span> y = SharedPtr!<span class="keyword">long</span>.make(123);
+	<span class="keyword">assert</span>(x == x);
+	<span class="keyword">assert</span>(y == y);
+	<span class="keyword">assert</span>(x != y);
+}
+
+{
+	SharedPtr!<span class="keyword">long</span> x;
+	SharedPtr!(<span class="keyword">const</span> <span class="keyword">long</span>) y;
+	<span class="keyword">assert</span>(x == x);
+	<span class="keyword">assert</span>(y == y);
+	<span class="keyword">assert</span>(x == y);
+}
+
+{
+	SharedPtr!<span class="keyword">long</span> x = SharedPtr!<span class="keyword">long</span>.make(123);
+	SharedPtr!<span class="keyword">long</span> y = SharedPtr!<span class="keyword">long</span>.make(123);
+	<span class="keyword">assert</span>(x == x.element);
+	<span class="keyword">assert</span>(y.element == y);
+	<span class="keyword">assert</span>(x != y.element);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.opCmp" id="SharedPtr.opCmp"><code class="code">opCmp</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.opCmp"></span>const pure nothrow @nogc scope @trusted sizediff_t <code class="code">opCmp</code>(typeof(null) <code class="code">nil</code>);
+<br>
+const pure nothrow @nogc scope @trusted sizediff_t <code class="code">opCmp</code>(Elm)(scope const Elm <code class="code">elm</code>) if (is(Elm : GetElementReferenceType!(typeof(this))));
+<br>
+const pure nothrow @nogc scope @trusted sizediff_t <code class="code">opCmp</code>(Rhs)(auto ref scope const Rhs <code class="code">rhs</code>) if (isSharedPtr!Rhs &amp;&amp; !is(Rhs == shared));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Operators &lt;, &lt;=, &gt;, &gt;= for <code class="code">SharedPtr</code>.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    Compare address of payload.
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">{
+	<span class="keyword">const</span> a = SharedPtr!<span class="keyword">long</span>.make(42);
+	<span class="keyword">const</span> b = SharedPtr!<span class="keyword">long</span>.make(123);
+	<span class="keyword">const</span> n = SharedPtr!<span class="keyword">long</span>.init;
+
+	<span class="keyword">assert</span>(a &lt;= a);
+	<span class="keyword">assert</span>(a &gt;= a);
+
+	<span class="keyword">assert</span>((a &lt; b) == !(a &gt;= b));
+	<span class="keyword">assert</span>((a &gt; b) == !(a &lt;= b));
+
+	<span class="keyword">assert</span>(a &gt; n);
+	<span class="keyword">assert</span>(a &gt; <span class="keyword">null</span>);
+
+	<span class="keyword">assert</span>(n &lt; a);
+	<span class="keyword">assert</span>(<span class="keyword">null</span> &lt; a);
+}
+
+{
+	<span class="keyword">const</span> a = SharedPtr!<span class="keyword">long</span>.make(42);
+	<span class="keyword">const</span> b = SharedPtr!<span class="keyword">long</span>.make(123);
+
+	<span class="keyword">assert</span>(a &lt;= a.element);
+	<span class="keyword">assert</span>(a.element &gt;= a);
+
+	<span class="keyword">assert</span>((a &lt; b.element) == !(a.element &gt;= b));
+	<span class="keyword">assert</span>((a &gt; b.element) == !(a.element &lt;= b));
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr.toHash" id="SharedPtr.toHash"><code class="code">toHash</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr.toHash"></span>const pure nothrow @nogc @property scope @trusted size_t <code class="code">toHash</code>();
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Generate hash
+
+  </p>
+</div>
+<div class="ddoc_section">
+  <p class="para">
+    <span class="ddoc_section_h">Return:</span>
+Address of payload as <code class="code">size_t</code>
+
+
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">{
+	SharedPtr!<span class="keyword">long</span> x = SharedPtr!<span class="keyword">long</span>.make(123);
+	SharedPtr!<span class="keyword">long</span> y = SharedPtr!<span class="keyword">long</span>.make(123);
+	<span class="keyword">assert</span>(x.<span class="psymbol">toHash</span> == x.<span class="psymbol">toHash</span>);
+	<span class="keyword">assert</span>(y.<span class="psymbol">toHash</span> == y.<span class="psymbol">toHash</span>);
+	<span class="keyword">assert</span>(x.<span class="psymbol">toHash</span> != y.<span class="psymbol">toHash</span>);
+	SharedPtr!(<span class="keyword">const</span> <span class="keyword">long</span>) z = x;
+	<span class="keyword">assert</span>(x.<span class="psymbol">toHash</span> == z.<span class="psymbol">toHash</span>);
+}
+{
+	SharedPtr!<span class="keyword">long</span> x;
+	SharedPtr!(<span class="keyword">const</span> <span class="keyword">long</span>) y;
+	<span class="keyword">assert</span>(x.<span class="psymbol">toHash</span> == x.<span class="psymbol">toHash</span>);
+	<span class="keyword">assert</span>(y.<span class="psymbol">toHash</span> == y.<span class="psymbol">toHash</span>);
+	<span class="keyword">assert</span>(x.<span class="psymbol">toHash</span> == y.<span class="psymbol">toHash</span>);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li>
+</ul>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#SharedPtr" id="SharedPtr"><code class="code">SharedPtr</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="SharedPtr"></span>template <code class="code">SharedPtr</code>(_Type, _ControlType, _DestructorType = DestructorType!_Type, bool _weakPtr = false) if (isControlBlock!_ControlType &amp;&amp; isDestructorType!_DestructorType)
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Alias to <code class="code"><code class="code">SharedPtr</code></code> with different order of template parameters
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="keyword">static</span> <span class="keyword">class</span> Foo{
+    <span class="keyword">int</span> i;
+
+    <span class="keyword">this</span>(<span class="keyword">int</span> i)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+        <span class="keyword">this</span>.i = i;
+    }
+}
+
+<span class="keyword">static</span> <span class="keyword">class</span> Bar : Foo{
+    <span class="keyword">double</span> d;
+
+    <span class="keyword">this</span>(<span class="keyword">int</span> i, <span class="keyword">double</span> d)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+        <span class="keyword">super</span>(i);
+        <span class="keyword">this</span>.d = d;
+    }
+}
+
+<span class="keyword">static</span> <span class="keyword">class</span> Zee : Bar{
+    <span class="keyword">bool</span> b;
+
+    <span class="keyword">this</span>(<span class="keyword">int</span> i, <span class="keyword">double</span> d, <span class="keyword">bool</span> b)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+        <span class="keyword">super</span>(i, d);
+        <span class="keyword">this</span>.b = b;
+    }
+
+    ~<span class="keyword">this</span>()<span class="keyword">nothrow</span> @system{
+    }
+}
+
+<span class="comment">///simple:
+</span>{
+    <span class="psymbol">SharedPtr</span>!<span class="keyword">long</span> a = <span class="psymbol">SharedPtr</span>!<span class="keyword">long</span>.make(42);
+    <span class="keyword">assert</span>(a.useCount == 1);
+
+    <span class="psymbol">SharedPtr</span>!(<span class="keyword">const</span> <span class="keyword">long</span>) b = a;
+    <span class="keyword">assert</span>(a.useCount == 2);
+
+    <span class="psymbol">SharedPtr</span>!<span class="keyword">long</span>.WeakType w = a.weak; <span class="comment">//or WeakPtr!long
+</span>    <span class="keyword">assert</span>(a.useCount == 2);
+    <span class="keyword">assert</span>(a.weakCount == 1);
+
+    <span class="psymbol">SharedPtr</span>!<span class="keyword">long</span> c = w.lock;
+    <span class="keyword">assert</span>(a.useCount == 3);
+    <span class="keyword">assert</span>(a.weakCount == 1);
+
+    <span class="keyword">assert</span>(*c == 42);
+    <span class="keyword">assert</span>(c.get == 42);
+}
+
+<span class="comment">///polymorphism and aliasing:
+</span>{
+    <span class="comment">///create SharedPtr
+</span>    <span class="psymbol">SharedPtr</span>!Foo foo = <span class="psymbol">SharedPtr</span>!Bar.make(42, 3.14);
+    <span class="psymbol">SharedPtr</span>!Zee zee = <span class="psymbol">SharedPtr</span>!Zee.make(42, 3.14, <span class="keyword">false</span>);
+
+    <span class="comment">///dynamic cast:
+</span>    <span class="psymbol">SharedPtr</span>!Bar bar = dynCast!Bar(foo);
+    <span class="keyword">assert</span>(bar != <span class="keyword">null</span>);
+    <span class="keyword">assert</span>(foo.useCount == 2);
+
+    <span class="comment">///this doesnt work because Foo destructor attributes are more restrictive then Zee's:
+</span>    <span class="comment">//SharedPtr!Foo x = zee;
+</span>
+    <span class="comment">///this does work:
+</span>    <span class="psymbol">SharedPtr</span>!(Foo, DestructorType!(Foo, Zee)) x = zee;
+    <span class="keyword">assert</span>(zee.useCount == 2);
+
+    <span class="comment">///aliasing (shared ptr `d` share ref counting with `bar`):
+</span>    <span class="psymbol">SharedPtr</span>!<span class="keyword">double</span> d = <span class="psymbol">SharedPtr</span>!<span class="keyword">double</span>(bar, &amp;bar.get.d);
+    <span class="keyword">assert</span>(d != <span class="keyword">null</span>);
+    <span class="keyword">assert</span>(*d == 3.14);
+    <span class="keyword">assert</span>(foo.useCount == 3);
+}
+
+
+<span class="comment">///multi threading:
+</span>{
+    <span class="comment">///create SharedPtr with atomic ref counting
+</span>    <span class="psymbol">SharedPtr</span>!(<span class="keyword">shared</span> Foo) foo = <span class="psymbol">SharedPtr</span>!(<span class="keyword">shared</span> Bar).make(42, 3.14);
+
+    <span class="comment">///this doesnt work:
+</span>    <span class="comment">//foo.get.i += 1;
+</span>
+    <span class="keyword">import</span> core.atomic : atomicFetchAdd;
+    atomicFetchAdd(foo.get.i, 1);
+    <span class="keyword">assert</span>(foo.get.i == 43);
+
+
+    <span class="comment">///creating `shared(SharedPtr)`:
+</span>    <span class="keyword">shared</span> <span class="psymbol">SharedPtr</span>!(<span class="keyword">shared</span> Bar) bar = share(dynCast!Bar(foo));
+
+    <span class="comment">///`shared(SharedPtr)` is not lock free but `RcPtr` is lock free.
+</span>    <span class="keyword">static</span> <span class="keyword">assert</span>(<span class="keyword">typeof</span>(bar).isLockFree == <span class="keyword">false</span>);
+
+    <span class="comment">///multi thread operations (`load`, `store`, `exchange` and `compareExchange`):
+</span>    <span class="psymbol">SharedPtr</span>!(<span class="keyword">shared</span> Bar) bar2 = bar.load();
+    <span class="keyword">assert</span>(bar2 != <span class="keyword">null</span>);
+    <span class="keyword">assert</span>(bar2.useCount == 3);
+
+    <span class="psymbol">SharedPtr</span>!(<span class="keyword">shared</span> Bar) bar3 = bar.exchange(<span class="keyword">null</span>);
+    <span class="keyword">assert</span>(bar3 != <span class="keyword">null</span>);
+    <span class="keyword">assert</span>(bar3.useCount == 3);
+}
+
+<span class="comment">///dynamic array:
+</span>{
+    <span class="keyword">import</span> std.algorithm : all, equal;
+
+    <span class="psymbol">SharedPtr</span>!(<span class="keyword">long</span>[]) a = <span class="psymbol">SharedPtr</span>!(<span class="keyword">long</span>[]).make(10, -1);
+    <span class="keyword">assert</span>(a.length == 10);
+    <span class="keyword">assert</span>(a.get.length == 10);
+    <span class="keyword">assert</span>(a.get.all!(x =&gt; x == -1));
+
+    <span class="keyword">for</span>(<span class="keyword">long</span> i = 0; i &lt; a.length; ++i){
+        a.get[i] = i;
+    }
+    <span class="keyword">assert</span>(a.get[] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+    <span class="comment">///aliasing:
+</span>    <span class="psymbol">SharedPtr</span>!<span class="keyword">long</span> a6 = <span class="psymbol">SharedPtr</span>!<span class="keyword">long</span>(a, &amp;a.get[6]);
+    <span class="keyword">assert</span>(*a6 == a.get[6]);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div><div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="comment">//make SharedPtr object
+</span><span class="keyword">static</span> <span class="keyword">struct</span> Foo{
+	<span class="keyword">int</span> i;
+
+	<span class="keyword">this</span>(<span class="keyword">int</span> i)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+		<span class="keyword">this</span>.i = i;
+	}
+}
+
+{
+	<span class="keyword">auto</span> foo = <span class="psymbol">SharedPtr</span>!Foo.make(42);
+	<span class="keyword">auto</span> foo2 = <span class="psymbol">SharedPtr</span>!Foo.make!Mallocator(42);  <span class="comment">//explicit stateless allocator
+</span>}
+
+{
+	<span class="keyword">import</span> std.experimental.allocator : make, dispose;
+
+	<span class="keyword">static</span> <span class="keyword">void</span> deleter(<span class="keyword">long</span>* x)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @trusted @nogc{
+		Mallocator.instance.dispose(x);
+	}
+	<span class="keyword">long</span>* element = Mallocator.instance.make!<span class="keyword">long</span>;
+
+	<span class="keyword">auto</span> x = <span class="psymbol">SharedPtr</span>!<span class="keyword">long</span>.make(element, &amp;deleter);
+}
+
+{
+	<span class="keyword">auto</span> arr = <span class="psymbol">SharedPtr</span>!(<span class="keyword">long</span>[]).make(10); <span class="comment">//dynamic array with length 10
+</span>	<span class="keyword">assert</span>(arr.length == 10);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div><div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="comment">//alloc SharedPtr object
+</span><span class="keyword">import</span> std.experimental.allocator : make, dispose, allocatorObject;
+
+<span class="keyword">auto</span> allocator = allocatorObject(Mallocator.instance);
+
+{
+	<span class="keyword">auto</span> x = <span class="psymbol">SharedPtr</span>!<span class="keyword">long</span>.alloc(allocator, 42);
+}
+
+{
+	<span class="keyword">static</span> <span class="keyword">void</span> deleter(<span class="keyword">long</span>* x)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @trusted @nogc{
+		Mallocator.instance.dispose(x);
+	}
+	<span class="keyword">long</span>* element = Mallocator.instance.make!<span class="keyword">long</span>;
+	<span class="keyword">auto</span> x = <span class="psymbol">SharedPtr</span>!<span class="keyword">long</span>.alloc(allocator, element, &amp;deleter);
+}
+
+{
+	<span class="keyword">auto</span> arr = <span class="psymbol">SharedPtr</span>!(<span class="keyword">long</span>[]).alloc(allocator, 10); <span class="comment">//dynamic array with length 10
+</span>	<span class="keyword">assert</span>(arr.length == 10);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#WeakPtr" id="WeakPtr"><code class="code">WeakPtr</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="WeakPtr"></span>template <code class="code">WeakPtr</code>(_Type, _DestructorType = DestructorType!_Type, _ControlType = ControlBlockDeduction!(_Type, SharedControlBlock)) if (isControlBlock!_ControlType &amp;&amp; isDestructorType!_DestructorType)<br>
+template <code class="code">WeakPtr</code>(_Type, _ControlType, _DestructorType = DestructorType!_Type) if (isControlBlock!_ControlType &amp;&amp; isDestructorType!_DestructorType)
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Weak pointer.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    Alias to <code class="code">SharedPtr.WeakType</code>.
+  </p>
+</div>
+
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#dynCastMove" id="dynCastMove"><code class="code">dynCastMove</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="dynCastMove"></span>UnqualSmartPtr!Ptr.ChangeElementType!T <code class="code">dynCastMove</code>(T, Ptr)(auto ref scope Ptr <code class="code">ptr</code>) if (isSharedPtr!Ptr &amp;&amp; !is(Ptr == shared) &amp;&amp; !Ptr.isWeak &amp;&amp; isReferenceType!T &amp;&amp; (__traits(getLinkage, T) == "D") &amp;&amp; isReferenceType!(Ptr.ElementType) &amp;&amp; (__traits(getLinkage, Ptr.ElementType) == "D"));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Dynamic cast for shared pointers if <code class="code">ElementType</code> is class with D linkage.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    Move instance of <code class="code">SharedPtr</code> whose stored pointer is obtained from <code class="code"><code class="code">ptr</code></code>'s stored pointer using a dynaic cast expression.
+<br><br>
+	If <code class="code"><code class="code">ptr</code></code> is <code class="code">null</code> or dynamic cast fail then result <code class="code">SharedPtr</code> is <code class="code">null</code>.
+	Otherwise, the new <code class="code">SharedPtr</code> will share ownership with the initial value of <code class="code"><code class="code">ptr</code></code>.
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="keyword">static</span> <span class="keyword">class</span> Foo{
+	<span class="keyword">int</span> i;
+
+	<span class="keyword">this</span>(<span class="keyword">int</span> i)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+		<span class="keyword">this</span>.i = i;
+	}
+}
+
+<span class="keyword">static</span> <span class="keyword">class</span> Bar : Foo{
+	<span class="keyword">double</span> d;
+
+	<span class="keyword">this</span>(<span class="keyword">int</span> i, <span class="keyword">double</span> d)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+		<span class="keyword">super</span>(i);
+		<span class="keyword">this</span>.d = d;
+	}
+}
+
+<span class="keyword">static</span> <span class="keyword">class</span> Zee{
+}
+
+{
+	SharedPtr!(<span class="keyword">const</span> Foo) foo = SharedPtr!Bar.make(42, 3.14);
+	<span class="keyword">assert</span>(foo.get.i == 42);
+
+	<span class="keyword">auto</span> bar = <span class="psymbol">dynCastMove</span>!Bar(foo);
+	<span class="keyword">assert</span>(foo == <span class="keyword">null</span>);
+	<span class="keyword">assert</span>(bar != <span class="keyword">null</span>);
+	<span class="keyword">assert</span>(bar.get.d == 3.14);
+	<span class="keyword">static</span> <span class="keyword">assert</span>(<span class="keyword">is</span>(<span class="keyword">typeof</span>(bar) == SharedPtr!(<span class="keyword">const</span> Bar)));
+
+	<span class="keyword">auto</span> zee = <span class="psymbol">dynCastMove</span>!Zee(bar);
+	<span class="keyword">assert</span>(zee == <span class="keyword">null</span>);
+	<span class="keyword">assert</span>(bar != <span class="keyword">null</span>);
+	<span class="keyword">static</span> <span class="keyword">assert</span>(<span class="keyword">is</span>(<span class="keyword">typeof</span>(zee) == SharedPtr!(<span class="keyword">const</span> Zee)));
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#dynCast" id="dynCast"><code class="code">dynCast</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="dynCast"></span>UnqualSmartPtr!Ptr.ChangeElementType!T <code class="code">dynCast</code>(T, Ptr)(auto ref scope Ptr <code class="code">ptr</code>) if (isSharedPtr!Ptr &amp;&amp; !is(Ptr == shared) &amp;&amp; !Ptr.isWeak &amp;&amp; isReferenceType!T &amp;&amp; (__traits(getLinkage, T) == "D") &amp;&amp; isReferenceType!(Ptr.ElementType) &amp;&amp; (__traits(getLinkage, Ptr.ElementType) == "D"));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Dynamic cast for shared pointers if <code class="code">ElementType</code> is class with D linkage.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    Creates a new instance of <code class="code">SharedPtr</code> whose stored pointer is obtained from <code class="code"><code class="code">ptr</code></code>'s stored pointer using a dynaic cast expression.
+<br><br>
+	If <code class="code"><code class="code">ptr</code></code> is <code class="code">null</code> or dynamic cast fail then result <code class="code">SharedPtr</code> is <code class="code">null</code>.
+	Otherwise, the new <code class="code">SharedPtr</code> will share ownership with the initial value of <code class="code"><code class="code">ptr</code></code>.
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="keyword">static</span> <span class="keyword">class</span> Foo{
+	<span class="keyword">int</span> i;
+
+	<span class="keyword">this</span>(<span class="keyword">int</span> i)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+		<span class="keyword">this</span>.i = i;
+	}
+}
+
+<span class="keyword">static</span> <span class="keyword">class</span> Bar : Foo{
+	<span class="keyword">double</span> d;
+
+	<span class="keyword">this</span>(<span class="keyword">int</span> i, <span class="keyword">double</span> d)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+		<span class="keyword">super</span>(i);
+		<span class="keyword">this</span>.d = d;
+	}
+}
+
+<span class="keyword">static</span> <span class="keyword">class</span> Zee{
+}
+
+{
+	SharedPtr!(<span class="keyword">const</span> Foo) foo = SharedPtr!Bar.make(42, 3.14);
+	<span class="keyword">assert</span>(foo.get.i == 42);
+
+	<span class="keyword">auto</span> bar = <span class="psymbol">dynCast</span>!Bar(foo);
+	<span class="keyword">assert</span>(bar != <span class="keyword">null</span>);
+	<span class="keyword">assert</span>(bar.get.d == 3.14);
+	<span class="keyword">static</span> <span class="keyword">assert</span>(<span class="keyword">is</span>(<span class="keyword">typeof</span>(bar) == SharedPtr!(<span class="keyword">const</span> Bar)));
+
+	<span class="keyword">auto</span> zee = <span class="psymbol">dynCast</span>!Zee(foo);
+	<span class="keyword">assert</span>(zee == <span class="keyword">null</span>);
+	<span class="keyword">static</span> <span class="keyword">assert</span>(<span class="keyword">is</span>(<span class="keyword">typeof</span>(zee) == SharedPtr!(<span class="keyword">const</span> Zee)));
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#sharedPtr" id="sharedPtr"><code class="code">sharedPtr</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="sharedPtr"></span>@trusted auto <code class="code">sharedPtr</code>(Ptr)(auto ref scope Ptr <code class="code">ptr</code>) if (!is(Ptr == shared) &amp;&amp; isSmartPtr!Ptr);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Create <code class="code">SharedPtr</code> from parameter <code class="code"><code class="code">ptr</code></code> of type <code class="code">SharedPtr</code>, <code class="code">RcPtr</code> or <code class="code">IntrusivePtr</code>.
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="keyword">import</span> btl.autoptr.rc_ptr;
+<span class="keyword">import</span> btl.autoptr.intrusive_ptr;
+
+<span class="keyword">import</span> core.lifetime : move;
+<span class="comment">//RcPtr -&gt; SharedPtr:
+</span>{
+	<span class="keyword">auto</span> x = RcPtr!<span class="keyword">long</span>.make(42);
+	<span class="keyword">assert</span>(*x == 42);
+	<span class="keyword">assert</span>(x.useCount == 1);
+
+	<span class="keyword">auto</span> s = <span class="psymbol">sharedPtr</span>(x);
+	<span class="keyword">assert</span>(x.useCount == 2);
+
+	<span class="keyword">import</span> btl.autoptr.shared_ptr : isSharedPtr;
+	<span class="keyword">static</span> <span class="keyword">assert</span>(isSharedPtr!(<span class="keyword">typeof</span>(s)));
+
+	<span class="keyword">auto</span> s2 = <span class="psymbol">sharedPtr</span>(x.move);
+	<span class="keyword">assert</span>(s.useCount == 2);
+
+	<span class="keyword">auto</span> y = <span class="psymbol">sharedPtr</span>(RcPtr!<span class="keyword">long</span>.init);
+	<span class="keyword">assert</span>(y == <span class="keyword">null</span>);
+}
+
+<span class="comment">//IntrusivePtr -&gt; SharedPtr:
+</span>{
+	<span class="keyword">static</span> <span class="keyword">class</span> Foo{
+		ControlBlock!(<span class="keyword">int</span>, <span class="keyword">int</span>) c;
+		<span class="keyword">int</span> i;
+
+		<span class="keyword">this</span>(<span class="keyword">int</span> i)<span class="keyword">pure</span> <span class="keyword">nothrow</span> @safe @nogc{
+			<span class="keyword">this</span>.i = i;
+		}
+	}
+
+	<span class="keyword">auto</span> x = IntrusivePtr!Foo.make(42);
+	<span class="comment">//assert(x.get.i == 42);
+</span>	<span class="keyword">assert</span>(x.useCount == 1);
+
+	<span class="keyword">auto</span> s = <span class="psymbol">sharedPtr</span>(x);
+	<span class="keyword">assert</span>(x.useCount == 2);
+
+	<span class="keyword">import</span> btl.autoptr.shared_ptr : isSharedPtr;
+	<span class="keyword">static</span> <span class="keyword">assert</span>(isSharedPtr!(<span class="keyword">typeof</span>(s)));
+
+	<span class="keyword">auto</span> s2 = <span class="psymbol">sharedPtr</span>(x.move);
+	<span class="keyword">assert</span>(s.useCount == 2);
+
+	<span class="keyword">auto</span> y = <span class="psymbol">sharedPtr</span>(IntrusivePtr!Foo.init);
+	<span class="keyword">assert</span>(y == <span class="keyword">null</span>);
+}
+
+<span class="comment">//SharedPtr -&gt; SharedPtr:
+</span>{
+	<span class="keyword">auto</span> a = SharedPtr!<span class="keyword">long</span>.make(1);
+	<span class="keyword">assert</span>(a.useCount == 1);
+
+	<span class="keyword">auto</span> b = <span class="psymbol">sharedPtr</span>(a);
+	<span class="keyword">assert</span>(a.useCount == 2);
+
+	<span class="keyword">auto</span> c = <span class="psymbol">sharedPtr</span>(SharedPtr!<span class="keyword">long</span>.make(2));
+	<span class="keyword">assert</span>(c.useCount == 1);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#share" id="share"><code class="code">share</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="share"></span>shared(Ptr) <code class="code">share</code>(Ptr)(auto ref scope Ptr <code class="code">ptr</code>) if (isSharedPtr!Ptr);
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Return <code class="code">shared SharedPtr</code> pointing to same managed object like parameter <code class="code"><code class="code">ptr</code></code>.
+
+  </p>
+</div>
+<div class="ddoc_description">
+  <h4>Discussion</h4>
+  <p class="para">
+    Type of parameter <code class="code"><code class="code">ptr</code></code> must be <code class="code">SharedPtr</code> with <code class="code">shared(ControlType)</code> and <code class="code">shared</code>/<code class="code">immutable</code> <code class="code">ElementType</code> .
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code">{
+	<span class="keyword">auto</span> x = SharedPtr!(<span class="keyword">shared</span> <span class="keyword">long</span>).make(123);
+	<span class="keyword">assert</span>(x.useCount == 1);
+
+	<span class="keyword">shared</span> s1 = <span class="psymbol">share</span>(x);
+	<span class="keyword">assert</span>(x.useCount == 2);
+
+
+	<span class="keyword">import</span> core.lifetime : move;
+	<span class="keyword">shared</span> s2 = <span class="psymbol">share</span>(x.move);
+	<span class="keyword">assert</span>(x == <span class="keyword">null</span>);
+	<span class="keyword">assert</span>(s2.useCount == 2);
+	<span class="keyword">assert</span>(s2.load.get == 123);
+
+}
+
+{
+	<span class="keyword">auto</span> x = SharedPtr!(<span class="keyword">long</span>).make(123);
+	<span class="keyword">assert</span>(x.useCount == 1);
+
+	<span class="comment">///error `shared SharedPtr` need shared `ControlType` and shared `ElementType`.
+</span>	<span class="comment">//shared s1 = share(x);
+</span>
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li><li class="ddoc_member">
+  <div class="ddoc_member_header">
+  <div class="ddoc_header_anchor">
+  <a href="#first" id="first"><code class="code">first</code></a>
+</div>
+</div><div class="ddoc_decl">
+  <section class="section">
+    <div class="declaration">
+      <h4>Declaration</h4>
+      <div class="dlang">
+        <p class="para">
+          <code class="code">
+            <span class="ddoc_anchor" id="first"></span>@trusted auto <code class="code">first</code>(Ptr)(auto ref scope Ptr <code class="code">ptr</code>) if (isSharedPtr!Ptr &amp;&amp; !is(Ptr == shared) &amp;&amp; is(Ptr.ElementType : T[], T));
+
+          </code>
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="ddoc_decl">
+  <section class="section ddoc_sections">
+  <div class="ddoc_summary">
+  <p class="para">
+    Return <code class="code">SharedPtr</code> pointing to <code class="code">first</code> element of array managed by shared pointer <code class="code"><code class="code">ptr</code></code>.
+  </p>
+</div>
+<div class="ddoc_examples">
+  <h4>Examples</h4>
+  <p class="para">
+    
+<section class="code_listing">
+  <div class="code_sample">
+    <div class="dlang">
+      <ol class="code_lines">
+        <li><code class="code"><span class="comment">//copy
+</span>{
+	<span class="keyword">auto</span> x = SharedPtr!(<span class="keyword">long</span>[]).make(10, -1);
+	<span class="keyword">assert</span>(x.length == 10);
+
+	<span class="keyword">auto</span> y = <span class="psymbol">first</span>(x);
+	<span class="keyword">static</span> <span class="keyword">assert</span>(<span class="keyword">is</span>(<span class="keyword">typeof</span>(y) == SharedPtr!<span class="keyword">long</span>));
+	<span class="keyword">assert</span>(*y == -1);
+	<span class="keyword">assert</span>(x.useCount == 2);
+}
+
+{
+	<span class="keyword">auto</span> x = SharedPtr!(<span class="keyword">long</span>[10]).make(-1);
+	<span class="keyword">assert</span>(x.get.length == 10);
+
+	<span class="keyword">auto</span> y = <span class="psymbol">first</span>(x);
+	<span class="keyword">static</span> <span class="keyword">assert</span>(<span class="keyword">is</span>(<span class="keyword">typeof</span>(y) == SharedPtr!<span class="keyword">long</span>));
+	<span class="keyword">assert</span>(*y == -1);
+	<span class="keyword">assert</span>(x.useCount == 2);
+}
+
+<span class="comment">//move
+</span><span class="keyword">import</span> core.lifetime : move;
+{
+	<span class="keyword">auto</span> x = SharedPtr!(<span class="keyword">long</span>[]).make(10, -1);
+	<span class="keyword">assert</span>(x.length == 10);
+
+	<span class="keyword">auto</span> y = <span class="psymbol">first</span>(x.move);
+	<span class="keyword">static</span> <span class="keyword">assert</span>(<span class="keyword">is</span>(<span class="keyword">typeof</span>(y) == SharedPtr!<span class="keyword">long</span>));
+	<span class="keyword">assert</span>(*y == -1);
+}
+
+{
+	<span class="keyword">auto</span> x = SharedPtr!(<span class="keyword">long</span>[10]).make(-1);
+	<span class="keyword">assert</span>(x.get.length == 10);
+
+	<span class="keyword">auto</span> y = <span class="psymbol">first</span>(x.move);
+	<span class="keyword">static</span> <span class="keyword">assert</span>(<span class="keyword">is</span>(<span class="keyword">typeof</span>(y) == SharedPtr!<span class="keyword">long</span>));
+	<span class="keyword">assert</span>(*y == -1);
+}
+</code></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+  </p>
+</div>
+</section>
+
+</div>
+
+</li>
+</ul>
+  </div>
+</section>
+</section>
+      </article>
+    </div>
+  </body>
+</html>

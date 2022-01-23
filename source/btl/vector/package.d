@@ -1,5 +1,5 @@
 /**
-    Implementation of dynamic array `Vector` (similar to c++ `std::vector` and `folly::btl.vector`).
+    Implementation of dynamic array `Vector` (similar to c++ `std::vector` and `folly::small_vector`).
 
     License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
     Authors:   $(HTTP github.com/submada/basic_string, Adam Búš)
@@ -13,11 +13,21 @@ import std.traits : Select;
 import btl.internal.traits;
 import btl.internal.mallocator;
 import btl.internal.null_allocator;
-
-import btl.vector.common;
+import btl.internal.forward;
+import btl.internal.gc;
+import btl.internal.lifetime;
 
 
 debug import std.stdio : writeln;
+
+
+
+/**
+    Type used in forward constructors.
+*/
+alias Forward = btl.internal.forward.Forward;
+
+
 
 /**
     True if `T` is a `Vector` or implicitly converts to one, otherwise false.
@@ -26,13 +36,6 @@ template isVector(T...)
 if(T.length == 1){
     enum bool isVector = is(Unqual!(T[0]) == Vector!Args, Args...);
 }
-
-
-
-/*
-*/
-struct Forward{}
-
 
 
 /**
@@ -48,7 +51,7 @@ struct Forward{}
 
     Template parameters:
 
-        `_Type` element type.
+        `_Type` = element type.
 
         `N` Number of preallocated space for elements.
 
@@ -317,7 +320,7 @@ template Vector(
             This deallocates all the storage capacity allocated by the `Vector` using its allocator.
         */
         public ~this()scope{
-            this._destruct();
+            this._release_impl();
         }
 
 
@@ -439,13 +442,15 @@ template Vector(
 
                         assert(rhs.length <= minimalCapacity);  //this.reserve(rhs.length);
 
-                        moveElements!false(
-                            (()@trusted => rhs._heap_storage.ptr )(),
-                            (()@trusted => this._inline_storage.ptr )(),
-                            rhs.length
-                        );
+                        if(rhs.length){
+                            moveEmplaceRange!false(
+                                (()@trusted => this._inline_storage.ptr )(),
+                                (()@trusted => rhs._heap_storage.ptr )(),
+                                rhs.length
+                            );
 
-                        this.length = rhs.length;
+                            this.length = rhs.length;
+                        }
 
                         //debug writeln("heap -> inline:");
                         assert(!this._is_external);
@@ -458,13 +463,15 @@ template Vector(
                     //inline -> inline:
                     if(minimalCapacity >= Rhs.minimalCapacity || minimalCapacity >= rhs.length){
 
-                        moveElements!false(
-                            (()@trusted => rhs._inline_storage.ptr )(),
-                            (()@trusted => this._inline_storage.ptr )(),
-                            rhs.length
-                        );
+                        if(rhs.length){
+                            moveEmplaceRange!false(
+                                (()@trusted => this._inline_storage.ptr )(),
+                                (()@trusted => rhs._inline_storage.ptr )(),
+                                rhs.length
+                            );
 
-                        this._length = rhs._length;
+                            this._length = rhs._length;
+                        }
 
                         assert(!this._is_external);
                         //debug writeln("inline -> inline:");
@@ -472,10 +479,11 @@ template Vector(
                     //inline -> heap
                     else{
                         this.reserve(rhs.length);
+                        assert(rhs.length);
 
-                        moveElements!false(
-                            (()@trusted => rhs._inline_storage.ptr )(),
+                        moveEmplaceRange!false(
                             (()@trusted => this._heap_storage.ptr )(),
+                            (()@trusted => rhs._inline_storage.ptr )(),
                             rhs.length
                         );
 
@@ -508,10 +516,9 @@ template Vector(
 
                 //move elements from range
                 if(old_length < new_length){
-
-                    moveElements!false(
-                        (()@trusted => range.ptr )(),
+                    moveEmplaceRange!false(
                         (()@trusted => this.ptr + old_length)(),
+                        (()@trusted => range.ptr )(),
                         (new_length - old_length)
                     );
                 }
@@ -584,10 +591,11 @@ template Vector(
                 }();
 
                 size_t emplaced = 0;
-                scope(failure)
+                scope(failure){
                     self.length = emplaced;
+                }
 
-                emplaceImpl(emplaced, elms, forward!range);
+                emplaceElements(emplaced, elms, forward!range);
             }
 
             self.length = length;
@@ -684,7 +692,7 @@ template Vector(
                 scope(failure)
                     this.length = (old_length + emplaced);
 
-                emplaceImpl(emplaced, elms, forward!range);
+                emplaceElements(emplaced, elms, forward!range);
             }
 
             this.length = new_length;
@@ -733,9 +741,9 @@ template Vector(
                 //move elements from range
                 if(old_length < new_length){
 
-                    moveElements!false(
-                        (()@trusted => range.ptr )(),
+                    moveEmplaceRange!false(
                         (()@trusted => this.ptr + old_length)(),
+                        (()@trusted => range.ptr )(),
                         (new_length - old_length)
                     );
                 }
@@ -783,7 +791,9 @@ template Vector(
 
             ElementType* ptr = (()@trusted => this.ptr + new_length )();
             ElementType result = move(*ptr);
-            destroyElement(*ptr);
+
+            ///TODO can be destruct ignored for moved element?
+            ///destructImpl!false(*ptr);   //destroyElement(*ptr);
 
             return move(result);
         }
@@ -822,12 +832,14 @@ template Vector(
 
             ElementType* elm = (()@trusted => this.ptr + pos )();
             ElementType result = move(*elm);
-            destroyElement(*elm);
+
+            ///TODO can be destruct ignored for moved element?
+            ///destructImpl!false(*elm);   //destroyElement(*elm);
 
             if(top < old_length){
-                moveElements(
-                    (()@trusted => elm + 1 )(),
+                moveEmplaceRange(
                     elm,
+                    (()@trusted => elm + 1 )(),
                     (old_length - top)
                 );
             }
@@ -856,7 +868,7 @@ template Vector(
                 --------------------
         */
         public void clear()()scope nothrow{
-            destroyElements(this._trusted_elements);
+            destructRangeImpl!false(this._trusted_elements);    //destroyElements(this._trusted_elements);
             this.length = 0;
         }
 
@@ -882,7 +894,7 @@ template Vector(
                 --------------------
         */
         public void release()()scope nothrow{
-            this._destruct();
+            this._release_impl();
             this._trusted_init_length();
         }
 
@@ -927,14 +939,12 @@ template Vector(
 
                 const bool d = heap_storage.allocate(_allocator, new_capacity, inline_elements);
                 if(!d)assert(0, "reallocate fail");
-                
-                
-                if(this.length > 0)
-                    moveElements!false(
-                        (()@trusted => heap_storage.ptr )(),
-                        (()@trusted => this._inline_storage.ptr )(),
-                        length
-                    );
+
+                moveEmplaceRange!false(
+                    (()@trusted => this._inline_storage.ptr )(),
+                    (()@trusted => heap_storage.ptr )(),
+                    this.length
+                );
 
                 this._is_external = true;
                 this._heap_storage = heap_storage;
@@ -953,8 +963,14 @@ template Vector(
                 else
                     const new_capacity = max(old_capacity * 2, n);
 
-                const bool d = this._heap_storage.reallocate(_allocator, new_capacity, this.length);    
-                if(!d)assert(0, "reallocate fail");
+                if(minimalCapacity > 0 || old_capacity > 0){
+                    const bool d = this._heap_storage.reallocate(_allocator, new_capacity, this.length);
+                    if(!d)assert(0, "reallocate fail");
+                }
+                else{
+                    const bool d = this._heap_storage.allocate(_allocator, new_capacity);
+                    if(!d)assert(0, "allocate fail");
+                }
 
 
             }
@@ -990,7 +1006,12 @@ template Vector(
             const size_t old_length = this.length;
 
             if(old_length > n){
-                size_t len = old_length;
+
+                ElementType[] slice = (()@trusted => this.ptr[n .. old_length] )();
+                destructRangeImpl!false(slice);
+                this.length = n;
+
+                /+size_t len = old_length;
                 do{
                     len -= 1;
 
@@ -998,7 +1019,7 @@ template Vector(
                     destroyElement(*ptr);
                 }while(len != n);
 
-                this.length = n;
+                this.length = n;+/
 
             }
             else if(old_length < n){
@@ -1008,18 +1029,17 @@ template Vector(
                     return this._allocated_elements[old_length .. n];
                 }();
                 size_t emplaced = 0;
-                try{
 
-                    foreach(ref elm; elms){
-                        emplaceElement(elm, args);
-                        emplaced += 1;
-                    }
-                    //emplaceElements(emplaced, elms, forward!args);
-                }
-                catch(Exception ex){
+                scope(failure){
                     this.length = (old_length + emplaced);
-                    throw ex;
                 }
+
+                emplaceElementsArgs(emplaced, elms, forward!args);
+                /+foreach(ref elm; elms){
+                    emplaceImpl(elm, args); //emplaceElement(elm, args);
+                    emplaced += 1;
+                }+/
+                //emplaceElements(emplaced, elms, forward!args);
 
                 this.length = n;
             }
@@ -1050,14 +1070,19 @@ template Vector(
             const size_t old_length = this.length;
 
             if(old_length > n){
-                size_t len = old_length;
+
+                ElementType[] slice = (()@trusted => this.ptr[n .. old_length] )();
+                destructRangeImpl!false(slice);
+                this.length = n;
+
+                /+size_t len = old_length;
                 do{
                     len -= 1;
                     ElementType* ptr = (()@trusted => this.ptr + len )();
                     destroyElement(*ptr);
                 }while(len != n);
 
-                this.length = n;
+                this.length = n;+/
             }
         }
 
@@ -1094,18 +1119,17 @@ template Vector(
                 }();
 
                 size_t emplaced = 0;
-                try{
-
-                    foreach(ref elm; elms){
-                        emplaceElement(elm, args);
-                        emplaced += 1;
-                    }
-                    //emplaceElements(emplaced, elms, forward!args);
-                }
-                catch(Exception ex){
+                scope(failure){
                     this.length = (old_length + emplaced);
-                    throw ex;
                 }
+
+
+                emplaceElementsArgs(emplaced, elms, forward!args);
+                /+foreach(ref elm; elms){
+                    emplaceImpl(elm, args); //emplaceElement(elm, args);
+                    emplaced += 1;
+                }+/
+                //emplaceElements(emplaced, elms, forward!args);
                 //emplaceElements(elms, forward!args);
 
                 this.length = n;
@@ -1151,9 +1175,9 @@ template Vector(
                     assert(this.capacity == minimalCapacity);
 
                     if(minimalCapacity > 0 && length != 0)
-                        moveElements!false(
-                            (()@trusted => hs_data.ptr )(),
+                        moveEmplaceRange!false(
                             (()@trusted => this._inline_storage.ptr )(),
+                            (()@trusted => hs_data.ptr )(),
                             length
                         );
 
@@ -1389,9 +1413,9 @@ template Vector(
                         *(()@trusted => large._inline_storage.ptr + i )()
                     );
 
-                moveElements(
-                    (()@trusted => large._inline_storage.ptr + small.length )(),
+                moveEmplaceRange(
                     (()@trusted => small._inline_storage.ptr + small.length )(),
+                    (()@trusted => large._inline_storage.ptr + small.length )(),
                     (large.length - small.length)
                 );
 
@@ -1410,9 +1434,9 @@ template Vector(
                 heap._length = inline_len;  //change external to false
                 assert(!inline._is_external);
 
-                moveElements(
-                    (()@trusted => inline._inline_storage.ptr )(),
+                moveEmplaceRange(
                     (()@trusted => heap._inline_storage.ptr )(),
+                    (()@trusted => inline._inline_storage.ptr )(),
                     inline_len
                 );
 
@@ -1492,21 +1516,20 @@ template Vector(
             //return this.insert(pos, ElementType(forward!args));
 
             const size_t new_length = (old_length + 1);
-            const size_t shift = (old_length - pos);
 
             this.reserve(new_length);
 
             auto ptr = (()@trusted => this.ptr + pos)();
 
-            moveElements(
-                ptr,
+            moveEmplaceRange(
                 ptr + 1,
-                shift
+                ptr,
+                (old_length - pos)  //shift
             );
 
             this.length = new_length;
 
-            emplaceElement(*ptr, forward!args);
+            emplaceImpl(*ptr, forward!args); //emplaceElement(*ptr, forward!args);
 
             return pos;
         }
@@ -1562,7 +1585,7 @@ template Vector(
             this.reserve(new_length);
             auto ptr = (()@trusted => this.ptr + old_length )();
 
-            emplaceElement(*ptr, forward!args);
+            emplaceImpl(*ptr, forward!args);   //emplaceElement(*ptr, forward!args);
 
             this.length = new_length;
         }
@@ -1644,7 +1667,7 @@ template Vector(
                 scope(failure)
                     this.length = (old_length + emplaced);
 
-                emplaceImpl(emplaced, elms, forward!args);
+                emplaceElements(emplaced, elms, forward!args);
             }
 
             this.length = new_length;
@@ -1800,16 +1823,15 @@ template Vector(
             const size_t args_length = emplaceLength(args);
             const size_t old_length = this.length;
             const size_t new_length = (old_length + args_length);
-            const size_t shift = (old_length - pos);
 
             this.reserve(new_length);
 
             ElementType[] elms = (()@trusted => this.ptr[pos .. pos + args_length])();
 
-            moveElements(
-                (()@trusted => elms.ptr )(),
+            moveEmplaceRange(
                 (()@trusted => elms.ptr + args_length )(),
-                shift
+                (()@trusted => elms.ptr )(),
+                (old_length - pos)  //shift
             );
 
             this.length = new_length;
@@ -1819,7 +1841,7 @@ template Vector(
                 scope(failure)
                     initElements(elms[emplaced .. $]);
 
-                emplaceImpl(emplaced, elms, forward!args);
+                emplaceElements(emplaced, elms, forward!args);
             }
 
 
@@ -1909,8 +1931,8 @@ template Vector(
             if(pos >= old_length)
                 return old_length;
 
-            ElementType[] elements = this._trusted_elements;
-            destroyElements(elements[pos .. old_length]);
+            ElementType[] elements = this._trusted_elements[pos .. old_length];
+            destructRangeImpl!false(elements);  //destroyElements(elements);
 
             this.length = pos;
 
@@ -1932,11 +1954,11 @@ template Vector(
             if(n != 0){
                 ElementType[] elements = this._trusted_elements;
 
-                destroyElements(elements[pos .. top]);
+                destructRangeImpl!false(elements[pos .. top]);  //destroyElements(elements[pos .. top]);
 
-                moveElements(
-                    (()@trusted => elements.ptr + top )(),
+                moveEmplaceRange(
                     (()@trusted => elements.ptr + pos )(),
+                    (()@trusted => elements.ptr + top )(),
                     (old_length - top)
                 );
 
@@ -2158,14 +2180,14 @@ template Vector(
             if(args_length == erase_length){
                 ElementType[] elements = this._trusted_elements;
                 ElementType[] elms = elements[pos .. top];
-                destroyElements(elms);
+                destructRangeImpl!false(elms);  // destroyElements(elms);
 
                 {
                     size_t emplaced = 0;
                     scope(failure)
                         initElements(elms[emplaced .. $]);
 
-                    emplaceImpl(emplaced, elms, forward!args);
+                    emplaceElements(emplaced, elms, forward!args);
                 }
 
                 return pos;
@@ -2179,10 +2201,11 @@ template Vector(
                 ElementType[] old_elms = elements[pos .. top];
                 ElementType[] new_elms = elements[pos .. pos + args_length];
 
-                destroyElements(old_elms);
-                moveElements(
-                    (()@trusted => elements.ptr + top - diff )(),
+                destructRangeImpl!false(old_elms);  // destroyElements(old_elms);
+
+                moveEmplaceRange(
                     (()@trusted => elements.ptr + top )(),
+                    (()@trusted => elements.ptr + top - diff )(),
                     diff
                 );
 
@@ -2193,7 +2216,7 @@ template Vector(
                     scope(failure)
                         initElements(new_elms[emplaced .. $]);
 
-                    emplaceImpl(emplaced, new_elms, forward!args);
+                    emplaceElements(emplaced, new_elms, forward!args);
                 }
 
 
@@ -2211,11 +2234,11 @@ template Vector(
                 ElementType[] old_elms = elements[pos .. top];
                 ElementType[] new_elms = elements[pos .. pos + args_length];
 
-                destroyElements(old_elms);
+                destructRangeImpl!false(old_elms);  // destroyElements(old_elms);
 
-                moveElements(
-                    (()@trusted => elements.ptr + top )(),
+                moveEmplaceRange(
                     (()@trusted => elements.ptr + top + diff )(),
+                    (()@trusted => elements.ptr + top )(),
                     diff
                 );
 
@@ -2226,7 +2249,7 @@ template Vector(
                     scope(failure)
                         initElements(new_elms[emplaced .. $]);
 
-                    emplaceImpl(emplaced, new_elms, forward!args);
+                    emplaceElements(emplaced, new_elms, forward!args);
                 }
 
                 return pos;
@@ -2418,7 +2441,7 @@ template Vector(
                     scope(failure)
                         this.length = (this.length + emplaced);
 
-                    emplaceImpl(emplaced, elms, forward!arg);
+                    emplaceElements(emplaced, elms, forward!arg);
                 }
 
 
@@ -2507,10 +2530,10 @@ template Vector(
             return *&elements;
         }
 
-        private void _destruct()scope nothrow{
+        private void _release_impl()scope nothrow{
             const bool is_external = this._is_external;
 
-            destroyElements(this._trusted_elements);
+            destructRangeImpl!false(this._trusted_elements);  // destroyElements(this._trusted_elements);
 
             static if(allowHeap)
                 if(is_external){
@@ -2555,27 +2578,27 @@ template Vector(
 
 
 
-        static void emplaceImpl(T, Val)(ref size_t emplaced, T[] slice, auto ref Val val, const size_t count)
+        static void emplaceElements(T, Val)(ref size_t emplaced, T[] slice, auto ref Val val, const size_t count)
         if(is(immutable Val : immutable _Type)){
             assert(slice.length == count);
 
             foreach(ref elm; slice){
-                emplaceElement(elm, val);
+                emplaceImpl(elm, val);   //emplaceElement(elm, val);
                 emplaced += 1;
             }
         }
 
-        static void emplaceImpl(T, Val)(ref size_t emplaced, T[] slice, auto ref Val val)
+        static void emplaceElements(T, Val)(ref size_t emplaced, T[] slice, auto ref Val val)
         if(is(immutable Val : immutable _Type)){
             assert(slice.length == 1);
 
             foreach(ref elm; slice){
-                emplaceElement(elm, val);
+                emplaceImpl(elm, val);   //emplaceElement(elm, val);
                 emplaced += 1;
             }
         }
 
-        static void emplaceImpl(T, R)(ref size_t emplaced, T[] slice, R range)
+        static void emplaceElements(T, R)(ref size_t emplaced, T[] slice, R range)
         if(hasLength!R && isInputRange!R && is(immutable ElementEncodingType!R : immutable _Type)){
             auto ptr = (()@trusted => slice.ptr )();
 
@@ -2584,7 +2607,7 @@ template Vector(
             while(!range.empty){
                 debug assert(ptr < end_ptr);
 
-                emplaceElement(*ptr, range.front);
+                emplaceImpl(*ptr, range.front);   //emplaceElement(*ptr, range.front);
                 emplaced += 1;
 
                 range.popFront();
@@ -2594,9 +2617,45 @@ template Vector(
             }
         }
 
-        static void emplaceImpl(T, Vec)(ref size_t emplaced, T[] slice, scope auto ref Vec vec)
+        static void emplaceElements(T, Vec)(ref size_t emplaced, T[] slice, scope auto ref Vec vec)
         if(isVector!Vec && is(immutable Vec.ElementType == immutable _Type)){
-            emplaceImpl(emplaced, slice, (()@trusted => vec.elements )() );
+            emplaceElements(emplaced, slice, (()@trusted => vec.elements )() );
+        }
+
+        static void emplaceElements(T)(ref size_t emplaced, T[] slice){
+
+            /// TODO emplaceRangeImpl if nothrow ctors
+            foreach(ref elm; slice){
+                emplaceImpl(elm);   //emplaceElement(elm, val);
+                emplaced += 1;
+            }
+        }
+
+        static void emplaceElementsArgs(T, Args...)(ref size_t emplaced, T[] slice, auto ref Args args){
+
+            /// TODO emplaceRangeImpl if nothrow ctors
+            foreach(ref elm; slice){
+                emplaceImpl(elm, args);   //emplaceElement(elm, val);
+                emplaced += 1;
+            }
+        }
+
+
+
+        static void initElements(T)(T[] elements)nothrow{
+            enum has_init = __traits(compiles, () => emplaceElement(elm));
+
+            static if(has_init){
+                foreach(ref elm; elements)
+                    emplaceElement(elm);
+                return true;
+            }
+            else{
+                import std.traits : Unqual;
+
+                assert(0, "fatal error: " ~ Unqual!T.stringof ~ " has @disabled init");
+
+            }
         }
 
     }
@@ -2773,7 +2832,7 @@ private{
             }();
 
             static if(gcRange)
-                gc_add_range(data);
+                gcAddRange(data);
 
             return true;
         }
@@ -2796,7 +2855,7 @@ private{
             }();
 
             static if(gcRange)
-                gc_add_range(data);
+                gcAddRange(data);
 
             return true;
         }
@@ -2825,8 +2884,8 @@ private{
                 this.capacity = new_capacity;
 
                 static if(gcRange){
-                    gc_remove_range(old_data);
-                    gc_add_range(data);
+                    gcRemoveRange(old_data);
+                    gcAddRange(data);
                 }
 
                 return true;
@@ -2837,9 +2896,9 @@ private{
                 if(data.length == 0)
                     return false;
 
-                moveElements!false(
-                    (()@trusted => this.ptr )(),
+                moveEmplaceRange!false(
                     (()@trusted => cast(T*)data.ptr )(),
+                    (()@trusted => this.ptr )(),
                     length
                 );
                 /+
@@ -2850,8 +2909,8 @@ private{
                 }();+/
 
                 static if(gcRange){
-                    gc_add_range(data);
-                    gc_remove_range(old_data);
+                    gcAddRange(data);
+                    gcRemoveRange(old_data);
                 }
 
                 static if(safeAllcoate!A)
@@ -2877,7 +2936,7 @@ private{
             void[] old_data = (()@trusted => this.data )();
 
             static if(gcRange)
-                gc_remove_range(old_data);
+                gcRemoveRange(old_data);
 
 
             this.ptr = null;
@@ -2900,13 +2959,21 @@ private{
         const size_t size;
         allcoator.allocate(size);
     }(*cast(A*)null));
+
 }
 
+//move:
+private{
+    void moveEmplaceRange(bool overlap = true, T, S)(T* target, S* source, size_t length){
+        if(length)
+            moveEmplaceRangeImpl!overlap(target, source, length);
+    }
+}
 
 //GC add/remove range:
 private{
     //same as GC.addRange but `pure nothrow @trusted @nogc` and with debug testing
-    void gc_add_range(const void[] data)pure nothrow @trusted @nogc{
+    /+void gcAddRange(const void[] data)pure nothrow @trusted @nogc{
         gc_add_range(data.ptr, data.length);
     }
     void gc_add_range(const void* data, const size_t length)pure nothrow @trusted @nogc{
@@ -2920,11 +2987,11 @@ private{
                 GC.addRange(ptr, len);
             })(data, length);
         }
-    }
+    }+/
 
 
     //same as GC.removeRange but `pure nothrow @trusted @nogc` and with debug testing
-    void gc_remove_range(const void[] data)pure nothrow @trusted @nogc{
+    /+void gc_remove_range(const void[] data)pure nothrow @trusted @nogc{
         gc_remove_range(data.ptr);
     }
     void gc_remove_range(const void* data)pure nothrow @trusted @nogc{
@@ -2938,7 +3005,7 @@ private{
                 GC.removeRange(ptr);
             })(data);
         }
-    }
+    }+/
 }
 
 //local traits:

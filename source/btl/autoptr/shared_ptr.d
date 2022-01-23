@@ -8,6 +8,7 @@ module btl.autoptr.shared_ptr;
 
 import btl.internal.mallocator;
 import btl.internal.traits;
+import btl.internal.gc;
 
 import btl.autoptr.common;
 //import btl.autoptr.rc_ptr : RcPtr, isRcPtr;
@@ -229,7 +230,10 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 			this._element = element;
 		}
 
-		//forward ctor impl:
+
+		/**
+            Forward constructor (merge move and copy constructor).
+        */
 		public this(Rhs, this This)(auto ref scope Rhs rhs, Forward)@trusted //if rhs is rvalue then dtor is called on empty rhs
 		if(    isSmartPtr!Rhs	//(isSharedPtr!Rhs || isRcPtr!Rhs || isIntrusivePtr!Rhs)
 			&& isConstructable!(rhs, This)
@@ -1860,7 +1864,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 			this._const_set_element(null);
 		}
 
-		private auto _move()@trusted{
+		package auto _move()@trusted{
 			auto e = this._element;
 			auto c = this._control;
 			this._const_reset();
@@ -3963,4 +3967,50 @@ unittest{
 		const x = SharedPtr!void.make();
 		x.get;
 	}
+}
+
+
+
+@safe pure nothrow @nogc unittest{
+    {
+        auto p = SharedPtr!long.make(42);
+
+        apply!((scope long* a, scope long* b){
+            assert(p.useCount == 3);
+            assert(a !is null);
+            assert(b !is null);
+
+            assert(a is b);
+            assert(*a == 42);
+        })(p, p);
+
+    }
+
+    {
+        auto p = SharedPtr!long.make(42);
+
+        apply!((scope long* a, scope long* b){
+            assert(p.useCount == 3);
+            assert(a !is null);
+            assert(b !is null);
+
+            assert(a is b);
+            assert(*a == 42);
+        })(p, p.weak());
+    }
+
+    {
+        auto p = SharedPtr!long.make(42);
+        auto w = SharedPtr!long.make(123).weak();
+        assert(w.expired);
+
+        apply!((scope long* a, scope long* b){
+            assert(p.useCount == 2);
+            assert(a !is null);
+            assert(b is null);
+
+            assert(*a == 42);
+        })(p, w);
+    }
+
 }

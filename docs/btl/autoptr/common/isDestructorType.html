@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Enum member isDestructorType</title>
+		<title>Alias isDestructorType</title>
 		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
@@ -21,13 +21,11 @@ $('#symbolSearchPane').show();</script>
 			</div>
 			<ul class="tree-view">
 				<li class="tree-view ">
-					<div class="package ">
-						<a href="../../../btl.html">btl</a>
+					<div class="package ">btl
 					</div>
 			<ul class="tree-view">
 				<li class="tree-view ">
-					<div class="package ">
-						<a href="../../../btl/autoptr.html">autoptr</a>
+					<div class="package ">autoptr
 					</div>
 			<ul class="tree-view">
 				<li>
@@ -72,13 +70,13 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Enum member isDestructorType</h1><p>Check if type <code class="lang-d"><span class="typ">Type</span></code> is of type destructor type (is(void function(Evoid* )pure nothrow @safe @nogc : Type))
+			<h1>Alias isDestructorType</h1><p>Check if type <code class="lang-d"><span class="typ">Type</span></code> is of type destructor type (is(void function(Evoid* )pure nothrow @safe @nogc : Type))
 </p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="kwd">enum</span> <span class="pln">isDestructorType</span>(Type)
-			 <span class="pun">=</span> <span class="kwd">is</span><span class="pun">(</span><span class="typ">void </span><span class="kwd">function</span><span class="pun">(</span><span class="typ">Evoid</span><span class="pun">*) </span><span class="kwd">pure nothrow @nogc @safe </span><span class="pun">: </span><span class="typ">Type</span><span class="pun">)</span><span class="pun">;</span>
+			<span class="kwd">alias</span> <span class="pln">isDestructorType</span>
+			 <span class="pun">=</span> <span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">internal<wbr/></span><span class="pun">.</span><span class="pln">lifetime<wbr/></span><span class="pun">.</span><span class="pln">isDtorType</span><span class="pun">;</span>
 					</div>
 				</code>
 			</div>

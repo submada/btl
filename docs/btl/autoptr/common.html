@@ -21,13 +21,11 @@ $('#symbolSearchPane').show();</script>
 			</div>
 			<ul class="tree-view">
 				<li class="tree-view ">
-					<div class="package ">
-						<a href="../../btl.html">btl</a>
+					<div class="package ">btl
 					</div>
 			<ul class="tree-view">
 				<li class="tree-view ">
-					<div class="package ">
-						<a href="../../btl/autoptr.html">autoptr</a>
+					<div class="package ">autoptr
 					</div>
 			<ul class="tree-view">
 				<li>
@@ -72,28 +70,10 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Module btl.autoptr.common</h1><p>Common code shared with other modules.
+			<h1>Module btl.autoptr.common</h1><p>Common code shared with other <code class="lang-d"><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">autoptr</span></code> modules .
 </p><section></section>
 
 			<section></section>
-			<section>
-				<h2>Functions</h2>
-				<table>
-					<col class="caption"/>
-					<tr>
-						<th>Name</th><th>Description</th>
-					</tr>
-					<tr>
-						<td>
-							<code>
-								<a id="apply" class="public" href="../../btl/autoptr/common/apply.html">apply</a><span class="tableEntryAnnotation">(args)</span>
-							</code>
-						</td>
-						<td>Sefly dereference all <code class="lang-d"><a href="../../btl/autoptr/common/apply.html#args"><span class="pln">args</span></a></code> of types <code class="lang-d"><a href="../../btl/autoptr/shared_ptr/SharedPtr.html" title="btl.autoptr.shared_ptr.SharedPtr"><span class="typ">SharedPtr</span></a></code>, <code class="lang-d"><a href="../../btl/autoptr/rc_ptr/RcPtr.html" title="btl.autoptr.rc_ptr.RcPtr"><span class="typ">RcPtr</span></a></code> and <code class="lang-d"><a href="../../btl/autoptr/intrusive_ptr/IntrusivePtr.html" title="btl.autoptr.intrusive_ptr.IntrusivePtr"><span class="typ">IntrusivePtr</span></a></code> and forward them to callable alias <code class="lang-d"><span class="pln">fn</span></code>.
-</td>
-					</tr>
-				</table>
-			</section>
 			<section>
 				<h2>Structs</h2>
 				<table>
@@ -110,22 +90,23 @@ $('#symbolSearchPane').show();</script>
 						<td>Control block for <code class="lang-d"><span class="typ">SharedPtr</span></code>, <code class="lang-d"><span class="typ">RcPtr</span></code>, <code class="lang-d"><span class="typ">UniquePtr</span></code> and <code class="lang-d"><span class="typ">IntrusivePtr</span></code>.
 </td>
 					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Templates</h2>
+				<table>
+					<col class="caption"/>
 					<tr>
-						<td>
-							<code>
-								<a id="Evoid" class="public" href="../../btl/autoptr/common/Evoid.html">Evoid</a>
-							</code>
-						</td>
-						<td>Type used as parameter for function pointer returned from <code class="lang-d"><a href="../../btl/autoptr/common/DestructorType.html"><span class="typ">DestructorType</span></a></code>.
-</td>
+						<th>Name</th><th>Description</th>
 					</tr>
 					<tr>
 						<td>
 							<code>
-								<a id="Forward" class="public" href="../../btl/autoptr/common/Forward.html">Forward</a>
+								<a id="apply" class="public" href="../../btl/autoptr/common/apply.html">apply</a>
 							</code>
 						</td>
-						<td></td>
+						<td>Sefly dereference all <code class="lang-d"><span class="pln">args</span></code> of types <code class="lang-d"><a href="../../btl/autoptr/shared_ptr/SharedPtr.html" title="btl.autoptr.shared_ptr.SharedPtr"><span class="typ">SharedPtr</span></a></code>, <code class="lang-d"><a href="../../btl/autoptr/rc_ptr/RcPtr.html" title="btl.autoptr.rc_ptr.RcPtr"><span class="typ">RcPtr</span></a></code> and <code class="lang-d"><a href="../../btl/autoptr/intrusive_ptr/IntrusivePtr.html" title="btl.autoptr.intrusive_ptr.IntrusivePtr"><span class="typ">IntrusivePtr</span></a></code> and forward them to callable alias <code class="lang-d"><span class="pln">fn</span></code>.
+</td>
 					</tr>
 				</table>
 			</section>
@@ -145,17 +126,6 @@ $('#symbolSearchPane').show();</script>
 						<td>
 						</td>
 						<td>Check if type <code class="lang-d"><span class="pln">T</span></code> is of type <code class="lang-d"><a href="../../btl/autoptr/common/ControlBlock.html"><span class="typ">ControlBlock</span></a><span class="pun">!(...)</span></code>.
-</td>
-					</tr>
-					<tr>
-						<td>
-							<a id="isDestructorType" class="public" href="../../btl/autoptr/common/isDestructorType.html">
-								<code>isDestructorType</code>
-							</a>
-						</td>
-						<td>
-						</td>
-						<td>Check if type <code class="lang-d"><span class="typ">Type</span></code> is of type destructor type (is(void function(Evoid* )pure nothrow @safe @nogc : Type))
 </td>
 					</tr>
 					<tr>
@@ -251,6 +221,30 @@ $('#symbolSearchPane').show();</script>
 					</tr>
 					<tr>
 						<td>
+							<a id="Evoid" class="public" href="../../btl/autoptr/common/Evoid.html">
+								<code>Evoid</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">internal<wbr/></span><span class="pun">.</span><span class="pln">lifetime<wbr/></span><span class="pun">.</span><span class="typ">Evoid</span></code>
+						</td>
+						<td>Type used as parameter for function pointer returned from <code class="lang-d"><a href="../../btl/autoptr/common/DestructorType.html"><span class="typ">DestructorType</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="Forward" class="public" href="../../btl/autoptr/common/Forward.html">
+								<code>Forward</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">internal<wbr/></span><span class="pun">.</span><span class="pln">forward<wbr/></span><span class="pun">.</span><span class="typ">Forward</span></code>
+						</td>
+						<td>Type used in forward constructors.
+</td>
+					</tr>
+					<tr>
+						<td>
 							<a id="IntrusiveControlBlock" class="public" href="../../btl/autoptr/common/IntrusiveControlBlock.html">
 								<code>IntrusiveControlBlock</code>
 							</a>
@@ -259,6 +253,18 @@ $('#symbolSearchPane').show();</script>
 							<code class="prettyprint lang-d"><span class="pln">impl</span></code>
 						</td>
 						<td>Alias to <code class="lang-d"><a href="../../btl/autoptr/common/ControlBlock.html"><span class="typ">ControlBlock</span></a></code> including qualifiers contained by <code class="lang-d"><span class="typ">Type</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="isDestructorType" class="public" href="../../btl/autoptr/common/isDestructorType.html">
+								<code>isDestructorType</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">internal<wbr/></span><span class="pun">.</span><span class="pln">lifetime<wbr/></span><span class="pun">.</span><span class="pln">isDtorType</span></code>
+						</td>
+						<td>Check if type <code class="lang-d"><span class="typ">Type</span></code> is of type destructor type (is(void function(Evoid* )pure nothrow @safe @nogc : Type))
 </td>
 					</tr>
 					<tr>

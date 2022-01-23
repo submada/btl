@@ -21,13 +21,11 @@ $('#symbolSearchPane').show();</script>
 			</div>
 			<ul class="tree-view">
 				<li class="tree-view ">
-					<div class="package ">
-						<a href="../../../btl.html">btl</a>
+					<div class="package ">btl
 					</div>
 			<ul class="tree-view">
 				<li class="tree-view ">
-					<div class="package ">
-						<a href="../../../btl/autoptr.html">autoptr</a>
+					<div class="package ">autoptr
 					</div>
 			<ul class="tree-view">
 				<li>
@@ -101,7 +99,7 @@ $('#symbolSearchPane').show();</script>
 			<section><h2>Examples</h2>
 <pre class="code"><code class="lang-d"><span class="kwd">static class </span><span class="typ">Foo</span><span class="pun">{
     </span><span class="typ">long </span><span class="pln">i</span><span class="pun">;
-    </span><span class="typ">MutableControlBlock</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">) </span><span class="pln">c</span><span class="pun">;
+    </span><span class="typ">ControlBlock</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">) </span><span class="pln">c</span><span class="pun">;
 
     </span><span class="kwd">this</span><span class="pun">(</span><span class="typ">long </span><span class="pln">i</span><span class="pun">)</span><span class="kwd">pure nothrow @safe @nogc</span><span class="pun">{
         </span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">= </span><span class="pln">i</span><span class="pun">;
@@ -112,10 +110,10 @@ $('#symbolSearchPane').show();</script>
         </span><span class="kwd">auto </span><span class="pln">self </span><span class="pun">= </span><span class="kwd">cast</span><span class="pun">(</span><span class="typ">Unqual</span><span class="pun">!</span><span class="typ">This</span><span class="pun">)</span><span class="kwd">this</span><span class="pun">;
         </span><span class="kwd">return </span><span class="pun">(</span><span class="pln">self<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">== </span><span class="pln">i</span><span class="pun">);
     }
+
+
 }
-
-</span><span class="kwd">alias </span><span class="typ">Type </span><span class="pun">= </span><span class="kwd">const </span><span class="typ">Foo</span><span class="pun">;
-
+</span><span class="kwd">alias </span><span class="typ">Type </span><span class="pun">= </span><span class="typ">Foo</span><span class="pun">;
 </span><span class="kwd">static foreach</span><span class="pun">(</span><span class="kwd">enum </span><span class="typ">bool <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.weak.html"></span><span class="pln">weak</span></a><span class="pun">; [</span><span class="kwd">true</span><span class="pun">, </span><span class="kwd">false</span><span class="pun">]){
     </span><span class="com">//fail
     </span><span class="pun">{

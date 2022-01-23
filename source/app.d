@@ -512,12 +512,3 @@ unittest{
 
 
 
-@safe unittest{
-    auto p = SharedPtr!long.make(42);
-
-    apply!((scope ref long a, scope ref long b){
-
-
-    })(p, p);
-
-}

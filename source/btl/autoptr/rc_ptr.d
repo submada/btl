@@ -8,6 +8,7 @@ module btl.autoptr.rc_ptr;
 
 import btl.internal.mallocator;
 import btl.internal.traits;
+import btl.internal.gc;
 
 import btl.autoptr.common;
 
@@ -232,7 +233,10 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
             control.add!isWeak;
         }
 
-        //forward ctor impl:
+
+        /**
+            Forward constructor (merge move and copy constructor).
+        */
         public this(Rhs, this This)(auto ref scope Rhs rhs, Forward)@trusted
         if(    isRcPtr!Rhs
             && isConstructable!(rhs, This)
@@ -1835,7 +1839,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
                 (*cast(Unqual!ElementReferenceType*)&self._element) = cast(Unqual!ElementReferenceType)e;
         }
 
-        private auto _move()@trusted{
+        package auto _move()@trusted{
             auto e = this._element;
             this._const_reset();
 

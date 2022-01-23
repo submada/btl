@@ -1,5 +1,5 @@
 /**
-	Common code shared with other modules.
+	Common code shared with other `btl.autoptr` modules .
 
 	License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
 	Authors:   $(HTTP github.com/submada/basic_string, Adam Búš)
@@ -10,20 +10,22 @@ import std.meta : AliasSeq;
 
 import btl.internal.traits;
 import btl.internal.mallocator;
+import btl.internal.forward;
+import btl.internal.gc;
+import btl.internal.lifetime;
 
 
 /**
 	Type used as parameter for function pointer returned from `DestructorType`.
 */
-public struct Evoid{
-
-}
+public alias Evoid = btl.internal.lifetime.Evoid;
 
 
 /**
+	Type used in forward constructors.
 */
-public struct Forward{
-}
+alias Forward = btl.internal.forward.Forward;
+
 
 
 /**/
@@ -53,63 +55,99 @@ public deprecated alias UniqueControlType = UniqueControlBlock;
 public alias DefaultAllocator = Mallocator;
 
 
-//generate `DestructorTypes` alias
-version(D_BetterC){}else
-private string genDestructorTypes(){
-	string result;
-	result.reserve(16*40);
-
-	import std.range : empty;
-	foreach(string _pure; ["pure", ""])
-	foreach(string _nothrow; ["nothrow", ""])
-	foreach(string _safe; ["@safe", "@system"])
-	foreach(string _nogc; ["@nogc", ""])
-		result ~= "void function(void* )" ~ _pure
-			~ (_pure.empty?"":" ") ~ _nothrow
-			~ ((_pure.empty && _nothrow.empty)?"":" ") ~ _safe
-			~ ((_pure.empty && _nothrow.empty && _safe.empty)?"":" ") ~ _nogc
-			~ ",\n";
-
-	return result;
-}
-
-
-//create all possible DestructorType types, DestructorType can return type with some hidden information and comparsion with it can fail (bug in D compiler).
-//If type is created before calling DestructorType then DestructorType return existing type free of hidden informations and comparsion is ok.
-public alias DestructorTypes = AliasSeq!(
-	void function(Evoid* )pure nothrow @safe @nogc,
-	void function(Evoid* )pure nothrow @safe,
-	void function(Evoid* )pure nothrow @system @nogc,
-	void function(Evoid* )pure nothrow @system,
-	void function(Evoid* )pure @safe @nogc,
-	void function(Evoid* )pure @safe,
-	void function(Evoid* )pure @system @nogc,
-	void function(Evoid* )pure @system,
-	void function(Evoid* )nothrow @safe @nogc,
-	void function(Evoid* )nothrow @safe,
-	void function(Evoid* )nothrow @system @nogc,
-	void function(Evoid* )nothrow @system,
-	void function(Evoid* )@safe @nogc,
-	void function(Evoid* )@safe,
-	void function(Evoid* )@system @nogc,
-	void function(Evoid* )@system,
-);
 
 
 /**
 	Check if type `Type` is of type destructor type (is(void function(Evoid* )pure nothrow @safe @nogc : Type))
 */
-public template isDestructorType(Type){
-	enum bool isDestructorType = is(
-		void function(Evoid* )pure nothrow @safe @nogc : Type
-	);
-}
+alias isDestructorType = btl.internal.lifetime.isDtorType;
+
 
 ///
 unittest{
 	static assert(isDestructorType!(void function(Evoid* )pure));
 	static assert(isDestructorType!(DestructorType!long));
 	static assert(!isDestructorType!(long));
+}
+
+
+
+/**
+	Destructor type of destructors of types `Types` ( void function(Evoid*)@destructor_attributes ).
+*/
+public template DestructorType(Types...){
+    import std.traits : Unqual, isDynamicArray, BaseClassesTuple;
+    import std.range : ElementEncodingType;
+    import std.meta : AliasSeq;
+
+    static void fn_body(Evoid*)pure nothrow @safe @nogc{}
+
+    static void impl()(Evoid*){
+
+        static foreach(alias Type; Types){
+            static if(is(Type == class)){
+                {
+                    ClassDtorType!Type fn = &fn_body;
+                    fn(null);
+                }
+            }
+            else static if(isDynamicArray!Type){
+                {
+                    ElementEncodingType!(Unqual!Type) tmp;
+                }
+            }
+            else static if(is(void function(Evoid*)pure nothrow @safe @nogc : Unqual!Type)){
+                {
+                    Unqual!Type fn = &fn_body;
+                    fn(null);
+                }
+            }
+            else{
+                {
+                    DtorType!Type fn = &fn_body;
+                    fn(null);
+                }
+            }
+        }
+    }
+
+    alias DestructorType = typeof(&impl!());
+}
+
+
+///
+unittest{
+	static assert(is(DestructorType!long == void function(Evoid*)pure nothrow @safe @nogc));
+
+
+	static struct Struct{
+		~this()nothrow @system{
+		}
+	}
+	static assert(is(DestructorType!Struct == void function(Evoid*)nothrow @system));
+
+
+	version(D_BetterC)
+		static extern(C)class Class{
+			~this()pure @trusted{
+
+			}
+		}
+	else
+		static class Class{
+			~this()pure @trusted{
+
+			}
+		}
+
+	static assert(is(DestructorType!Class == void function(Evoid*)pure @safe));
+
+	//multiple types:
+	static assert(is(DestructorType!(Class, Struct, long) == void function(Evoid*)@system));
+
+	static assert(is(
+		DestructorType!(Class, DestructorType!long, DestructorType!Struct) == DestructorType!(Class, Struct, long)
+	));
 }
 
 
@@ -231,97 +269,6 @@ public template DestructorAllocatorType(Allocator){
 	}
 
 	alias DestructorAllocatorType = typeof(&impl!());
-}
-
-
-
-/**
-	Destructor type of destructors of types `Types` ( void function(Evoid*)@destructor_attributes ).
-*/
-public template DestructorType(Types...){
-	import std.traits : Unqual, isDynamicArray, BaseClassesTuple;
-	import std.range : ElementEncodingType;
-	import std.meta : AliasSeq;
-
-	alias Get(T) = T;
-
-	static void impl()(Evoid*){
-
-		static foreach(alias Type; Types){
-			static if(is(Unqual!Type == void)){
-				//nothing
-			}
-			else static if(is(Type == class)){
-				// generate a body that calls all the destructors in the chain,
-				// compiler should infer the intersection of attributes
-				foreach (B; AliasSeq!(Type, BaseClassesTuple!Type)) {
-					alias UB = Unqual!B;
-
-					// __dtor, i.e. B.~this
-					static if (__traits(hasMember, B, "__dtor"))
-						() { UB obj; obj.__dtor; } ();
-					// __xdtor, i.e. dtors for all RAII members
-					static if (__traits(hasMember, B, "__xdtor"))
-						() { UB obj; obj.__xdtor; } ();
-				}
-			}
-			else static if(isDynamicArray!Type){
-				{
-					ElementEncodingType!(Unqual!Type) tmp;
-				}
-			}
-			else static if(is(void function(Evoid*)pure nothrow @safe @nogc : Unqual!Type)){
-				{
-					static void fn_body(Evoid*)pure nothrow @safe @nogc{}
-
-					Unqual!Type fn = &fn_body;
-					fn(null);
-				}
-			}
-			else{
-				{
-					Unqual!Type tmp;
-				}
-			}
-		}
-	}
-
-	alias DestructorType = typeof(&impl!());
-}
-
-///
-unittest{
-	static assert(is(DestructorType!long == void function(Evoid*)pure nothrow @safe @nogc));
-
-
-	static struct Struct{
-		~this()nothrow @system{
-		}
-	}
-	static assert(is(DestructorType!Struct == void function(Evoid*)nothrow @system));
-
-
-	version(D_BetterC)
-		static extern(C)class Class{
-			~this()pure @trusted{
-
-			}
-		}
-	else
-		static class Class{
-			~this()pure @trusted{
-
-			}
-		}
-
-	static assert(is(DestructorType!Class == void function(Evoid*)pure @safe));
-
-	//multiple types:
-	static assert(is(DestructorType!(Class, Struct, long) == void function(Evoid*)@system));
-
-	static assert(is(
-		DestructorType!(Class, DestructorType!long, DestructorType!Struct) == DestructorType!(Class, Struct, long)
-	));
 }
 
 
@@ -832,7 +779,8 @@ template isSmartPtr(T){
 
 
 import std.meta : allSatisfy, staticMap, AliasSeq;
-import core.lifetime : forward;
+import std.traits : isMutable;
+import core.lifetime : forward, move;
 
 /**
 	Sefly dereference all `args` of types `btl.autoptr.shared_ptr.SharedPtr`, `btl.autoptr.rc_ptr.RcPtr` and `btl.autoptr.intrusive_ptr.IntrusivePtr` and forward them to callable alias `fn`.
@@ -840,28 +788,29 @@ import core.lifetime : forward;
 	Ref args are copyied and non ref args are moved.
 
 */
-public auto apply(alias fn, Args...)(scope auto ref Args args)
-if(allSatisfy!(isSmartPtr, Args)){
-	Args params;
+public template apply(alias fn){
+    auto impl(Args...)(scope Args args){
+        pragma(inline, true); @property auto elm(alias arg)()@trusted{
+            return arg.element();
+        }
 
-	scope(exit){
-		//release params, dtor doesn't work;
-		static foreach(alias param; params)
-			param = null;
-	}
+        return fn(staticMap!(elm, args));
+    }
 
-	//`Args params = forward!args` doesn't work
-	static foreach(enum int I, alias arg; args){
-		static assert(!typeof(arg).isWeak, I.stringof ~ ". argument is weak pointer.");
-		assert(arg != null, I.stringof ~ ". argument is null.");
-		params[I] = forward!arg;
-	}
+    auto apply(Args...)(scope auto ref Args args)
+    if(    allSatisfy!(isSmartPtr, Args)
+        && allSatisfy!(isMutable, staticMap!(GetControlType, Args))
+    ){
+        pragma(inline, true); @property auto ref param(alias arg)()@trusted{
+            static assert(!is(typeof(arg) == shared));
 
-	pragma(inline, true); @property auto ref elm(alias param)()@trusted{
-		pragma(inline, true); return param.get();
-	}
-
-	return fn(staticMap!(elm, params));
+            static if(arg.isWeak)
+                return arg.lock();
+            else
+                return forward!arg;
+        }
+        return impl(staticMap!(param, args));
+    }
 }
 
 
@@ -876,7 +825,7 @@ if(allSatisfy!(isSmartPtr, Args)){
 	import core.lifetime : move;
 
 	static class Foo{
-		ControlBlock!(int, int) c;   //or MutableControlBlock!(ControlBlock!(int, int)) c;
+		ControlBlock!(int, int) c;
 		int i;
 
 		this(int i)pure nothrow @safe @nogc{
@@ -897,7 +846,7 @@ if(allSatisfy!(isSmartPtr, Args)){
 		assert(b.useCount == 1);
 		assert(c.useCount == 1);
 
-		int i = apply!((scope ref long x, scope ref float y, scope Foo z){
+		int i = apply!((scope long* x, scope float* y, scope Foo z){
 			assert(a.useCount == 2);
 			assert(b.useCount == 2);
 
@@ -915,6 +864,8 @@ if(allSatisfy!(isSmartPtr, Args)){
 	}();
 
 }
+
+
 
 package template weakLock(From, To){
 	enum weakLock = (From.isWeak && !To.isWeak);
@@ -951,19 +902,6 @@ package template GetElementReferenceType(Ptr){
 
 	alias GetElementReferenceType = ElementReferenceTypeImpl!(GetElementType!Ptr);
 }
-/+
-package template ElementReferenceTypeImpl(Type){
-	import std.traits : Select, isDynamicArray;
-	import std.range : ElementEncodingType;
-
-	static if(isDynamicArray!Type)
-		alias ElementReferenceTypeImpl = ElementEncodingType!Type[];
-	else static if(is(T == class) || is(T == interface))
-		alias ElementReferenceTypeImpl = Type;
-	else
-		alias ElementReferenceTypeImpl = PtrOrRef!Type;
-
-}+/
 
 package template ElementReferenceTypeImpl(T){
 	import std.traits : Select, isDynamicArray;
@@ -1409,7 +1347,7 @@ package template MakeEmplace(_Type, _DestructorType, _ControlType, _AllocatorTyp
 				else
 					enum size_t gc_range_size = data.length;
 
-				gc_add_range(
+				gcAddRange(
 					(()@trusted => cast(void*)result.data.ptr)(),
 					gc_range_size
 				);
@@ -1418,13 +1356,13 @@ package template MakeEmplace(_Type, _DestructorType, _ControlType, _AllocatorTyp
 				static assert(supportGC);
 				static assert(!dataGCRange);
 
-				gc_add_range(
+				gcAddRange(
 					cast(void*)&result.allocator,
 					_AllocatorType.sizeof
 				);
 			}
 
-            //debug new MakeEmplace(forward!(a, args));
+			//debug new MakeEmplace(forward!(a, args));
 			return emplace(result, forward!(a, args));
 		}
 
@@ -1537,10 +1475,20 @@ package template MakeEmplace(_Type, _DestructorType, _ControlType, _AllocatorTyp
 
 			static if(is(_Type == struct) || is(_Type == class)){
 				void* data_ptr = this.data.ptr;
-				_destruct!(_Type, DestructorType!void)(data_ptr);
+
+				//btl.internal.lifetime.destruct!(_Type, DestructorType!void)(data_ptr);
+                static if(is(_Type == struct)){
+                    _Type* data = ((ref data)@trusted => cast(_Type*)data.ptr)(this.data);
+                    destructImpl!(false, DtorType!void)(*data);
+                }
+                else static if(is(_Type == class)){
+                    _Type data = ((ref data)@trusted => cast(_Type)data.ptr)(this.data);
+                    destructImpl!(false, DtorType!void)(data);
+                }
+                else static assert(0, "no impl");
 
 				static if(!allocatorGCRange && dataGCRange){
-					gc_remove_range(data_ptr);
+					gcRemoveRange(data_ptr);
 				}
 
 			}
@@ -1556,8 +1504,7 @@ package template MakeEmplace(_Type, _DestructorType, _ControlType, _AllocatorTyp
 
 		private void deallocate()pure nothrow @system @nogc{
 			void* self = cast(void*)&this;
-			_destruct!(typeof(this), DestructorType!void)(self);
-
+            destructImpl!(false, DtorType!void)(this);//btl.internal.lifetime.destruct!(typeof(this), DestructorType!void)(self);
 
 			void[] raw = self[0 .. typeof(this).sizeof];
 
@@ -1570,9 +1517,9 @@ package template MakeEmplace(_Type, _DestructorType, _ControlType, _AllocatorTyp
 
 			static if(allocatorGCRange){
 				static if(dataGCRange)
-					gc_remove_range(this.data.ptr);
+					gcRemoveRange(this.data.ptr);
 				else
-					gc_remove_range(&this.allocator);
+					gcRemoveRange(&this.allocator);
 			}
 
 			smart_ptr_deallocate(raw[]);
@@ -1705,7 +1652,7 @@ package template MakeDynamicArray(_Type, _DestructorType, _ControlType, _Allocat
 				else
 					enum size_t gc_range_size = _AllocatorType.sizeof;
 
-				gc_add_range(
+				gcAddRange(
 					cast(void*)&result.allocator,
 					gc_range_size
 				);
@@ -1714,7 +1661,7 @@ package template MakeDynamicArray(_Type, _DestructorType, _ControlType, _Allocat
 				static assert(supportGC);
 				static assert(!allocatorGCRange);
 
-				gc_add_range(
+				gcAddRange(
 					(()@trusted => result.data.ptr)(),
 					arraySize   //result.data.length * _Type.sizeof
 				);
@@ -1782,24 +1729,20 @@ package template MakeDynamicArray(_Type, _DestructorType, _ControlType, _Allocat
 		}
 
 		private void destruct()pure nothrow @system @nogc{
-
-			static if(is(ElementEncodingType!_Type == struct)){
-				foreach(ref elm; this.data)
-					_destruct!(ElementEncodingType!_Type, DestructorType!void)(&elm);
-			}
+            destructRangeImpl!(false, DtorType!void)(this.data);
 
 			static if(!allocatorGCRange && dataGCRange){
-				gc_remove_range(this.data.ptr);
+				gcRemoveRange(this.data.ptr);
 			}
 
 			smart_ptr_destruct();
 		}
 
 		private void deallocate()pure nothrow @system @nogc{
-			const size_t data_length = ElementEncodingType!_Type.sizeof * this.data.length;
 
+			const size_t data_length = ElementEncodingType!_Type.sizeof * this.data.length;
 			void* self = cast(void*)&this;
-			_destruct!(typeof(this), DestructorType!void)(self);
+			destructImpl!(false, DtorType!void)(this);    //btl.internal.lifetime.destruct!(typeof(this), DestructorType!void)(self);
 
 
 			void[] raw = self[0 .. typeof(this).sizeof + data_length];
@@ -1813,7 +1756,7 @@ package template MakeDynamicArray(_Type, _DestructorType, _ControlType, _Allocat
 
 
 			static if(allocatorGCRange){
-				gc_remove_range(&this.allocator);
+				gcRemoveRange(&this.allocator);
 			}
 
 			smart_ptr_deallocate(raw[]);
@@ -1969,7 +1912,7 @@ if(isIntrusive!_Type == 1){
 				else
 					enum size_t gc_range_size = data.length;
 
-				gc_add_range(
+				gcAddRange(
 					(()@trusted => cast(void*)result.data.ptr)(),
 					gc_range_size
 				);
@@ -1978,7 +1921,7 @@ if(isIntrusive!_Type == 1){
 				static assert(supportGC);
 				static assert(!dataGCRange);
 
-				gc_add_range(
+				gcAddRange(
 					cast(void*)&result.allocator,
 					_AllocatorType.sizeof
 				);
@@ -2069,10 +2012,20 @@ if(isIntrusive!_Type == 1){
 
 			static if(is(_Type == struct) || is(_Type == class)){
 				void* data_ptr = this.data.ptr;
-				_destruct!(_Type, DestructorType!void)(data_ptr);
+				//btl.internal.lifetime.destruct!(_Type, DestructorType!void)(data_ptr);
+
+                static if(is(_Type == struct)){
+                    _Type* data = ((ref data)@trusted => cast(_Type*)data.ptr)(this.data);
+                    destructImpl!(false, DtorType!void)(*data);
+                }
+                else static if(is(_Type == class)){
+                    _Type data = ((ref data)@trusted => cast(_Type)data.ptr)(this.data);
+                    destructImpl!(false, DtorType!void)(data);
+                }
+                else static assert(0, "no impl");
 
 				static if(!allocatorGCRange && dataGCRange){
-					gc_remove_range(data_ptr);
+					gcRemoveRange(data_ptr);
 				}
 
 			}
@@ -2088,8 +2041,7 @@ if(isIntrusive!_Type == 1){
 
 		private void deallocate()pure nothrow @system @nogc{
 			void* self = cast(void*)&this;
-			_destruct!(typeof(this), DestructorType!void)(self);
-
+            destructImpl!(false, DtorType!void)(this);//btl.internal.lifetime.destruct!(typeof(this), DestructorType!void)(self);
 
 			void[] raw = self[0 .. typeof(this).sizeof];
 
@@ -2102,9 +2054,9 @@ if(isIntrusive!_Type == 1){
 
 			static if(allocatorGCRange){
 				static if(dataGCRange)
-					gc_remove_range(this.data.ptr);
+					gcRemoveRange(this.data.ptr);
 				else
-					gc_remove_range(&this.allocator);
+					gcRemoveRange(&this.allocator);
 			}
 
 			smart_ptr_deallocate(raw[]);
@@ -2248,7 +2200,7 @@ package template MakeDeleter(_Type, _DestructorType, _ControlType, DeleterType, 
 				else
 					enum size_t gc_range_size = _AllocatorType.sizeof;
 
-				gc_add_range(
+				gcAddRange(
 					cast(void*)&result.allocator,
 					gc_range_size
 				);
@@ -2265,7 +2217,7 @@ package template MakeDeleter(_Type, _DestructorType, _ControlType, DeleterType, 
 				else
 					enum size_t gc_range_size = _DeleterType.sizeof;
 
-				gc_add_range(
+				gcAddRange(
 					cast(void*)&result.deleter,
 					gc_range_size
 				);
@@ -2275,7 +2227,7 @@ package template MakeDeleter(_Type, _DestructorType, _ControlType, DeleterType, 
 				static assert(!allocatorGCRange);
 				static assert(!deleterGCRange);
 
-				gc_add_range(
+				gcAddRange(
 					&result.data,
 					ElementReferenceType.sizeof
 				);
@@ -2350,7 +2302,7 @@ package template MakeDeleter(_Type, _DestructorType, _ControlType, DeleterType, 
 			static if(!allocatorGCRange && !deleterGCRange && dataGCRange){
 				static assert(supportGC);
 
-				gc_remove_range(&this.data);
+				gcRemoveRange(&this.data);
 			}
 
 			smart_ptr_destruct();
@@ -2358,8 +2310,7 @@ package template MakeDeleter(_Type, _DestructorType, _ControlType, DeleterType, 
 
 		private void deallocate()pure nothrow @system @nogc{
 			void* self = cast(void*)&this;
-			_destruct!(typeof(this), DestructorType!void)(self);
-
+            destructImpl!(false, DtorType!void)(this);    //btl.internal.lifetime.destruct!(typeof(this), DestructorType!void)(self);
 
 			void[] raw = self[0 .. typeof(this).sizeof];
 
@@ -2374,13 +2325,13 @@ package template MakeDeleter(_Type, _DestructorType, _ControlType, DeleterType, 
 			static if(allocatorGCRange){
 				static assert(supportGC);
 
-				gc_remove_range(&this.allocator);
+				gcRemoveRange(&this.allocator);
 			}
 			else static if(deleterGCRange){
 				static assert(supportGC);
 				static assert(!allocatorGCRange);
 
-				gc_remove_range(&this.deleter);
+				gcRemoveRange(&this.deleter);
 			}
 
 			smart_ptr_deallocate(raw[]);
@@ -2391,103 +2342,24 @@ package template MakeDeleter(_Type, _DestructorType, _ControlType, DeleterType, 
 
 
 
-
-
-
-//class destructor
-private extern(C) void rt_finalize2(void* p, bool det = true, bool resetMemory = false)nothrow @safe @nogc pure;
-
-//Destruct _payload as if is type of `Type` and destructor has type qualifiers as `DestructorType`
-package void _destruct(Type, DestructorType)(void* _payload)
-if(isDestructorType!DestructorType){
-	import std.traits : Unqual, isStaticArray;
-
-	alias Get(T) = T;
-
-	///interface:
-	static assert(!is(Type == interface));
-
-	///class:
-	static if(is(Type == class)){
-		template finalizer(F){
-			static extern(C) alias finalizer = typeof(function void(void* p, bool det = true, bool resetMemory = true ) {
-				F fn;
-				fn(null);
-			});
-		}
-
-		alias FinalizeType = finalizer!DestructorType;
-
-
-		auto obj = (()@trusted => cast(Unqual!Type)_payload )();
-
-		///D class
-		static if(__traits(getLinkage, Type) == "D"){
-			FinalizeType finalize = ()@trusted{
-				return cast(FinalizeType) &rt_finalize2;
-			}();
-
-			//resetMemory must be false because intrusiv pointers can contains control block with weak references.
-			finalize(() @trusted { return cast(void*) obj; }(), true, false);
-		}
-		///C++ class
-		else static if (__traits(getLinkage, Type) == "C++"){
-			static if (__traits(hasMember, Type, "__xdtor")){
-				if(false){
-					DestructorType f;
-					f(null);
-				}
-				assumePureNoGcNothrow((Unqual!Type* o)@trusted{
-					o.__xdtor();
-				})(obj);
-			}
-		}
-		else static assert(0, "no impl");
-	}
-	///struct:
-	else static if(is(Type == struct)){
-		Unqual!Type* obj = (()@trusted => cast(Unqual!Type*)_payload)();
-
-		static if(true
-			&& __traits(hasMember, Type, "__xdtor")
-			&& __traits(isSame, Type, __traits(parent, obj.__xdtor))
-		){
-			if(false){
-				DestructorType f;
-				f(null);
-			}
-			assumePureNoGcNothrow((Unqual!Type* o)@trusted{
-				o.__xdtor;
-			})(obj);
-		}
-	}
-	///static array:
-	else static if(isStaticArray!Type){
-		import std.range : ElementEncodingType;
-
-		alias ElementType = Unqual!(ElementEncodingType!Type);
-
-		static if(!isReferenceType!ElementType){
-			auto obj = (()@trusted => cast(Unqual!Type*)_payload)();
-			foreach_reverse (ref ElementType elm; (*obj)[]){
-				void* elm_ptr = (()@trusted => cast(void*)&elm)();
-				._destruct!(ElementType, DestructorType)(elm_ptr);
-			}
-
-		}
-	}
-	///else:
-	else{
-		///nothing
-	}
-}
-
-
-version(autoptr_track_smart_ptr_lifecycle){
-	public __gshared long _conter_constructs = 0;
+version(BTL_AUTOPTR_COUNT_ALLOCATIONS)
 	public __gshared long _conter_allocations = 0;
 
-	shared static ~this(){
+version(BTL_AUTOPTR_COUNT_CONSTRUCTIONS)
+	public __gshared long _conter_constructs = 0;
+
+version(BTL_AUTOPTR_COUNT_ALLOCATIONS)
+	enum bool BTL_AUTOPTR_COUNT = true;
+else version(BTL_AUTOPTR_COUNT_CONSTRUCTIONS)
+	enum bool BTL_AUTOPTR_COUNT = true;
+else
+	enum bool BTL_AUTOPTR_COUNT = false;
+
+
+static if(BTL_AUTOPTR_COUNT){
+
+	private void shared_static_dtor_impl(){
+		version(BTL_AUTOPTR_COUNT_ALLOCATIONS)
 		if(_conter_allocations != 0){
 			version(D_BetterC){
 				assert(0, "_conter_allocations != 0");
@@ -2498,6 +2370,7 @@ version(autoptr_track_smart_ptr_lifecycle){
 			}
 		}
 
+		version(BTL_AUTOPTR_COUNT_CONSTRUCTIONS)
 		if(_conter_constructs != 0){
 			version(D_BetterC){
 				assert(0, "_conter_constructs != 0");
@@ -2507,13 +2380,27 @@ version(autoptr_track_smart_ptr_lifecycle){
 				assert(0, "_conter_constructs: " ~ _conter_constructs.to!string);
 			}
 		}
-
-
 	}
+
+	version(D_BetterC){
+		pragma(crt_destructor)
+		extern(C) void shared_static_this(){
+			shared_static_dtor_impl();
+		}
+	}
+	else
+		shared static ~this(){
+			shared_static_dtor_impl();
+
+		}
+
+
+
 }
 
+
 package void smart_ptr_allocate(scope const void[] data)pure nothrow @safe @nogc{
-	version(autoptr_track_smart_ptr_lifecycle){
+	version(BTL_AUTOPTR_COUNT_ALLOCATIONS){
 		import core.atomic;
 
 		assumePure(function void()@trusted{
@@ -2522,7 +2409,7 @@ package void smart_ptr_allocate(scope const void[] data)pure nothrow @safe @nogc
 	}
 }
 package void smart_ptr_construct()pure nothrow @safe @nogc{
-	version(autoptr_track_smart_ptr_lifecycle){
+	version(BTL_AUTOPTR_COUNT_CONSTRUCTIONS){
 		import core.atomic;
 
 		assumePure(function void()@trusted{
@@ -2531,7 +2418,7 @@ package void smart_ptr_construct()pure nothrow @safe @nogc{
 	}
 }
 package void smart_ptr_deallocate(scope const void[] data)pure nothrow @safe @nogc{
-	version(autoptr_track_smart_ptr_lifecycle){
+	version(BTL_AUTOPTR_COUNT_ALLOCATIONS){
 		import core.atomic;
 
 		assumePure(function void()@trusted{
@@ -2540,7 +2427,7 @@ package void smart_ptr_deallocate(scope const void[] data)pure nothrow @safe @no
 	}
 }
 package void smart_ptr_destruct()pure nothrow @safe @nogc{
-	version(autoptr_track_smart_ptr_lifecycle){
+	version(BTL_AUTOPTR_COUNT_CONSTRUCTIONS){
 		import core.atomic;
 
 		assumePure(function void()@trusted{
@@ -2633,120 +2520,8 @@ unittest{
 	assert(result1 == result2);
 }
 
-
-version(D_BetterC){
-}
-else{
-	version(autoptr_count_gc_ranges)
-		public __gshared long _conter_gc_ranges = 0;
-
-
-	version(autoptr_track_gc_ranges)
-		package __gshared const(void)[][] _gc_ranges = null;
-
-
-
-	shared static ~this(){
-		version(autoptr_count_gc_ranges){
-			import std.conv;
-			if(_conter_gc_ranges != 0)
-				assert(0, "_conter_gc_ranges: " ~ _conter_gc_ranges.to!string);
-		}
-
-
-		version(autoptr_track_gc_ranges){
-			foreach(const(void)[] gcr; _gc_ranges)
-				assert(gcr.length == 0);
-		}
-	}
-}
-
-//same as GC.addRange but `pure nothrow @trusted @nogc` and with debug testing
-package void gc_add_range(const void* data, const size_t length)pure nothrow @trusted @nogc{
-	version(D_BetterC){
-	}
-	else{
-		assumePure(function void(const void* ptr, const size_t len){
-			import core.memory: GC;
-			GC.addRange(ptr, len);
-		})(data, length);
-
-
-		assert(data !is null);
-		assert(length > 0);
-
-		assumePureNoGc(function void(const void* data, const size_t length)@trusted{
-			version(autoptr_count_gc_ranges){
-				import core.atomic;
-				atomicFetchAdd!(MemoryOrder.raw)(_conter_gc_ranges, 1);
-			}
-
-
-
-			version(autoptr_track_gc_ranges){
-				foreach(const void[] gcr; _gc_ranges){
-					if(gcr.length == 0)
-						continue;
-
-					const void* gcr_end = (gcr.ptr + gcr.length);
-					assert(!(data <= gcr.ptr && gcr.ptr < (data + length)));
-					assert(!(data < gcr_end && gcr_end <= (data + length)));
-					assert(!(gcr.ptr <= data && (data + length) <= gcr_end));
-				}
-
-				foreach(ref const(void)[] gcr; _gc_ranges){
-					if(gcr.length == 0){
-						gcr = data[0 .. length];
-						return;
-					}
-				}
-
-				_gc_ranges ~= data[0 .. length];
-
-			}
-
-		})(data, length);
-	}
-}
-
-//same as GC.removeRange but `pure nothrow @trusted @nogc` and with debug testing
-package void gc_remove_range(const void* data)pure nothrow @trusted @nogc{
-	version(D_BetterC){
-	}
-	else{
-
-		assumePure(function void(const void* ptr){
-			import core.memory: GC;
-			GC.removeRange(ptr);
-		})(data);
-
-		assert(data !is null);
-
-		assumePure(function void(const void* data)@trusted{
-			version(autoptr_count_gc_ranges){
-				import core.atomic;
-				atomicFetchSub!(MemoryOrder.raw)(_conter_gc_ranges, 1);
-			}
-
-			version(autoptr_track_gc_ranges){
-				foreach(ref const(void)[] gcr; _gc_ranges){
-					if(gcr.ptr is data){
-						gcr = null;
-						return;
-					}
-					const void* gcr_end = (gcr.ptr + gcr.length);
-					assert(!(gcr.ptr <= data && data < gcr_end));
-				}
-
-				assert(0, "missing gc range");
-			}
-		})(data);
-	}
-}
-
-
 package template isMoveCtor(T, alias arg){
-    enum bool isMoveCtor = is(T == struct)
-        && !isRef!arg
-        && is(immutable T == immutable typeof(arg));
+	enum bool isMoveCtor = is(T == struct)
+		&& !isRef!arg
+		&& is(immutable T == immutable typeof(arg));
 }

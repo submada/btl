@@ -21,13 +21,11 @@ $('#symbolSearchPane').show();</script>
 			</div>
 			<ul class="tree-view">
 				<li class="tree-view ">
-					<div class="package ">
-						<a href="../../../btl.html">btl</a>
+					<div class="package ">btl
 					</div>
 			<ul class="tree-view">
 				<li class="tree-view ">
-					<div class="package ">
-						<a href="../../../btl/autoptr.html">autoptr</a>
+					<div class="package ">autoptr
 					</div>
 			<ul class="tree-view">
 				<li>
@@ -167,7 +165,7 @@ $('#symbolSearchPane').show();</script>
 
 			<section><h3>Examples</h3>
 <pre class="code"><code class="lang-d"><span class="kwd">static struct </span><span class="typ">Foo</span><span class="pun">{
-    </span><span class="typ">MutableControlBlock</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">) </span><span class="pln">c</span><span class="pun">;
+    </span><span class="typ">ControlBlock</span><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">) </span><span class="pln">c</span><span class="pun">;
     </span><span class="typ">int </span><span class="pln">i</span><span class="pun">;
 
     </span><span class="kwd">this</span><span class="pun">(</span><span class="typ">int </span><span class="pln">i</span><span class="pun">)</span><span class="kwd">pure nothrow @safe @nogc</span><span class="pun">{
@@ -193,27 +191,6 @@ $('#symbolSearchPane').show();</script>
     </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">px<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
     </span><span class="pln">pcx </span><span class="pun">= </span><span class="pln">px</span><span class="pun">;
     </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">pcx<wbr/></span><span class="pun">.</span><span class="pln">get<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">pcx<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
-}
-
-
-{
-    </span><span class="kwd">const <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="typ">Foo</span><span class="pun">) </span><span class="pln">cpx </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="typ">Foo</span><span class="pun">)<wbr/>.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">1</span><span class="pun">);
-    <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="kwd">const </span><span class="typ">Foo</span><span class="pun">) </span><span class="pln">pcx </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="typ">Foo</span><span class="pun">)<wbr/>.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">2</span><span class="pun">);
-
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">pcx<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
-    </span><span class="pln">pcx </span><span class="pun">= </span><span class="pln">cpx</span><span class="pun">;
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">pcx<wbr/></span><span class="pun">.</span><span class="pln">get<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">pcx<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
-}
-
-{
-    <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="kwd">immutable </span><span class="typ">Foo</span><span class="pun">) </span><span class="pln">pix </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="kwd">immutable </span><span class="typ">Foo</span><span class="pun">)<wbr/>.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">123</span><span class="pun">);
-    <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="kwd">const </span><span class="typ">Foo</span><span class="pun">) </span><span class="pln">pcx </span><span class="pun">= <a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html"></span><span class="typ">IntrusivePtr</span></a><span class="pun">!(</span><span class="typ">Foo</span><span class="pun">)<wbr/>.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">2</span><span class="pun">);
-
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">pix<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
-    </span><span class="pln">pcx </span><span class="pun">= </span><span class="pln">pix</span><span class="pun">;
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">pcx<wbr/></span><span class="pun">.</span><span class="pln">get<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">== </span><span class="lit">123</span><span class="pun">);
     </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">pcx<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
 }</span></code></pre>
 </section>

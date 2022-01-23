@@ -8,6 +8,7 @@ module btl.autoptr.intrusive_ptr;
 
 import btl.internal.mallocator;
 import btl.internal.traits;
+import btl.internal.gc;
 
 import btl.autoptr.common;
 
@@ -213,7 +214,10 @@ public template IntrusivePtr(
             this._element = element;
         }
 
-        //forward ctor impl:
+
+        /**
+            Forward constructor (merge move and copy constructor).
+        */
         public this(Rhs, this This)(auto ref scope Rhs rhs, Forward)@trusted
         if(    isIntrusivePtr!Rhs
             && isConstructable!(rhs, This)
@@ -288,7 +292,7 @@ public template IntrusivePtr(
             Examples:
                 --------------------
                 static struct Foo{
-                    MutableControlBlock!(int, int) c;
+                    ControlBlock!(int, int) c;
                     int i;
 
                     this(int i)pure nothrow @safe @nogc{
@@ -309,10 +313,10 @@ public template IntrusivePtr(
                     IntrusivePtr!Foo c = x; //lvalue ctor
                     assert(c == x);
 
-                    const IntrusivePtr!Foo d = b;   //lvalue ctor
-                    assert(d == x);
+                    //const IntrusivePtr!Foo d = b;   //lvalue ctor
+                    //assert(d == x);
 
-                    assert(x.useCount == 5);
+                    assert(x.useCount == 4);
                 }
 
                 {
@@ -471,7 +475,7 @@ public template IntrusivePtr(
             Examples:
                 --------------------
                 static struct Foo{
-                    MutableControlBlock!(int, int) c;
+                    ControlBlock!(int, int) c;
                     int i;
 
                     this(int i)pure nothrow @safe @nogc{
@@ -497,27 +501,6 @@ public template IntrusivePtr(
                     assert(px.useCount == 1);
                     pcx = px;
                     assert(pcx.get.i == 1);
-                    assert(pcx.useCount == 2);
-                }
-
-
-                {
-                    const IntrusivePtr!(Foo) cpx = IntrusivePtr!(Foo).make(1);
-                    IntrusivePtr!(const Foo) pcx = IntrusivePtr!(Foo).make(2);
-
-                    assert(pcx.useCount == 1);
-                    pcx = cpx;
-                    assert(pcx.get.i == 1);
-                    assert(pcx.useCount == 2);
-                }
-
-                {
-                    IntrusivePtr!(immutable Foo) pix = IntrusivePtr!(immutable Foo).make(123);
-                    IntrusivePtr!(const Foo) pcx = IntrusivePtr!(Foo).make(2);
-
-                    assert(pix.useCount == 1);
-                    pcx = pix;
-                    assert(pcx.get.i == 123);
                     assert(pcx.useCount == 2);
                 }
                 --------------------
@@ -1090,7 +1073,7 @@ public template IntrusivePtr(
                 --------------------
                 static class Foo{
                     long i;
-                    MutableControlBlock!(int, int) c;
+                    ControlBlock!(int, int) c;
 
                     this(long i)pure nothrow @safe @nogc{
                         this.i = i;
@@ -1101,10 +1084,10 @@ public template IntrusivePtr(
                         auto self = cast(Unqual!This)this;
                         return (self.i == i);
                     }
+
+
                 }
-
-                alias Type = const Foo;
-
+                alias Type = Foo;
                 static foreach(enum bool weak; [true, false]){
                     //fail
                     {
@@ -1904,7 +1887,7 @@ public template IntrusivePtr(
             self._reset();
         }
 
-        private auto _move()@trusted{
+        package auto _move()@trusted{
             auto e = this._element;
             this._const_reset();
 
@@ -2039,7 +2022,7 @@ nothrow unittest{
 pure nothrow @nogc unittest{
 
     static class Foo{
-        ControlBlock!(int, int) c;   //or MutableControlBlock!(ControlBlock!(int, int)) c;
+        ControlBlock!(int, int) c;
         int i;
 
         this(int i)pure nothrow @safe @nogc{

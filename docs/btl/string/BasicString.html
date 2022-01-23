@@ -21,13 +21,11 @@ $('#symbolSearchPane').show();</script>
 			</div>
 			<ul class="tree-view">
 				<li class="tree-view ">
-					<div class="package ">
-						<a href="../../btl.html">btl</a>
+					<div class="package ">btl
 					</div>
 			<ul class="tree-view">
 				<li class="tree-view collapsed">
-					<div class="package ">
-						<a href="../../btl/autoptr.html">autoptr</a>
+					<div class="package ">autoptr
 					</div>
 			<ul class="tree-view">
 				<li>
@@ -86,7 +84,7 @@ $('#symbolSearchPane').show();</script>
 						</a>
 					</li>
 				</ul>
-			</nav><h2 id="0">Struct BasicString</h2><p>The <code class="lang-d"><span class="typ">BasicString</span></code> is the generalization of struct string for character of type <code class="lang-d"><span class="typ">char</span></code>, <code class="lang-d"><span class="typ">wchar</span></code> or <code class="lang-d"><span class="typ">dchar</span></code>.
+			</nav><h2 id="0">Struct BasicString</h2><p>The <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> is the generalization of struct string for character of type <code class="lang-d"><span class="typ">char</span></code>, <code class="lang-d"><span class="typ">wchar</span></code> or <code class="lang-d"><span class="typ">dchar</span></code>.
 </p>
 			<div class="prototype">
 				<code class="lang-d">
@@ -99,10 +97,10 @@ $('#symbolSearchPane').show();</script>
 					</div>
 				</code>
 			</div>
-			<section><p><code class="lang-d"><span class="typ">BasicString</span></code> use utf-8, utf-16 or utf-32 encoding.
+			<section><p><code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> use utf-8, utf-16 or utf-32 encoding.
 </p>
 
-<p>	<code class="lang-d"><span class="typ">BasicString</span></code> use SSO (Small String Optimization).
+<p>	<code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> use SSO (Small String Optimization).
 </p>
 
 <p>	Template parameters:
@@ -114,7 +112,7 @@ $('#symbolSearchPane').show();</script>
 <p>		<code class="lang-d"><span class="pln">_Allocator</span></code> Type of the allocator object used to define the storage allocation model. By default Mallocator is used.
 </p>
 
-<p>		<code class="lang-d"><span class="pln">_Padding</span></code> Additional size of struct <code class="lang-d"><span class="typ">BasicString</span></code>, increase max length of small string.
+<p>		<code class="lang-d"><span class="pln">_Padding</span></code> Additional size of struct <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code>, increase max length of small string.
 </p>
 </section>
 
@@ -669,7 +667,7 @@ $('#symbolSearchPane').show();</script>
 					</tr>
 				</table>
 			</section>
-			<h2 id="1">Alias BasicString</h2><p>Alias to <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> with different order of template parameters
+			<h2 id="1">Alias BasicString</h2><p>Alias to <code class="lang-d"><span class="typ">BasicString</span></code> with different order of template parameters
 </p>
 			<div class="prototype">
 				<code class="lang-d">
@@ -684,7 +682,7 @@ $('#symbolSearchPane').show();</script>
 
 <pre class="code"><code class="lang-d"><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">experimental<wbr/></span><span class="pun">.</span><span class="pln">allocator<wbr/></span><span class="pun">.</span><span class="pln">mallocator </span><span class="pun">: </span><span class="typ">Mallocator</span><span class="pun">;
 
-</span><span class="kwd">alias <a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> </span><span class="pun">= <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(
+</span><span class="kwd">alias <a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> </span><span class="pun">= </span><span class="typ">BasicString</span><span class="pun">!(
 	</span><span class="typ">char</span><span class="pun">,               </span><span class="com">//character type
 	</span><span class="typ">Mallocator</span><span class="pun">,         </span><span class="com">//allocator type (can be stateless or with state)
 	</span><span class="lit">32                  </span><span class="com">//additional padding to increas max size of small string (small string does not allocate memory).

@@ -4,13 +4,10 @@ import std.traits : Unqual, Unconst, isSomeChar, isSomeString, isIntegral;
 
 import btl.internal.mallocator;
 import btl.internal.traits;
+import btl.internal.forward;
 
 import btl.string.encoding;
 
-
-/*
-*/
-package struct Forward{}
 
 
 package template isBasicStringCore(T){
