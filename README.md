@@ -20,4 +20,4 @@ This is colection of packages:
   - [String](https://submada.github.io/btl/btl/string/String.html) alias to `BasicString!char`.
 
 ## History
-This repositories was in past divided into 3 packages: **`autoptr`**, **`small-vector`** and **`basic-string`** but they shared meny internal parts so I unite them under one repository. 
+This repository was in past divided into 3 repositories: **`autoptr`**, **`small-vector`** and **`basic-string`** but they shared meny internal parts so I unite them under one. 
