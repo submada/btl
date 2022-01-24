@@ -8,11 +8,11 @@ This is colection of packages:
   - [RcPtr](https://submada.github.io/btl/btl/autoptr/rc_ptr/RcPtr.html) reference counted pointer with limited support for aliasing (but small size and lock free manipulation of pointer) and optional weak pointer support.
   - [IntrusivePtr](https://submada.github.io/btl/btl/autoptr/intrusive_ptr/IntrusivePtr.html) reference counted pointer with reference counting inside of managed object with limited support for aliasing (but small size and lock free manipulation of pointer) and optional weak pointer support.
   - [UniquePtr](https://submada.github.io/btl/btl/autoptr/unique_ptr/UniquePtr.html) non copyable owning pointer that owns and manages object through a pointer and disposes of that object when goes out of scope. 
-- **[btl:vector](https://submada.github.io/btl/btl/vector.html)** dynamic array like c++ `std::vector` and `folly::small_vector`
+- **btl:vector** dynamic array like c++ `std::vector` and `folly::small_vector`
   - [Vector](https://submada.github.io/btl/btl/vector/Vector.html) sequence container with growable capacity.
   - [SmallVector](https://submada.github.io/btl/btl/vector/SmallVector.html) sequence container with growable capacity that implements small buffer optimization for `N` elements.
   - [FixedVector](https://submada.github.io/btl/btl/vector/FixedVector.html) sequence container with max `N` elements.
-- **[btl:string](https://submada.github.io/btl/btl/string.html)** mutable string with small string optimization like c++ `std::basic_string` and `std::string`
+- **btl:string** mutable string with small string optimization like c++ `std::basic_string` and `std::string`
   - [BasicString](https://submada.github.io/btl/btl/string/BasicString.html) The `BasicString` is the generalization of struct string for character type char, wchar and dchar.
   - [String](https://submada.github.io/btl/btl/string/String.html) alias to `BasicString!char`.
 
