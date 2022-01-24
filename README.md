@@ -6,7 +6,7 @@ https://submada.github.io/btl
 ## About
 This is colection of subbackages:
   
-- [btl:autoptr](https://submada.github.io/btl/btl/autoptr.html): smart pointers like c++ `std::shared_ptr`, `std::weak_ptr`, `std::enable_shared_from_this` and more.
+- `btl:autoptr`: smart pointers like c++ `std::shared_ptr`, `std::weak_ptr`, `std::enable_shared_from_this` and more.
   - [SharedPtr](https://submada.github.io/btl/btl/autoptr/shared_ptr/SharedPtr.html)
   - [RcPtr](https://submada.github.io/btl/btl/autoptr/rc_ptr/RcPtr.html)
   - [IntrusivePtr](https://submada.github.io/btl/btl/autoptr/intrusive_ptr/IntrusivePtr.html)
