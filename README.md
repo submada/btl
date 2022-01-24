@@ -18,3 +18,6 @@ This is colection of packages:
 - **[btl:string](https://submada.github.io/btl/btl/string.html)** mutable string with small string optimization like c++ `std::basic_string` and `std::string`
   - [BasicString](https://submada.github.io/btl/btl/string/BasicString.html) The `BasicString` is the generalization of struct string for character type char, wchar and dchar.
   - [String](https://submada.github.io/btl/btl/string/String.html) alias to `BasicString!char`.
+
+## History
+This repositories was in past divided into 3 packages: **`autoptr`**, **`small-vector`** and **`basic-string`** but they shared meny internal parts so I unite them under one repository. 
