@@ -232,8 +232,8 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 
 
 		/**
-            Forward constructor (merge move and copy constructor).
-        */
+			Forward constructor (merge move and copy constructor).
+		*/
 		public this(Rhs, this This)(auto ref scope Rhs rhs, Forward)@trusted //if rhs is rvalue then dtor is called on empty rhs
 		if(    isSmartPtr!Rhs	//(isSharedPtr!Rhs || isRcPtr!Rhs || isIntrusivePtr!Rhs)
 			&& isConstructable!(rhs, This)
@@ -1925,128 +1925,128 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 
 ///
 unittest{
-    static class Foo{
-        int i;
+	static class Foo{
+		int i;
 
-        this(int i)pure nothrow @safe @nogc{
-            this.i = i;
-        }
-    }
+		this(int i)pure nothrow @safe @nogc{
+			this.i = i;
+		}
+	}
 
-    static class Bar : Foo{
-        double d;
+	static class Bar : Foo{
+		double d;
 
-        this(int i, double d)pure nothrow @safe @nogc{
-            super(i);
-            this.d = d;
-        }
-    }
+		this(int i, double d)pure nothrow @safe @nogc{
+			super(i);
+			this.d = d;
+		}
+	}
 
-    static class Zee : Bar{
-        bool b;
+	static class Zee : Bar{
+		bool b;
 
-        this(int i, double d, bool b)pure nothrow @safe @nogc{
-            super(i, d);
-            this.b = b;
-        }
+		this(int i, double d, bool b)pure nothrow @safe @nogc{
+			super(i, d);
+			this.b = b;
+		}
 
-        ~this()nothrow @system{
-        }
-    }
+		~this()nothrow @system{
+		}
+	}
 
-    ///simple:
-    {
-        SharedPtr!long a = SharedPtr!long.make(42);
-        assert(a.useCount == 1);
+	///simple:
+	{
+		SharedPtr!long a = SharedPtr!long.make(42);
+		assert(a.useCount == 1);
 
-        SharedPtr!(const long) b = a;
-        assert(a.useCount == 2);
+		SharedPtr!(const long) b = a;
+		assert(a.useCount == 2);
 
-        SharedPtr!long.WeakType w = a.weak; //or WeakPtr!long
-        assert(a.useCount == 2);
-        assert(a.weakCount == 1);
+		SharedPtr!long.WeakType w = a.weak; //or WeakPtr!long
+		assert(a.useCount == 2);
+		assert(a.weakCount == 1);
 
-        SharedPtr!long c = w.lock;
-        assert(a.useCount == 3);
-        assert(a.weakCount == 1);
+		SharedPtr!long c = w.lock;
+		assert(a.useCount == 3);
+		assert(a.weakCount == 1);
 
-        assert(*c == 42);
-        assert(c.get == 42);
-    }
+		assert(*c == 42);
+		assert(c.get == 42);
+	}
 
-    ///polymorphism and aliasing:
-    {
-        ///create SharedPtr
-        SharedPtr!Foo foo = SharedPtr!Bar.make(42, 3.14);
-        SharedPtr!Zee zee = SharedPtr!Zee.make(42, 3.14, false);
+	///polymorphism and aliasing:
+	{
+		///create SharedPtr
+		SharedPtr!Foo foo = SharedPtr!Bar.make(42, 3.14);
+		SharedPtr!Zee zee = SharedPtr!Zee.make(42, 3.14, false);
 
-        ///dynamic cast:
-        SharedPtr!Bar bar = dynCast!Bar(foo);
-        assert(bar != null);
-        assert(foo.useCount == 2);
+		///dynamic cast:
+		SharedPtr!Bar bar = dynCast!Bar(foo);
+		assert(bar != null);
+		assert(foo.useCount == 2);
 
-        ///this doesnt work because Foo destructor attributes are more restrictive then Zee's:
-        //SharedPtr!Foo x = zee;
+		///this doesnt work because Foo destructor attributes are more restrictive then Zee's:
+		//SharedPtr!Foo x = zee;
 
-        ///this does work:
-        SharedPtr!(Foo, DestructorType!(Foo, Zee)) x = zee;
-        assert(zee.useCount == 2);
+		///this does work:
+		SharedPtr!(Foo, DestructorType!(Foo, Zee)) x = zee;
+		assert(zee.useCount == 2);
 
-        ///aliasing (shared ptr `d` share ref counting with `bar`):
-        SharedPtr!double d = SharedPtr!double(bar, &bar.get.d);
-        assert(d != null);
-        assert(*d == 3.14);
-        assert(foo.useCount == 3);
-    }
-
-
-    ///multi threading:
-    {
-        ///create SharedPtr with atomic ref counting
-        SharedPtr!(shared Foo) foo = SharedPtr!(shared Bar).make(42, 3.14);
-
-        ///this doesnt work:
-        //foo.get.i += 1;
-
-        import core.atomic : atomicFetchAdd;
-        atomicFetchAdd(foo.get.i, 1);
-        assert(foo.get.i == 43);
+		///aliasing (shared ptr `d` share ref counting with `bar`):
+		SharedPtr!double d = SharedPtr!double(bar, &bar.get.d);
+		assert(d != null);
+		assert(*d == 3.14);
+		assert(foo.useCount == 3);
+	}
 
 
-        ///creating `shared(SharedPtr)`:
-        shared SharedPtr!(shared Bar) bar = share(dynCast!Bar(foo));
+	///multi threading:
+	{
+		///create SharedPtr with atomic ref counting
+		SharedPtr!(shared Foo) foo = SharedPtr!(shared Bar).make(42, 3.14);
 
-        ///`shared(SharedPtr)` is not lock free but `RcPtr` is lock free.
-        static assert(typeof(bar).isLockFree == false);
+		///this doesnt work:
+		//foo.get.i += 1;
 
-        ///multi thread operations (`load`, `store`, `exchange` and `compareExchange`):
-        SharedPtr!(shared Bar) bar2 = bar.load();
-        assert(bar2 != null);
-        assert(bar2.useCount == 3);
+		import core.atomic : atomicFetchAdd;
+		atomicFetchAdd(foo.get.i, 1);
+		assert(foo.get.i == 43);
 
-        SharedPtr!(shared Bar) bar3 = bar.exchange(null);
-        assert(bar3 != null);
-        assert(bar3.useCount == 3);
-    }
 
-    ///dynamic array:
-    {
-        import std.algorithm : all, equal;
+		///creating `shared(SharedPtr)`:
+		shared SharedPtr!(shared Bar) bar = share(dynCast!Bar(foo));
 
-        SharedPtr!(long[]) a = SharedPtr!(long[]).make(10, -1);
-        assert(a.length == 10);
-        assert(a.get.length == 10);
-        assert(a.get.all!(x => x == -1));
+		///`shared(SharedPtr)` is not lock free but `RcPtr` is lock free.
+		static assert(typeof(bar).isLockFree == false);
 
-        for(long i = 0; i < a.length; ++i){
-            a.get[i] = i;
-        }
-        assert(a.get[] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+		///multi thread operations (`load`, `store`, `exchange` and `compareExchange`):
+		SharedPtr!(shared Bar) bar2 = bar.load();
+		assert(bar2 != null);
+		assert(bar2.useCount == 3);
 
-        ///aliasing:
-        SharedPtr!long a6 = SharedPtr!long(a, &a.get[6]);
-        assert(*a6 == a.get[6]);
-    }
+		SharedPtr!(shared Bar) bar3 = bar.exchange(null);
+		assert(bar3 != null);
+		assert(bar3.useCount == 3);
+	}
+
+	///dynamic array:
+	{
+		import std.algorithm : all, equal;
+
+		SharedPtr!(long[]) a = SharedPtr!(long[]).make(10, -1);
+		assert(a.length == 10);
+		assert(a.get.length == 10);
+		assert(a.get.all!(x => x == -1));
+
+		for(long i = 0; i < a.length; ++i){
+			a.get[i] = i;
+		}
+		assert(a.get[] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+		///aliasing:
+		SharedPtr!long a6 = SharedPtr!long(a, &a.get[6]);
+		assert(*a6 == a.get[6]);
+	}
 }
 
 
@@ -3972,45 +3972,45 @@ unittest{
 
 
 @safe pure nothrow @nogc unittest{
-    {
-        auto p = SharedPtr!long.make(42);
+	{
+		auto p = SharedPtr!long.make(42);
 
-        apply!((scope long* a, scope long* b){
-            assert(p.useCount == 3);
-            assert(a !is null);
-            assert(b !is null);
+		apply!((scope long* a, scope long* b){
+			assert(p.useCount == 3);
+			assert(a !is null);
+			assert(b !is null);
 
-            assert(a is b);
-            assert(*a == 42);
-        })(p, p);
+			assert(a is b);
+			assert(*a == 42);
+		})(p, p);
 
-    }
+	}
 
-    {
-        auto p = SharedPtr!long.make(42);
+	{
+		auto p = SharedPtr!long.make(42);
 
-        apply!((scope long* a, scope long* b){
-            assert(p.useCount == 3);
-            assert(a !is null);
-            assert(b !is null);
+		apply!((scope long* a, scope long* b){
+			assert(p.useCount == 3);
+			assert(a !is null);
+			assert(b !is null);
 
-            assert(a is b);
-            assert(*a == 42);
-        })(p, p.weak());
-    }
+			assert(a is b);
+			assert(*a == 42);
+		})(p, p.weak());
+	}
 
-    {
-        auto p = SharedPtr!long.make(42);
-        auto w = SharedPtr!long.make(123).weak();
-        assert(w.expired);
+	{
+		auto p = SharedPtr!long.make(42);
+		auto w = SharedPtr!long.make(123).weak();
+		assert(w.expired);
 
-        apply!((scope long* a, scope long* b){
-            assert(p.useCount == 2);
-            assert(a !is null);
-            assert(b is null);
+		apply!((scope long* a, scope long* b){
+			assert(p.useCount == 2);
+			assert(a !is null);
+			assert(b is null);
 
-            assert(*a == 42);
-        })(p, w);
-    }
+			assert(*a == 42);
+		})(p, w);
+	}
 
 }

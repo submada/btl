@@ -27,6 +27,11 @@ import btl.string.core;
 alias Forward = btl.internal.forward.Forward;
 
 
+/**
+    Default allcoator for `BasicString`.
+*/
+public alias DefaultAllocator = Mallocator;
+
 
 /**
 	True if `T` is a `BasicString` or implicitly converts to one, otherwise false.
@@ -58,14 +63,14 @@ alias String = BasicString!char;
 
 		`_Char` Character type. (`char`, `wchar` or `dchar`).
 
-		`_Allocator` Type of the allocator object used to define the storage allocation model. By default Mallocator is used.
+		`_Allocator` Type of the allocator object used to define the storage allocation model. By default `DefaultAllocator` is used.
 
 		`_Padding` Additional size of struct `BasicString`, increase max length of small string.
 
 */
 template BasicString(
 	_Char,
-	_Allocator = Mallocator,
+	_Allocator = DefaultAllocator,
 	size_t _Padding = 0,
 )
 if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
@@ -94,7 +99,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 
 		/**
-			Type of the allocator object used to define the storage allocation model. By default Mallocator is used.
+			Type of the allocator object used to define the storage allocation model. By default `DefaultAllocator` is used.
 		*/
 		public alias AllocatorType = Core.AllocatorType;
 
@@ -656,7 +661,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			Examples:
 				--------------------
 				{
-					BasicString!(char, Mallocator) str = Mallocator.init;
+					BasicString!(char, DefaultAllocator) str = DefaultAllocator.init;
 					assert(str.empty);
 				}
 				--------------------
@@ -704,7 +709,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			Examples:
 				--------------------
 				{
-					auto str = BasicString!(char, Mallocator)('読', Mallocator.init);
+					auto str = BasicString!(char, DefaultAllocator)('読', DefaultAllocator.init);
 					assert(str == "読");
 				}
 				--------------------
@@ -765,19 +770,19 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			Examples:
 				--------------------
 				{
-					auto str = BasicString!(char, Mallocator)("test", Mallocator.init);
+					auto str = BasicString!(char, DefaultAllocator)("test", DefaultAllocator.init);
 					assert(str == "test");
 				}
 
 				{
-					auto str = BasicString!(char, Mallocator)("test 読"d, Mallocator.init);
+					auto str = BasicString!(char, DefaultAllocator)("test 読"d, DefaultAllocator.init);
 					assert(str == "test 読");
 				}
 
 				{
 
 					wchar[3] data = [cast(wchar)'1', '2', '3'];
-					auto str = BasicString!(char, Mallocator)(data[], Mallocator.init);
+					auto str = BasicString!(char, DefaultAllocator)(data[], DefaultAllocator.init);
 					assert(str == "123");
 				}
 				--------------------
@@ -835,12 +840,12 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			Examples:
 				--------------------
 				{
-					auto str = BasicString!(char, Mallocator)(123uL, Mallocator.init);
+					auto str = BasicString!(char, DefaultAllocator)(123uL, DefaultAllocator.init);
 					assert(str == "123");
 				}
 
 				{
-					auto str = BasicString!(dchar, Mallocator)(-123, Mallocator.init);
+					auto str = BasicString!(dchar, DefaultAllocator)(-123, DefaultAllocator.init);
 					assert(str == "-123");
 				}
 				--------------------
@@ -878,7 +883,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 				{
 					BasicString!dchar a = "123";
-					auto b = BasicString!char(a, Mallocator.init);
+					auto b = BasicString!char(a, DefaultAllocator.init);
 					assert(b == "123");
 				}
 
@@ -1854,7 +1859,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 template BasicString(
 	_Char,
 	size_t _Padding,
-	_Allocator = Mallocator
+	_Allocator = DefaultAllocator
 )
 if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 	alias BasicString = .BasicString!(_Char, _Allocator, _Padding);
@@ -1864,11 +1869,9 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 ///
 pure nothrow @safe @nogc unittest {
-	import std.experimental.allocator.mallocator : Mallocator;
-
 	alias String = BasicString!(
 		char,               //character type
-		Mallocator,         //allocator type (can be stateless or with state)
+		DefaultAllocator,   //allocator type (can be stateless or with state)
 		32                  //additional padding to increas max size of small string (small string does not allocate memory).
 	);
 
@@ -2187,7 +2190,7 @@ version(unittest){
 	//doc.ctor(allocator):
 	pure nothrow @safe @nogc unittest{
 		{
-			BasicString!(char, Mallocator) str = Mallocator.init;
+			BasicString!(char, DefaultAllocator) str = DefaultAllocator.init;
 			assert(str.empty);
 		}
 	}
@@ -2208,7 +2211,7 @@ version(unittest){
 	//doc.ctor(character, allocator):
 	pure nothrow @safe @nogc unittest{
 		{
-			auto str = BasicString!(char, Mallocator)('読', Mallocator.init);
+			auto str = BasicString!(char, DefaultAllocator)('読', DefaultAllocator.init);
 			assert(str == "読");
 		}
 	}
@@ -2235,18 +2238,18 @@ version(unittest){
 	//doc.ctor(slice, allocator):
 	pure nothrow @safe @nogc unittest{
 		{
-			auto str = BasicString!(char, Mallocator)("test", Mallocator.init);
+			auto str = BasicString!(char, DefaultAllocator)("test", DefaultAllocator.init);
 			assert(str == "test");
 		}
 
 		{
-			auto str = BasicString!(char, Mallocator)("test 読"d, Mallocator.init);
+			auto str = BasicString!(char, DefaultAllocator)("test 読"d, DefaultAllocator.init);
 			assert(str == "test 読");
 		}
 
 		{
 			wchar[3] data = [cast(wchar)'1', '2', '3'];
-			auto str = BasicString!(char, Mallocator)(data[], Mallocator.init);
+			auto str = BasicString!(char, DefaultAllocator)(data[], DefaultAllocator.init);
 			assert(str == "123");
 		}
 	}
@@ -2267,12 +2270,12 @@ version(unittest){
 	//doc.ctor(integer, allocator):
 	pure nothrow @safe @nogc unittest{
 		{
-			auto str = BasicString!(char, Mallocator)(123uL, Mallocator.init);
+			auto str = BasicString!(char, DefaultAllocator)(123uL, DefaultAllocator.init);
 			assert(str == "123");
 		}
 
 		{
-			auto str = BasicString!(dchar, Mallocator)(-123, Mallocator.init);
+			auto str = BasicString!(dchar, DefaultAllocator)(-123, DefaultAllocator.init);
 			assert(str == "-123");
 		}
 	}
@@ -2294,7 +2297,7 @@ version(unittest){
 
 		{
 			BasicString!dchar a = "123";
-			auto b = BasicString!char(a, Mallocator.init);
+			auto b = BasicString!char(a, DefaultAllocator.init);
 			assert(b == "123");
 		}
 
@@ -2629,7 +2632,7 @@ version(unittest){
 
 //normal ut
 version(unittest){
-	version(basic_string_unittest)
+	version(BTL_BASIC_STRING_TESTS)
 	struct TestStatelessAllocator(bool Realloc){
 		import std.experimental.allocator.common : stateSize;
 
@@ -2726,7 +2729,7 @@ version(unittest){
 		static typeof(this) instance;
 	}
 
-	version(basic_string_unittest)
+	version(BTL_BASIC_STRING_TESTS)
 	class TestStateAllocator(bool Realloc){
 		import std.experimental.allocator.common : stateSize;
 
@@ -2824,7 +2827,7 @@ version(unittest){
 
 
 
-	version(basic_string_unittest){
+	version(BTL_BASIC_STRING_TESTS){
 		private auto trustedSlice(S)(auto ref scope S str)@trusted{
 			return str[];
 		}
@@ -3488,7 +3491,7 @@ version(unittest){
 	}
 
 
-	version(basic_string_unittest)
+	version(BTL_BASIC_STRING_TESTS)
 	void unittest_impl(Char, Allocator)(Allocator allocator){
 		unittest_allocator_impl!Char(allocator);
 
@@ -3514,7 +3517,7 @@ version(unittest){
 
 
 
-	version(basic_string_unittest)
+	version(BTL_BASIC_STRING_TESTS)
 	void unittest_impl(Allocator)(Allocator allocator = Allocator.init){
 		import std.stdio : writeln;
 		import std.range : only;
@@ -3525,12 +3528,12 @@ version(unittest){
 
 	}
 
-	version(basic_string_unittest)
+	version(BTL_BASIC_STRING_TESTS)
 	@nogc @safe pure nothrow unittest{
 		unittest_impl!Mallocator();
 	}
 
-	version(basic_string_unittest)
+	version(BTL_BASIC_STRING_TESTS)
 	nothrow unittest{
 		version(D_BetterC){}
 		else{
@@ -3581,7 +3584,7 @@ version(unittest){
 				}
 			}
 		}
-	}
+    }
 
 }
 

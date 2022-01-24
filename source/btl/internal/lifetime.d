@@ -114,23 +114,6 @@ public template DtorType(Type){
     alias DtorType = typeof(&impl!());
 }
 
-/+
-public void initElements(T)(T[] elements)nothrow{
-    enum has_init = __traits(compiles, () => emplaceElement(elm));
-
-    static if(has_init){
-        foreach(ref elm; elements)
-            emplaceElement(elm);
-        return true;
-    }
-    else{
-        import std.traits : Unqual;
-
-        assert(0, "fatal error: " ~ Unqual!T.stringof ~ " has @disabled init");
-
-    }
-}
-+/
 
 
 //emplaceImpl & emplaceRangeImpl & emplaceClassImpl

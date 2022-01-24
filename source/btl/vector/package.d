@@ -28,6 +28,11 @@ debug import std.stdio : writeln;
 alias Forward = btl.internal.forward.Forward;
 
 
+/**
+    Default allcoator for `Vector`.
+*/
+public alias DefaultAllocator = Mallocator;
+
 
 /**
     True if `T` is a `Vector` or implicitly converts to one, otherwise false.
@@ -55,7 +60,7 @@ if(T.length == 1){
 
         `N` Number of preallocated space for elements.
 
-        `_Allocator` Type of the allocator object used to define the storage allocation model. By default Mallocator is used.
+        `_Allocator` Type of the allocator object used to define the storage allocation model. By default `DefaultAllocator` is used.
 
 
     @safe:
@@ -76,7 +81,7 @@ if(T.length == 1){
 template Vector(
     _Type,
     size_t N = 0,
-    _Allocator = Mallocator,
+    _Allocator = DefaultAllocator,
     bool _supportGC = platformSupportGC
 ){
 
@@ -121,7 +126,7 @@ template Vector(
 
 
         /**
-            Type of the allocator object used to define the storage allocation model. By default Mallocator is used.
+            Type of the allocator object used to define the storage allocation model. By default `DefaultAllocator` is used.
         */
         public alias AllocatorType = _Allocator;/+Select!(
             _allowHeap,
@@ -331,7 +336,7 @@ template Vector(
             Examples:
                 --------------------
                 {
-                    Vector!(int, 6) vec = Mallocator.init;
+                    Vector!(int, 6) vec = DefaultAllocator.init;
                     assert(vec.empty);
                 }
                 --------------------
@@ -2735,7 +2740,7 @@ if(N > 0){
 template SmallVector(
     _Type,
     size_t N ,
-    _Allocator = Mallocator,
+    _Allocator = DefaultAllocator,
     bool _supportGC = platformSupportGC
 )
 if(N > 0){
