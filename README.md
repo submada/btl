@@ -20,4 +20,4 @@ This is colection of packages:
 https://submada.github.io/btl
 
 ## History
-This repository was in past divided into 3 repositories: **`autoptr`**, **`small-vector`** and **`basic-string`** but they shared meny internal parts so I unite them under one. 
+This repository was in past divided into 3 repositories: **`autoptr`**, **`small-vector`** and **`basic-string`** but they shared many internal parts so I unite them under one. 
