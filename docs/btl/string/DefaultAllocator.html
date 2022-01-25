@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Alias Vector.AllocatorType</title>
+		<title>Alias DefaultAllocator</title>
 		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
@@ -56,12 +56,12 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 				</li>
 				<li>
-					<div class="module ">
+					<div class="module selected">
 						<a href="../../btl/string.html">string</a>
 					</div>
 				</li>
 				<li>
-					<div class="module selected">
+					<div class="module ">
 						<a href="../../btl/vector.html">vector</a>
 					</div>
 				</li>
@@ -70,25 +70,13 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Alias Vector.AllocatorType</h1><p>Type of the allocator object used to define the storage allocation model. By default <code class="lang-d"><a href="../../btl/vector/DefaultAllocator.html"><span class="typ">DefaultAllocator</span></a></code> is used.
+			<h1>Alias DefaultAllocator</h1><p>Default allcoator for <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code>.
 </p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="kwd">struct</span> <a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a>
-			<br/>
-			<span class="pun">
-				{
-				<br/>
-			</span>
-			&nbsp;&nbsp;<span class="com">// ...</span>
-			<br/>
-			&nbsp;&nbsp;<span class="kwd">alias</span> <span class="pln">AllocatorType</span>
-			 <span class="pun">=</span> <span class="pln">_Allocator</span><span class="pun">;</span>
-			<br/>
-			&nbsp;&nbsp;<span class="com">// ...</span>
-			<br/>
-			<span class="pun">}</span>
+			<span class="kwd">alias</span> <span class="pln">DefaultAllocator</span>
+			 <span class="pun">=</span> <span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">experimental<wbr/></span><span class="pun">.</span><span class="pln">allocator<wbr/></span><span class="pun">.</span><span class="pln">mallocator<wbr/></span><span class="pun">.</span><span class="typ">Mallocator</span><span class="pun">;</span>
 					</div>
 				</code>
 			</div>
@@ -99,7 +87,7 @@ $('#symbolSearchPane').show();</script>
 					<tr>
 						<th>Authors</th>
 						<td>
-							<p>github.com/submada/basic_string, Adam Búš
+							<p>github.com/submada/btl.string, Adam Búš
 </p>
 
 						</td>

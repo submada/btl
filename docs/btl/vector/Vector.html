@@ -115,7 +115,7 @@ $('#symbolSearchPane').show();</script>
 <p>        <code class="lang-d"><span class="pln">N</span></code> Number of preallocated space for elements.
 </p>
 
-<p>        <code class="lang-d"><span class="pln">_Allocator</span></code> Type of the allocator object used to define the storage allocation model. By default Mallocator is used.
+<p>        <code class="lang-d"><span class="pln">_Allocator</span></code> Type of the allocator object used to define the storage allocation model. By default <code class="lang-d"><a href="../../btl/vector/DefaultAllocator.html"><span class="typ">DefaultAllocator</span></a></code> is used.
 </p>
 
 
@@ -270,7 +270,7 @@ $('#symbolSearchPane').show();</script>
 							</a>
 							<span class="tableEntryAnnotation">(pos)</span>
 						</td>
-						<td>Returns a copy to the element at position <code class="lang-d"><a href="../../btl/vector/Vector.at.html#pos"><span class="pln">pos</span></a></code>.
+						<td>Returns reference to element at specified location <code class="lang-d"><a href="../../btl/vector/Vector.at.html#pos"><span class="pln">pos</span></a></code>.
 </td>
 					</tr>
 					<tr>
@@ -288,7 +288,7 @@ $('#symbolSearchPane').show();</script>
 							<a href="../../btl/vector/Vector.build.html" class="public">
 								<code>build</code>
 							</a>
-							<span class="tableEntryAnnotation">(args)</span>
+							<span class="tableEntryAnnotation">(allocator, args)</span>
 						</td>
 						<td>Static function which return <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> construct from arguments <code class="lang-d"><a href="../../btl/vector/Vector.build.html#args"><span class="pln">args</span></a></code>.
 </td>
@@ -440,7 +440,27 @@ $('#symbolSearchPane').show();</script>
 							</a>
 							<span class="tableEntryAnnotation">(pos)</span>
 						</td>
-						<td>Returns reference to element at specified location <code class="lang-d"><a href="../../btl/vector/Vector.opIndex.html#pos"><span class="pln">pos</span></a></code>.
+						<td>Returns a copy to the element at position <code class="lang-d"><a href="../../btl/vector/Vector.opIndex.html#pos"><span class="pln">pos</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.opIndexAssign.html" class="public">
+								<code>opIndexAssign</code>
+							</a>
+							<span class="tableEntryAnnotation">(val, index)</span>
+						</td>
+						<td>Assign value <code class="lang-d"><a href="../../btl/vector/Vector.opIndexAssign.html#val"><span class="pln">val</span></a></code> to element at position <code class="lang-d"><a href="../../btl/vector/Vector.opIndexAssign.html#index"><span class="pln">index</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.opIndexOpAssign.html" class="public">
+								<code>opIndexOpAssign</code>
+							</a>
+							<span class="tableEntryAnnotation">(val, index)</span>
+						</td>
+						<td>Assign <code class="lang-d"><span class="pln">op</span></code> value <code class="lang-d"><a href="../../btl/vector/Vector.opIndexOpAssign.html#val"><span class="pln">val</span></a></code> to element at position <code class="lang-d"><a href="../../btl/vector/Vector.opIndexOpAssign.html#index"><span class="pln">index</span></a></code>.
 </td>
 					</tr>
 					<tr>
@@ -557,7 +577,7 @@ $('#symbolSearchPane').show();</script>
 								<code>AllocatorType</code>
 							</a>
 						</td>
-						<td>Type of the allocator object used to define the storage allocation model. By default Mallocator is used.
+						<td>Type of the allocator object used to define the storage allocation model. By default <code class="lang-d"><a href="../../btl/vector/DefaultAllocator.html"><span class="typ">DefaultAllocator</span></a></code> is used.
 </td>
 					</tr>
 					<tr>

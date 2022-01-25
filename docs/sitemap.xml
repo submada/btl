@@ -280,10 +280,12 @@
 <url><loc>http://127.0.0.1/btl/string/BasicString.this.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.toHash.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.valid.html</loc></url>
+<url><loc>http://127.0.0.1/btl/string/DefaultAllocator.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/Forward.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/isBasicString.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/String.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector.html</loc></url>
+<url><loc>http://127.0.0.1/btl/vector/DefaultAllocator.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/FixedVector.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Forward.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/isVector.html</loc></url>
@@ -337,6 +339,10 @@
 <url><loc>http://127.0.0.1/btl/vector/Vector.opEquals.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.opIndex.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.opIndex.html</loc></url>
+<url><loc>http://127.0.0.1/btl/vector/Vector.opIndexAssign.html</loc></url>
+<url><loc>http://127.0.0.1/btl/vector/Vector.opIndexAssign.html</loc></url>
+<url><loc>http://127.0.0.1/btl/vector/Vector.opIndexOpAssign.html</loc></url>
+<url><loc>http://127.0.0.1/btl/vector/Vector.opIndexOpAssign.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.opOpAssign.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.opSlice.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.pop.html</loc></url>

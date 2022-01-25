@@ -70,17 +70,17 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Function Vector.at</h1><p>Returns a copy to the element at position <code class="lang-d"><a href="../../btl/vector/Vector.at.html#pos"><span class="pln">pos</span></a></code>.
+			<h1>Function Vector.at</h1><p>Returns reference to element at specified location <code class="lang-d"><a href="../../btl/vector/Vector.at.html#pos"><span class="pln">pos</span></a></code>.
 </p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="typ">CopyTypeQualifiers</span>!(This,ElementType) <span class="pln">at</span>(This)
+			<span class="kwd">inout ref </span><span class="kwd">inout</span><span class="pun">(</span><a href="../../btl/vector/Vector.ElementType.html"><span class="typ">Vector<wbr/></span><span class="pun">.<wbr/></span><span class="typ">ElementType</span></a><span class="pun">)</span> <span class="pln">at</span>
 			<span class="pun">(</span>
 			<br/>
 			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">size_t</span> <span class="pln">pos</span>
 			<br/>
-			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span><span class="pun">;</span>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">pure nothrow @nogc scope @system</span><span class="pun">;</span>
 					</div>
 				</code>
 			</div>

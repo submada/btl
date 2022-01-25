@@ -1301,6 +1301,33 @@ template Vector(
 
 
 
+        /**
+            Returns a slice [begin .. end]. If the requested slice extends past the end of the vector, the returned slice is invalid.
+
+            The slice returned may be invalidated by further calls to other member functions that modify the object.
+
+            Examples:
+                --------------------
+                Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3, 4, 5, 6);
+
+                assert(vec[1 .. 4] == [2, 3, 4]);
+                assert(vec[1 .. $] == [2, 3, 4, 5, 6]);
+                --------------------
+        */
+        public inout(ElementType)[] opSlice(bool check = true)(const size_t begin, const size_t end)inout return pure nothrow @system @nogc{
+            assert(begin <= this.length);
+            assert(end <= this.length);
+
+            return this.ptr[begin .. end];
+
+        }
+
+        //
+        public size_t[2] opSlice(size_t dim : 0)(size_t begin, size_t end)const pure nothrow @safe @nogc{
+            return [begin, end];
+        }
+
+
 
         /**
             Return slice of all elements (same as `Vector.elements`).
@@ -1324,30 +1351,10 @@ template Vector(
             return this.elements();
         }
 
-        /**
-            Returns a slice [begin .. end]. If the requested slice extends past the end of the vector, the returned slice is invalid.
-
-            The slice returned may be invalidated by further calls to other member functions that modify the object.
-
-            Examples:
-                --------------------
-                Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3, 4, 5, 6);
-
-                assert(vec[1 .. 4] == [2, 3, 4]);
-                assert(vec[1 .. $] == [2, 3, 4, 5, 6]);
-                --------------------
-        */
-        public inout(ElementType)[] opSlice(bool check = true)(const size_t begin, const size_t end)inout return pure nothrow @system @nogc{
-            assert(begin <= this.length);
-            assert(end <= this.length);
-
-            return this.ptr[begin .. end];
-
-        }
 
 
         /**
-            Returns reference to element at specified location `pos`.
+            Returns a copy to the element at position `pos`.
 
             Examples:
                 --------------------
@@ -1357,11 +1364,120 @@ template Vector(
                 assert(vec[$-1] == 6);
                 --------------------
         */
-        public ref inout(ElementType) opIndex(const size_t pos)inout scope pure nothrow @system @nogc{
+        public CopyTypeQualifiers!(This, ElementType) opIndex(this This)(const size_t pos)scope{
+            assert(pos < this.length);
+
+            return *(()@trusted => this.ptr + pos )();
+        }
+
+
+
+        /**
+            Returns reference to element at specified location `pos`.
+
+            Examples:
+                --------------------
+                auto vec = Vector!(int, 10).build(1, 2, 3);
+
+                assert(vec.at(1) == 2);
+                --------------------
+        */
+        public ref inout(ElementType) at(const size_t pos)inout scope pure nothrow @system @nogc{
             assert(pos < this.length);
 
             return *(this.ptr + pos);
         }
+
+
+
+        /**
+            Assign value `val` to element at position `index`.
+
+            Examples:
+                --------------------
+                {
+                    auto vec = Vector!(int, 4).build(1, 2, 3, 4, 5);
+
+                    vec[1] = 42;
+
+                    assert(vec == [1, 42, 3, 4, 5]);
+                }
+
+                {
+                    auto vec = Vector!(int, 4).build(1, 2, 3, 4, 5);
+
+                    vec[1 .. $-1] = 42;
+
+                    assert(vec == [1, 42, 42, 42, 5]);
+                }
+                --------------------
+
+        */
+        public void opIndexAssign(Val)(auto ref Val val, size_t index){
+            assert(index < this.length);
+
+            *(()@trusted => (this.ptr + index) )() = forward!val;
+        }
+
+        /// ditto
+        public void opIndexAssign(Val)(auto ref Val val, size_t[2] index){
+            const begin = index[0];
+            const end = index[1];
+            assert(begin <= this.length);
+            assert(end <= this.length);
+
+
+            foreach(ref elm; (()@trusted => this.ptr[begin .. end] )() )
+                elm = val;
+        }
+
+
+
+        /**
+            Assign `op` value `val` to element at position `index`.
+
+            Examples:
+                --------------------
+                {
+                    auto vec = Vector!(int, 4).build(1, 2, 3, 4, 5);
+
+                    vec[1] += 40;
+
+                    assert(vec == [1, 42, 3, 4, 5]);
+                }
+
+                {
+                    auto vec = Vector!(int, 4).build(1, 2, 3, 4, 5);
+
+                    vec[1 .. $-1] *= -1;
+
+                    assert(vec == [1, -2, -3, -4, 5]);
+                }
+                --------------------
+
+        */
+        public void opIndexOpAssign(string op, Val)(auto ref Val val, size_t index){
+            assert(index < this.length);
+
+            ref ElementType elm()@trusted{
+                return *(this.ptr + index);
+            }
+
+            mixin("elm() " ~ op ~ "= forward!val;");
+        }
+
+        /// ditto
+        public void opIndexOpAssign(string op, Val)(auto ref Val val, size_t[2] index){
+            const begin = index[0];
+            const end = index[1];
+            assert(begin <= this.length);
+            assert(end <= this.length);
+
+
+            foreach(ref elm; (()@trusted => this.ptr[begin .. end] )() )
+                mixin("elm " ~ op ~ "= val;");
+        }
+
 
 
         /**
@@ -2349,24 +2465,6 @@ template Vector(
                 assert(0, "empty vector");
 
             return *(()@trusted => (this.ptr + (length - 1)) )();
-        }
-
-
-
-        /**
-            Returns a copy to the element at position `pos`.
-
-            Examples:
-                --------------------
-                auto vec = Vector!(int, 10).build(1, 2, 3);
-
-                assert(vec.at(1) == 2);
-                --------------------
-        */
-        public CopyTypeQualifiers!(This, ElementType) at(this This)(const size_t pos)scope{
-            assert(pos < this.length);
-
-            return *(()@trusted => this.ptr + pos )();
         }
 
 
@@ -3466,7 +3564,46 @@ version(unittest){
             assert(a1 <= a1);
         }
 
-        //Vector.opSlice()
+        //Vector.opIndexAssign
+        pure nothrow @nogc @safe unittest{
+
+            {
+                auto vec = Vector!(int, 4).build(1, 2, 3, 4, 5);
+
+                vec[1] = 42;
+
+                assert(vec == [1, 42, 3, 4, 5]);
+            }
+
+            {
+                auto vec = Vector!(int, 4).build(1, 2, 3, 4, 5);
+
+                vec[1 .. $-1] = 42;
+
+                assert(vec == [1, 42, 42, 42, 5]);
+            }
+        }
+
+        //Vector.opIndexOpAssign
+        pure nothrow @nogc @safe unittest{
+            {
+                auto vec = Vector!(int, 4).build(1, 2, 3, 4, 5);
+
+                vec[1] += 40;
+
+                assert(vec == [1, 42, 3, 4, 5]);
+            }
+
+            {
+                auto vec = Vector!(int, 4).build(1, 2, 3, 4, 5);
+
+                vec[1 .. $-1] *= -1;
+
+                assert(vec == [1, -2, -3, -4, 5]);
+            }
+        }
+
+        //Vector.opIndex()
         pure nothrow @nogc @system unittest{
             Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3);
 
@@ -3856,7 +3993,7 @@ version(unittest){
         }
 
         //Vector.at
-        pure nothrow @nogc @safe unittest{
+        pure nothrow @nogc @system unittest{
             auto vec = Vector!(int, 10).build(1, 2, 3);
 
             assert(vec.at(1) == 2);
@@ -4300,5 +4437,27 @@ pure nothrow @nogc unittest{
 
     vec = Vector!(Foo, 4).build(Foo(-1, "X"), Foo(-2, "Y"));
     assert(equal(vec[].map!(e => e.str), only("X", "Y")));
+
+}
+
+
+//opIndexAssign
+@safe pure nothrow @nogc unittest{
+    auto vec = Vector!int.build(1, 2, 3);
+
+    vec[0] = -1;
+    assert(vec == [-1, 2, 3]);
+
+    vec[1 .. $] = -2;
+    assert(vec == [-1, -2, -2]);
+
+    vec[0] *= -1;
+    assert(vec == [1, -2, -2]);
+
+    vec[1 .. $] *= -1;
+    assert(vec == [1, 2, 2]);
+
+
+
 
 }

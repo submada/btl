@@ -173,7 +173,7 @@ $('#symbolSearchPane').show();</script>
 </section>
 <section><h3>Examples</h3>
 <pre class="code"><code class="lang-d"><span class="pun">{
-	<a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(</span><span class="typ">char</span><span class="pun">, </span><span class="typ">Mallocator</span><span class="pun">) </span><span class="pln">str </span><span class="pun">= </span><span class="typ">Mallocator<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">;
+	<a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(</span><span class="typ">char</span><span class="pun">, <a href="../../btl/string/DefaultAllocator.html"></span><span class="typ">DefaultAllocator</span></a><span class="pun">) </span><span class="pln">str </span><span class="pun">= </span><span class="typ">DefaultAllocator<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">;
 	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">empty</span><span class="pun">);
 }</span></code></pre>
 </section>
@@ -239,7 +239,7 @@ $('#symbolSearchPane').show();</script>
 </section>
 <section><h3>Examples</h3>
 <pre class="code"><code class="lang-d"><span class="pun">{
-	</span><span class="kwd">auto </span><span class="pln">str </span><span class="pun">= <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(</span><span class="typ">char</span><span class="pun">, </span><span class="typ">Mallocator</span><span class="pun">)(</span><span class="str">'読'</span><span class="pun">, </span><span class="typ">Mallocator<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
+	</span><span class="kwd">auto </span><span class="pln">str </span><span class="pun">= <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(</span><span class="typ">char</span><span class="pun">, <a href="../../btl/string/DefaultAllocator.html"></span><span class="typ">DefaultAllocator</span></a><span class="pun">)(</span><span class="str">'読'</span><span class="pun">, </span><span class="typ">DefaultAllocator<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
 	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"読"</span><span class="pun">);
 }</span></code></pre>
 </section>
@@ -329,19 +329,19 @@ $('#symbolSearchPane').show();</script>
 </section>
 <section><h3>Examples</h3>
 <pre class="code"><code class="lang-d"><span class="pun">{
-	</span><span class="kwd">auto </span><span class="pln">str </span><span class="pun">= <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(</span><span class="typ">char</span><span class="pun">, </span><span class="typ">Mallocator</span><span class="pun">)(</span><span class="str">"test"</span><span class="pun">, </span><span class="typ">Mallocator<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
+	</span><span class="kwd">auto </span><span class="pln">str </span><span class="pun">= <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(</span><span class="typ">char</span><span class="pun">, <a href="../../btl/string/DefaultAllocator.html"></span><span class="typ">DefaultAllocator</span></a><span class="pun">)(</span><span class="str">"test"</span><span class="pun">, </span><span class="typ">DefaultAllocator<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
 	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"test"</span><span class="pun">);
 }
 
 {
-	</span><span class="kwd">auto </span><span class="pln">str </span><span class="pun">= <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(</span><span class="typ">char</span><span class="pun">, </span><span class="typ">Mallocator</span><span class="pun">)(</span><span class="str">"test 読"d</span><span class="pun">, </span><span class="typ">Mallocator<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
+	</span><span class="kwd">auto </span><span class="pln">str </span><span class="pun">= <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(</span><span class="typ">char</span><span class="pun">, <a href="../../btl/string/DefaultAllocator.html"></span><span class="typ">DefaultAllocator</span></a><span class="pun">)(</span><span class="str">"test 読"d</span><span class="pun">, </span><span class="typ">DefaultAllocator<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
 	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"test 読"</span><span class="pun">);
 }
 
 {
 
 	</span><span class="typ">wchar</span><span class="pun">[</span><span class="lit">3</span><span class="pun">] </span><span class="pln">data </span><span class="pun">= [</span><span class="kwd">cast</span><span class="pun">(</span><span class="typ">wchar</span><span class="pun">)</span><span class="str">'1'</span><span class="pun">, </span><span class="str">'2'</span><span class="pun">, </span><span class="str">'3'</span><span class="pun">];
-	</span><span class="kwd">auto </span><span class="pln">str </span><span class="pun">= <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(</span><span class="typ">char</span><span class="pun">, </span><span class="typ">Mallocator</span><span class="pun">)(</span><span class="pln">data</span><span class="pun">[], </span><span class="typ">Mallocator<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
+	</span><span class="kwd">auto </span><span class="pln">str </span><span class="pun">= <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(</span><span class="typ">char</span><span class="pun">, <a href="../../btl/string/DefaultAllocator.html"></span><span class="typ">DefaultAllocator</span></a><span class="pun">)(</span><span class="pln">data</span><span class="pun">[], </span><span class="typ">DefaultAllocator<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
 	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"123"</span><span class="pun">);
 }</span></code></pre>
 </section>
@@ -407,12 +407,12 @@ $('#symbolSearchPane').show();</script>
 </section>
 <section><h3>Examples</h3>
 <pre class="code"><code class="lang-d"><span class="pun">{
-	</span><span class="kwd">auto </span><span class="pln">str </span><span class="pun">= <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(</span><span class="typ">char</span><span class="pun">, </span><span class="typ">Mallocator</span><span class="pun">)(</span><span class="lit">123uL</span><span class="pun">, </span><span class="typ">Mallocator<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
+	</span><span class="kwd">auto </span><span class="pln">str </span><span class="pun">= <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(</span><span class="typ">char</span><span class="pun">, <a href="../../btl/string/DefaultAllocator.html"></span><span class="typ">DefaultAllocator</span></a><span class="pun">)(</span><span class="lit">123uL</span><span class="pun">, </span><span class="typ">DefaultAllocator<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
 	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"123"</span><span class="pun">);
 }
 
 {
-	</span><span class="kwd">auto </span><span class="pln">str </span><span class="pun">= <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(</span><span class="typ">dchar</span><span class="pun">, </span><span class="typ">Mallocator</span><span class="pun">)(-</span><span class="lit">123</span><span class="pun">, </span><span class="typ">Mallocator<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
+	</span><span class="kwd">auto </span><span class="pln">str </span><span class="pun">= <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(</span><span class="typ">dchar</span><span class="pun">, <a href="../../btl/string/DefaultAllocator.html"></span><span class="typ">DefaultAllocator</span></a><span class="pun">)(-</span><span class="lit">123</span><span class="pun">, </span><span class="typ">DefaultAllocator<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
 	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"-123"</span><span class="pun">);
 }</span></code></pre>
 </section>
@@ -480,7 +480,7 @@ $('#symbolSearchPane').show();</script>
 
 {
 	<a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">dchar </span><span class="pln">a </span><span class="pun">= </span><span class="str">"123"</span><span class="pun">;
-	</span><span class="kwd">auto </span><span class="pln">b </span><span class="pun">= <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">char</span><span class="pun">(</span><span class="pln">a</span><span class="pun">, </span><span class="typ">Mallocator<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
+	</span><span class="kwd">auto </span><span class="pln">b </span><span class="pun">= <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">char</span><span class="pun">(</span><span class="pln">a</span><span class="pun">, </span><span class="typ">DefaultAllocator<wbr/></span><span class="pun">.</span><span class="pln">init</span><span class="pun">);
 	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">b </span><span class="pun">== </span><span class="str">"123"</span><span class="pun">);
 }
 

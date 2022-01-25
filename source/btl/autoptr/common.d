@@ -883,6 +883,12 @@ package template GetElementType(Ptr){
 	alias GetElementType = CopyTypeQualifiers!(Ptr, Ptr.ElementType);
 }
 
+package template GetElementReferenceType(Ptr){
+    import std.traits : CopyTypeQualifiers;
+
+    alias GetElementReferenceType = ElementReferenceTypeImpl!(GetElementType!Ptr);
+}
+
 
 package template UnqualSmartPtr(Ptr){
 	import std.traits : TemplateOf;
@@ -895,12 +901,6 @@ package template UnqualSmartPtr(Ptr){
 		GetControlType!Ptr,
 		Ptr.isWeak
 	);
-}
-
-package template GetElementReferenceType(Ptr){
-	import std.traits : CopyTypeQualifiers;
-
-	alias GetElementReferenceType = ElementReferenceTypeImpl!(GetElementType!Ptr);
 }
 
 package template ElementReferenceTypeImpl(T){
