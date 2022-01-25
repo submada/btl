@@ -28,7 +28,7 @@ alias Forward = btl.internal.forward.Forward;
 
 
 /**
-    Default allcoator for `BasicString`.
+	Default allcoator for `BasicString`.
 */
 public alias DefaultAllocator = Mallocator;
 
@@ -1281,7 +1281,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				--------------------
 		*/
 		public CharType opIndex(const size_t pos)const scope pure nothrow @trusted @nogc{
-			assert(0 <= pos && pos < this.length);
+			this._bounds_check(pos);
 
 			return *(this.ptr + pos);
 		}
@@ -1301,6 +1301,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				--------------------
 		*/
 		public inout(CharType)[] opSlice(const size_t begin, const size_t end)inout return pure nothrow @system @nogc{
+			this._bounds_check([begin, end]);
 			const len = this.length;
 
 			return this.ptr[min(len, begin) .. min(len, end)];
@@ -1323,7 +1324,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				--------------------
 		*/
 		public CharType opIndexAssign(const CharType val, const size_t pos)scope pure nothrow @trusted @nogc{
-			assert(0 <= pos && pos < this.length);
+			this._bounds_check(pos);
 
 			return *(this.ptr + pos) = val;
 		}
@@ -1850,6 +1851,46 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			Core
 		*/
 		private Core core;
+
+
+        private pragma(inline, true) void _bounds_check(const size_t pos)const pure nothrow @safe @nogc{
+            assert(pos < this.length);
+
+            version(BTL_STRING_BOUNDS_CHECK){
+                if(pos >= this.length){
+                    assert(0, "btl.string bounds check error");
+                }
+            }
+        }
+
+        private pragma(inline, true) void _bounds_check(const size_t pos, const size_t len)const pure nothrow @safe @nogc{
+            assert(pos < this.length);
+            assert((pos + len) <= this.length);
+
+            version(BTL_STRING_BOUNDS_CHECK){
+                if(pos >= this.length){
+                    assert(0, "btl.string bounds check error");
+                }
+                if((pos + len) > this.length){
+                    assert(0, "btl.string bounds check error");
+                }
+            }
+        }
+
+        private pragma(inline, true) void _bounds_check(const size_t[2] index)const pure nothrow @safe @nogc{
+            assert(index[0] < this.length);
+            assert(index[1] <= this.length);
+
+            version(BTL_STRING_BOUNDS_CHECK){
+                if(index[0] >= this.length){
+                    assert(0, "btl.string bounds check error");
+                }
+                if(index[1] > this.length){
+                    assert(0, "btl.string bounds check error");
+                }
+            }
+        }
+
 	}
 }
 
@@ -3584,7 +3625,7 @@ version(unittest){
 				}
 			}
 		}
-    }
+	}
 
 }
 

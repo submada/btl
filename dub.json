@@ -30,47 +30,57 @@
 				{
 					"name": "unittest",
 					"versions": [
-					"BTL_GC_RANGE_COUNT", 
-					"BTL_GC_RANGE_TRACK",
-					"BTL_AUTOPTR_COUNT_CONSTRUCTIONS",
-					"BTL_AUTOPTR_COUNT_ALLOCATIONS",
+						"BTL_GC_RANGE_COUNT", 
+						"BTL_GC_RANGE_TRACK",
+						"BTL_AUTOPTR_COUNT_CONSTRUCTIONS",
+						"BTL_AUTOPTR_COUNT_ALLOCATIONS",
 					]
 				}
 			]
 		},
-	{
-		"name" : "string",
-		"description" : "Mutable @nogc string struct using `std.experimental.allocator` for allocations.",
-		"targetType" : "library",
-		"importPaths" : [
-			"source/"
-		],
-		"sourcePaths" : [
-			"source/btl/string",
-			"source/btl/internal"
-		]
-	},
-	{
-		"name" : "vector",
-		"description" : "Dynamic array supporting custom allcoators.",
-		"targetType" : "library",
-		"importPaths" : [
-			"source/"
-		],
-		"sourcePaths" : [
-			"source/btl/vector",
-			"source/btl/internal"
-		],
-		"configurations" : [
-			{
-			"name": "unittest",
-			"versions": [
-				"BTL_GC_RANGE_COUNT", 
-				"BTL_GC_RANGE_TRACK",
+		{
+			"name" : "string",
+			"description" : "Mutable @nogc string struct using `std.experimental.allocator` for allocations.",
+			"targetType" : "library",
+			"importPaths" : [
+				"source/"
+			],
+			"sourcePaths" : [
+				"source/btl/string",
+				"source/btl/internal"
+			],
+			"configurations" : [
+				{
+					"name": "unittest",
+					"versions": [
+						"__BTL_BASIC_STRING_TESTS",
+						"BTL_STRING_BOUNDS_CHECK",
+					]
+				}
 			]
-			}
-		]
-	}
+		},
+		{
+			"name" : "vector",
+			"description" : "Dynamic array supporting custom allcoators.",
+			"targetType" : "library",
+			"importPaths" : [
+				"source/"
+			],
+			"sourcePaths" : [
+				"source/btl/vector",
+				"source/btl/internal"
+			],
+			"configurations" : [
+				{
+					"name": "unittest",
+					"versions": [
+						"BTL_GC_RANGE_COUNT", 
+						"BTL_GC_RANGE_TRACK",
+						"BTL_VECTOR_BOUNDS_CHECK",
+					]
+				}
+			]
+		}
 	],
 	"dflags" : [
 		""

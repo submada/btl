@@ -272,7 +272,6 @@ template Vector(
 
                 assert(vec.ptr[0 .. 3] == [1, 2, 3]);
                 --------------------
-
         */
         public @property inout(ElementType)* ptr()inout return pure nothrow @system @nogc{
             return this._is_external
@@ -1315,8 +1314,7 @@ template Vector(
                 --------------------
         */
         public inout(ElementType)[] opSlice(bool check = true)(const size_t begin, const size_t end)inout return pure nothrow @system @nogc{
-            assert(begin <= this.length);
-            assert(end <= this.length);
+            this._bounds_check([begin, end]);
 
             return this.ptr[begin .. end];
 
@@ -1365,7 +1363,7 @@ template Vector(
                 --------------------
         */
         public CopyTypeQualifiers!(This, ElementType) opIndex(this This)(const size_t pos)scope{
-            assert(pos < this.length);
+            this._bounds_check(pos);
 
             return *(()@trusted => this.ptr + pos )();
         }
@@ -1383,7 +1381,7 @@ template Vector(
                 --------------------
         */
         public ref inout(ElementType) at(const size_t pos)inout scope pure nothrow @system @nogc{
-            assert(pos < this.length);
+            this._bounds_check(pos);
 
             return *(this.ptr + pos);
         }
@@ -1414,20 +1412,16 @@ template Vector(
 
         */
         public void opIndexAssign(Val)(auto ref Val val, size_t index){
-            assert(index < this.length);
+            this._bounds_check(index);
 
             *(()@trusted => (this.ptr + index) )() = forward!val;
         }
 
         /// ditto
         public void opIndexAssign(Val)(auto ref Val val, size_t[2] index){
-            const begin = index[0];
-            const end = index[1];
-            assert(begin <= this.length);
-            assert(end <= this.length);
+            this._bounds_check(index);
 
-
-            foreach(ref elm; (()@trusted => this.ptr[begin .. end] )() )
+            foreach(ref elm; (()@trusted => this.ptr[index[0] .. index[1]] )() )
                 elm = val;
         }
 
@@ -1457,7 +1451,7 @@ template Vector(
 
         */
         public void opIndexOpAssign(string op, Val)(auto ref Val val, size_t index){
-            assert(index < this.length);
+            this._bounds_check(index);
 
             ref ElementType elm()@trusted{
                 return *(this.ptr + index);
@@ -1468,13 +1462,9 @@ template Vector(
 
         /// ditto
         public void opIndexOpAssign(string op, Val)(auto ref Val val, size_t[2] index){
-            const begin = index[0];
-            const end = index[1];
-            assert(begin <= this.length);
-            assert(end <= this.length);
+            this._bounds_check(index);
 
-
-            foreach(ref elm; (()@trusted => this.ptr[begin .. end] )() )
+            foreach(ref elm; (()@trusted => this.ptr[index[0] .. index[1]] )() )
                 mixin("elm " ~ op ~ "= val;");
         }
 
@@ -1564,9 +1554,7 @@ template Vector(
                 inline._length = heap_len;  //change external to true
                 assert(inline._is_external);
                 inline._heap_storage = heap_storage;
-
             }
-
         }
 
 
@@ -2410,7 +2398,7 @@ template Vector(
 
         */
         public ref inout(ElementType) front()inout return pure nothrow @system @nogc{
-            assert(!this.empty);
+            this._bounds_check(0);
             return *this.ptr;
         }
 
@@ -2422,7 +2410,7 @@ template Vector(
             Calling this function on an empty container causes undefined behavior.
         */
         public ref inout(ElementType) back()inout return pure nothrow @system @nogc{
-            assert(!this.empty);
+            this._bounds_check(0);
             return *((this.ptr - 1) + this.length) ;
         }
 
@@ -2439,8 +2427,8 @@ template Vector(
                 --------------------
         */
         public auto first(this This)()scope{
-            if(this.empty)
-                assert(0, "empty vector");
+            this._bounds_check(0);
+            //if(this.empty)assert(0, "empty vector");
 
             return *(()@trusted => this.ptr )();
         }
@@ -2460,9 +2448,9 @@ template Vector(
                 --------------------
         */
         public auto last(this This)()scope{
-            const size_t length = this.length;
-            if(length == 0)
-                assert(0, "empty vector");
+            this._bounds_check(0);
+            //const size_t length = this.length;
+            //if(length == 0)assert(0, "empty vector");
 
             return *(()@trusted => (this.ptr + (length - 1)) )();
         }
@@ -2653,6 +2641,44 @@ template Vector(
                     const bool d = this._heap_storage.deallocate(_allocator);
                     assert(d, "deallocate of memory fail");
                 }
+        }
+
+        private pragma(inline, true) void _bounds_check(const size_t pos)const pure nothrow @safe @nogc{
+            assert(pos < this.length);
+
+            version(BTL_VECTOR_BOUNDS_CHECK){
+                if(pos >= this.length){
+                    assert(0, "btl.vector bounds check error");
+                }
+            }
+        }
+
+        private pragma(inline, true) void _bounds_check(const size_t pos, const size_t len)const pure nothrow @safe @nogc{
+            assert(pos < this.length);
+            assert((pos + len) <= this.length);
+
+            version(BTL_VECTOR_BOUNDS_CHECK){
+                if(pos >= this.length){
+                    assert(0, "btl.vector bounds check error");
+                }
+                if((pos + len) > this.length){
+                    assert(0, "btl.vector bounds check error");
+                }
+            }
+        }
+
+        private pragma(inline, true) void _bounds_check(const size_t[2] index)const pure nothrow @safe @nogc{
+            assert(index[0] < this.length);
+            assert(index[1] <= this.length);
+
+            version(BTL_VECTOR_BOUNDS_CHECK){
+                if(index[0] >= this.length){
+                    assert(0, "btl.vector bounds check error");
+                }
+                if(index[1] > this.length){
+                    assert(0, "btl.vector bounds check error");
+                }
+            }
         }
     }
 
