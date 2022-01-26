@@ -164,7 +164,7 @@ var symbols = [
 {name: 'btl.string.BasicString.front', kind: "aliasdeclaration", path: './btl/string/BasicString.front.html', attributes: []},
 {name: 'btl.string.BasicString.frontCodePoint', kind: "functiondeclaration", path: './btl/string/BasicString.frontCodePoint.html', attributes: ["const", "pure", "nothrow", "nogc", "property", "scope", "trusted"]},
 {name: 'btl.string.BasicString.frontCodeUnit', kind: "functiondeclaration", path: './btl/string/BasicString.frontCodeUnit.html', attributes: ["const", "pure", "nothrow", "nogc", "property", "scope", "trusted"]},
-{name: 'btl.string.BasicString.hasStatelessAllocator', kind: "aliasdeclaration", path: './btl/string/BasicString.hasStatelessAllocator.html', attributes: []},
+{name: 'btl.string.BasicString.hasStatelessAllocator', kind: "enummemberdeclaration", path: './btl/string/BasicString.hasStatelessAllocator.html', attributes: []},
 {name: 'btl.string.BasicString.insert', kind: "functiondeclaration", path: './btl/string/BasicString.insert.html', attributes: ["scope"]},
 {name: 'btl.string.BasicString.length', kind: "functiondeclaration", path: './btl/string/BasicString.length.html', attributes: ["const", "pure", "nothrow", "nogc", "property", "scope", "trusted"]},
 {name: 'btl.string.BasicString.maximalCapacity', kind: "aliasdeclaration", path: './btl/string/BasicString.maximalCapacity.html', attributes: []},

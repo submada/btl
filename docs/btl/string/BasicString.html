@@ -89,7 +89,7 @@ $('#symbolSearchPane').show();</script>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="kwd">struct</span> <span class="typ">BasicString</span>(_Char, _Allocator, <span class="typ">ulong</span> _Padding<span class="pln"> </span><span class="pun">= </span><span class="lit">0</span>)
+			<span class="kwd">struct</span> <span class="typ">BasicString</span>(_Char, _Allocator, <span class="typ">ulong</span> N<span class="pln"> </span><span class="pun">= </span><span class="lit">0</span>)
 			<br/>
 			&nbsp;&nbsp;
 			<br/>
@@ -112,7 +112,7 @@ $('#symbolSearchPane').show();</script>
 <p>		<code class="lang-d"><span class="pln">_Allocator</span></code> Type of the allocator object used to define the storage allocation model. By default <code class="lang-d"><a href="../../btl/string/DefaultAllocator.html"><span class="typ">DefaultAllocator</span></a></code> is used.
 </p>
 
-<p>		<code class="lang-d"><span class="pln">_Padding</span></code> Additional size of struct <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code>, increase max length of small string.
+<p>		<code class="lang-d"><span class="pln">N</span></code> Minimal capacity of <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> (increase max length of small string).
 </p>
 </section>
 
@@ -613,15 +613,6 @@ $('#symbolSearchPane').show();</script>
 					</tr>
 					<tr>
 						<td>
-							<a href="../../btl/string/BasicString.hasStatelessAllocator.html" class="public">
-								<code>hasStatelessAllocator</code>
-							</a>
-						</td>
-						<td>True if allocator doesn't have state.
-</td>
-					</tr>
-					<tr>
-						<td>
 							<a href="../../btl/string/BasicString.maximalCapacity.html" class="public">
 								<code>maximalCapacity</code>
 							</a>
@@ -672,8 +663,8 @@ $('#symbolSearchPane').show();</script>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="kwd">alias</span> <span class="pln">BasicString</span>(_Char, <span class="typ">ulong</span> _Padding, _Allocator)
-			 <span class="pun">=</span> <a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(_Char,_Allocator,_Padding)<span class="pun">;</span>
+			<span class="kwd">alias</span> <span class="pln">BasicString</span>(_Char, <span class="typ">ulong</span> N, _Allocator)
+			 <span class="pun">=</span> <a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(_Char,_Allocator,N)<span class="pun">;</span>
 					</div>
 				</code>
 			</div>
@@ -685,6 +676,7 @@ $('#symbolSearchPane').show();</script>
 	<a href="../../btl/string/DefaultAllocator.html"></span><span class="typ">DefaultAllocator</span></a><span class="pun">,   </span><span class="com">//allocator type (can be stateless or with state)
 	</span><span class="lit">32                  </span><span class="com">//additional padding to increas max size of small string (small string does not allocate memory).
 </span><span class="pun">);
+
 
 </span><span class="com">//copy:
 </span><span class="pun">{

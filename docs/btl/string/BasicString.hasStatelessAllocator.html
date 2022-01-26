@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Alias BasicString.hasStatelessAllocator</title>
+		<title>Enum member BasicString.hasStatelessAllocator</title>
 		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
@@ -70,7 +70,7 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Alias BasicString.hasStatelessAllocator</h1><p>True if allocator doesn't have state.
+			<h1>Enum member BasicString.hasStatelessAllocator</h1><p>True if allocator doesn't have state.
 </p>
 			<div class="prototype">
 				<code class="lang-d">
@@ -83,8 +83,8 @@ $('#symbolSearchPane').show();</script>
 			</span>
 			&nbsp;&nbsp;<span class="com">// ...</span>
 			<br/>
-			&nbsp;&nbsp;<span class="kwd">alias</span> <span class="pln">hasStatelessAllocator</span>
-			 <span class="pun">=</span> <span class="typ">Core<wbr/></span><span class="pun">.</span><span class="pln">hasStatelessAllocator</span><span class="pun">;</span>
+			&nbsp;&nbsp;<span class="kwd">enum</span> <span class="pln">hasStatelessAllocator</span>
+			 <span class="pun">=</span> <span class="pln">stateSize</span><span class="pun">!</span><span class="pln">_Allocator </span><span class="pun">== </span><span class="lit">0</span><span class="pun">;</span>
 			<br/>
 			&nbsp;&nbsp;<span class="com">// ...</span>
 			<br/>
