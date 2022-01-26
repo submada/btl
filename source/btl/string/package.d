@@ -539,8 +539,6 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				this._deallocate(this.storage.heap.allocatedChars);
 
 				this.storage.reset();
-				//this._short.setShort();
-				//this._short.length = 0;
 			}
 			else{
 				this.storage.inline.length = 0;
@@ -588,14 +586,10 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				CharType[] cdata = this._allocate(new_capacity);
 
 				()@trusted{
-					memCopy(cdata.ptr, this.storage.inline.ptr, length);    //cdata[0 .. length] = this._short_chars();
-					assert(this.storage.chars == cdata[0 .. length]); //assert(this._chars == cdata[0 .. length]);
+					memCopy(cdata.ptr, this.storage.inline.ptr, length);
+					assert(this.storage.chars == cdata[0 .. length]);
 
-					this.storage.setHeap(new_capacity, length, cdata.ptr);/+
-					this._long.capacity = new_capacity;
-					assert(!this._sso);
-					this._long.ptr = cdata.ptr;
-					this._long.length = length;+/
+					this.storage.setHeap(new_capacity, length, cdata.ptr);
 				}();
 
 				return new_capacity;
@@ -619,9 +613,6 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 				()@trusted{
 					this.storage.setHeap(new_capacity, length, cdata.ptr);
-					/+this._long.capacity = new_capacity;
-					this._long.ptr = cdata.ptr;
-					assert(!this._sso);+/
 				}();
 
 				return new_capacity;
@@ -703,14 +694,10 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			CharType[] cdata = this.storage.heap.allocatedChars;
 
 			if(length <= minimalCapacity){
-				//alias new_capacity = length;
-
 				this.storage.reset(length);
-				//this._short.setShort();
-				//this._short.length = cast(ShortLength)length;
 
 				()@trusted{
-					memCopy(this.storage.inline.ptr, cdata.ptr, length);    //this._short.data[0 .. length] = cdata[0 .. length];
+					memCopy(this.storage.inline.ptr, cdata.ptr, length);
 				}();
 
 				this._deallocate(cdata);
@@ -750,8 +737,6 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		public ~this()scope{
 			if(this.storage.external){
 				this._deallocate(this.storage.heap.allocatedChars);
-				//debug this._short.setShort();
-				//debug this._short.length = 0;
 				debug this.storage.reset();
 			}
 
@@ -1027,30 +1012,12 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			this(forward!rhs, Forward.init);
 		}
 
-		/+public static auto opCall(Rhs)(scope Rhs rhs)scope
-		if(    isBasicString!Rhs
-			&& isMoveConstructable!(rhs, typeof(this))
-			&& is(immutable This == immutable Rhs)
-		){
-			assert(0);
-		}+/
-
 		/// ditto
 		public this(this This, Rhs)(auto ref scope const Rhs rhs, AllocatorType allocator)scope
 		if(isBasicString!Rhs){
 			this(forward!allocator);
 			this._ctor(rhs.storage.chars);
 		}
-
-		/+
-		/// ditto
-		public this(this This, Rhs)(auto ref scope const Rhs rhs, Forward)scope
-		if(isBasicString!Rhs && isConstructable!(rhs, This)){
-			static if(isRef!rhs)
-				this.core = Core(rhs.core, Forward.init);
-			else
-				this.core = Core(move(rhs.core), Forward.init);
-		}+/
 
 		/// ditto
 		public this(this This, Rhs)(auto ref scope const Rhs rhs, Forward)scope
@@ -1065,15 +1032,11 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 					this.storage.heap.capacity = rhs.storage.heap.capacity;
 					this.storage.heap.ptr = rhs.storage.heap.ptr;
 					rhs.reset();
-					//rhs._short.setShort;
-					//rhs._short.length = 0;
 				}
 				else{
 					const size_t len = rhs.storage.inline.length;
 					this.storage.inline.length = len;
 					this.storage.inline.chars[0 .. len] = rhs.storage.inline.chars[0 .. len];
-					//this._short.length = rhs._short.length;
-					//this._short_chars[] = rhs._short_chars[];
 				}
 			}
 			else static if(isCopyConstructable!(rhs, This)){
@@ -1115,7 +1078,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		private void _ctor(C)(const C character)scope
 		if(isSomeChar!C){
 			assert(!this.storage.external);
-			this.storage.inline.length = character.encodeTo(this.storage.inline.allocatedChars);    //this._short.data[0] = c;;
+			this.storage.inline.length = character.encodeTo(this.storage.inline.allocatedChars);
 		}
 
 		private void _ctor(this This, C)(scope const C[] str)scope
@@ -1137,24 +1100,17 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 				()@trusted{
 					self.storage.setHeap(new_capacity, str[].encodeTo(cdata[]), cdata.ptr);
-					/+self._long.ptr = cdata.ptr;
-					self._long.length = str[].encodeTo(cdata[]);   //cdata[] = str[];
-					self._long.capacity = new_capacity;+/
 				}();
-				//assert(!self._sso);
 
 			}
 			else if(str.length != 0){
 				assert(!self.storage.external);
 
-				self.storage.inline.length = str[].encodeTo(self.storage.inline.allocatedChars);   //this._short.data[0 .. str_length] = str[];   ///str_length;
-				//assert(this.capacity == Short.capacity);
+				self.storage.inline.length = str[].encodeTo(self.storage.inline.allocatedChars);
 			}
 			else{
 				assert(!self.storage.external);
 				assert(self.storage.length == 0);
-				//assert(this.capacity == Short.capacity);
-				//assert(this._short.length == 0);
 			}
 		}
 
@@ -1681,7 +1637,6 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 			static if(!hasStatelessAllocator)
 				swap(this._allocator, rhs._allocator);
-			//this.core.proxySwap(rhs.core);
 
 		}
 
@@ -2352,7 +2307,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 			CharType[] new_cdata = this._allocate(new_capacity);
 			()@trusted{
-				memCopy(new_cdata.ptr, cdata.ptr, length);  //new_cdata[0 .. length] = cdata[0 .. length];
+				memCopy(new_cdata.ptr, cdata.ptr, length);
 			}();
 
 			static if(safeAllocate)
@@ -2440,11 +2395,8 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			this.reserve(new_length);
 
 			return ()@trusted{
-				auto chars = this.storage.chars;
-				//assert(this.capacity >= new_length);
 				this.storage.length = new_length;
-
-				return chars.ptr[old_length .. new_length];
+				return this.storage.ptr[old_length .. new_length];
 			}();
 		}
 
