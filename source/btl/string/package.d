@@ -689,7 +689,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				assert(str.capacity == BasicString!char.minimalCapacity);
 				--------------------
 		*/
-		public size_t shrinkToFit()scope{
+		public size_t shrinkToFit(bool realloc = true)scope{
 			if(!this.storage.external)
 				return minimalCapacity;
 
@@ -719,6 +719,10 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				return minimalCapacity;
 			}
 
+			if(realloc == false){
+				return old_capacity;
+			}
+
 			const size_t new_capacity = (length + 1) & ~0x1;
 
 			if(new_capacity >= old_capacity)
@@ -731,9 +735,6 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 			()@trusted{
 				this.storage.setHeap(new_capacity, length, cdata.ptr);
-				/+this._long.ptr = cdata.ptr;
-				this._long.capacity = new_capacity;
-				assert(!this._sso);+/
 			}();
 
 			return new_capacity;
