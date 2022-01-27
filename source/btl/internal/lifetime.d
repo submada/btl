@@ -2,6 +2,8 @@ module btl.internal.lifetime;
 
 import std.meta : AliasSeq;
 
+import std.range : isInputRange, ElementEncodingType;
+import std.traits : isDynamicArray;
 
 
 /*
@@ -304,6 +306,66 @@ private{
 
     }
 
+    void transferAssignRangeImpl(bool move, S, T)(T* target, S* source, size_t length)
+    if(is(immutable S[] : immutable T[])){
+        import std.traits : Unqual, hasElaborateAssign;
+
+        if(length == 0)
+            return;
+
+        static if (hasElaborateAssign!T){
+            for (size_t i = 0; i < length; i++){
+                static if(move)
+                    *(()@trusted => target + i )() = move(*(()@trusted => source + i )());
+                else
+                    *(()@trusted => target + i )() = *(()@trusted => source + i )();
+
+            }
+        }
+        else // trivial copy
+        {
+            static assert(T.sizeof == S.sizeof);
+
+            () @trusted{
+                import core.stdc.string : memcpy;
+
+                memcpy(
+                    cast(Unqual!T*) target,
+                    cast(Unqual!T*) source,
+                    T.sizeof * length
+                );
+            }();
+        }
+    }
+
+    void transferAssignRange(bool move, T, S)(T[] target, ref S[] source){
+        import btl.internal.traits : min;
+
+        assert(target.length <= source.length);
+
+        transferAssignRangeImpl!move(
+            (()@trusted => target.ptr )(),
+            (()@trusted => source.ptr )(),
+            target.length//min(target.length, source.length)
+        );
+    }
+
+    void transferAssignRange(bool move, T, R)(T[] target, ref R source)
+    if(isInputRange!R && is(immutable ElementEncodingType!R[] : immutable T[]) && !isDynamicArray!R){
+        import std.range ; popFront;
+        import core.lifetime : mv = move;
+
+        foreach(ref elm; target){
+            assert(!source.empty);
+
+            static if(move)
+                elm = mv(source.front);
+            else
+                elm = source.front;
+
+            source.popFront;
+        }
+    }
 }
 
 //moveEmplaceImpl
@@ -412,8 +474,10 @@ public{
 
     void moveEmplaceRangeImpl(bool overlap = true, S, T)(T* target, S* source, size_t length)
     if(is(immutable S[] : immutable T[])){
-        assert(length);
         import std.traits : hasElaborateMove, hasElaborateDestructor, hasElaborateCopyConstructor, Unqual;
+
+        if(length == 0)
+            return;
 
         static if(is(immutable S* : immutable T*)
             && !hasElaborateMove!T
@@ -468,6 +532,16 @@ public{
             }
         }
 
+    }
+
+    void moveAssignRangeImpl(S, T)(T* target, S* source, size_t length)
+    if(is(immutable S[] : immutable T[])){
+        transferAssignRangeImpl!true(target, source, length);
+    }
+
+    void moveAssignRange(T, R)(T[] target, ref R source)
+    if(isInputRange!R && is(immutable ElementEncodingType!R[] : immutable T[])){
+        transferAssignRange!true(target, source);
     }
 
     @safe pure nothrow @nogc unittest{
@@ -714,6 +788,9 @@ public{
     if(is(immutable S[] : immutable T[])){
         import std.traits : Unqual, hasElaborateCopyConstructor;
 
+        if(length == 0)
+            return;
+
         static if (hasElaborateCopyConstructor!T){
             size_t i;
             scope(failure){
@@ -742,6 +819,16 @@ public{
                 );
             }();
         }
+    }
+
+    void copyAssignRangeImpl(S, T)(T* target, S* source, size_t length)
+    if(is(immutable S[] : immutable T[])){
+        transferAssignRangeImpl!false(target, source, length);
+    }
+
+    void copyAssignRange(T, R)(T[] target, ref R source)
+    if(isInputRange!R && is(immutable ElementEncodingType!R[] : immutable T[])){
+        transferAssignRange!false(target, source);
     }
 
     @safe pure nothrow @nogc unittest{
@@ -828,5 +915,7 @@ public{
 
     }
 }
+
+
 
 

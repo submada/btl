@@ -2146,7 +2146,7 @@ nothrow unittest{
 
     {
         import btl.internal.traits;
-        static assert(!isConstructableFromRvalue!(typeof(allocator)));
+        static assert(isMoveConstructableElement!(typeof(allocator)));
         auto arr = RcPtr!(long[]).alloc(allocator, 10); //dynamic array with length 10
         assert(arr.length == 10);
     }

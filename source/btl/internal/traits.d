@@ -102,20 +102,6 @@ public template PtrOrRef(T){
 public enum bool isReferenceType(T) = is(T == class) || is(T == interface);
 
 
-//alias to `AliasSeq` containing `T` if `T` has state, otherwise a empty tuple.
-public template AllocatorWithState(T){
-    import std.experimental.allocator.common : stateSize;
-    import std.meta : AliasSeq;
-
-    enum bool hasStatelessAllocator = (stateSize!T == 0);
-
-    static if(stateSize!T == 0)
-        alias AllocatorWithState = AliasSeq!();
-    else
-        alias AllocatorWithState = AliasSeq!T;
-}
-
-
 public template isStatelessAllocator(T){
     import std.experimental.allocator.common : stateSize;
 
@@ -127,7 +113,7 @@ public template statelessAllcoator(T){
     import std.experimental.allocator.common : stateSize;
     import std.traits : hasStaticMember;
 
-    static assert(stateSize!T == 0);
+    static assert(isStatelessAllocator!T);
 
     static if(hasStaticMember!(T, "instance"))
         alias statelessAllcoator = T.instance;
@@ -146,11 +132,37 @@ public template instanceSize(T){
 }
 
 
-import core.lifetime : move;
-public enum bool isConstructableFromRvalue(T) = is(typeof((T x){
-    T tmp = move(x);
-    return true;
-}()));
+//[Copy, Move] ConstructableElement:
+template isCopyConstructableElement(From, To = From){
+    enum isCopyConstructableElement = true
+        && is(typeof((ref From from){
+            To tmp = from;
+        }));
+}
+template isMoveConstructableElement(From, To = From){
+    import core.lifetime : move;
+    enum isMoveConstructableElement = true
+        && is(typeof((From from){
+            To tmp = move(from);
+        }));
+}
+
+
+//[Copy, Move] AssignableElement:
+template isCopyAssignableElement(From, To = From){
+    enum isCopyAssignableElement = true
+        && is(typeof((ref From from, ref To to){
+            to = from;
+        }));
+}
+template isMoveAssignableElement(From, To = From){
+    import core.lifetime : move;
+    enum isMoveAssignableElement = true
+        && is(typeof((From from, ref To to){
+            to = move(from);
+        }));
+}
+
 
 
 //min/max:

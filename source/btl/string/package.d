@@ -7,8 +7,7 @@
 module btl.string;
 
 
-
-import std.traits : Unqual, Unconst, isSomeChar, isSomeString, isIntegral;
+import std.traits : Unqual, Unconst, CopyTypeQualifiers, isSomeChar, isSomeString, isIntegral;
 import std.meta : AliasSeq;
 
 import btl.internal.mallocator;
@@ -16,7 +15,6 @@ import btl.internal.traits;
 import btl.internal.forward;
 
 import btl.string.encoding;
-
 
 
 
@@ -73,10 +71,8 @@ template BasicString(
 	size_t N = 0,
 )
 if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
-	import std.experimental.allocator.common :  stateSize;
 	import std.range : isInputRange, ElementEncodingType, isRandomAccessRange;
 	import std.traits : Unqual, isIntegral, hasMember, isArray, isSafe;
-	import std.experimental.allocator.common :  stateSize;
 	import core.lifetime: forward, move;
 
 
@@ -87,7 +83,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		/**
 			True if allocator doesn't have state.
 		*/
-		public enum bool hasStatelessAllocator = (stateSize!_Allocator == 0);
+		public enum bool hasStatelessAllocator = isStatelessAllocator!_Allocator;
 
 
 
@@ -131,7 +127,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			Returns allocator.
 		*/
 		static if(hasStatelessAllocator)
-			public alias allocator = AllocatorType.instance;
+			public alias allocator = statelessAllcoator!AllocatorType;
 		else
 			public @property auto allocator()inout{
 				return this._allocator;
@@ -568,6 +564,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				--------------------
 		*/
 		public size_t reserve(const size_t n)scope{
+
 			size_t _reserve_short(const size_t n)scope{
 				assert(this.storage.external == false);
 
@@ -739,7 +736,6 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				this._deallocate(this.storage.heap.allocatedChars);
 				debug this.storage.reset();
 			}
-
 		}
 
 
@@ -1004,9 +1000,9 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				}
 				--------------------
 		*/
-		public this(this This, Rhs)(auto ref scope const Rhs rhs)scope
+		public this(this This, Rhs)(auto ref scope Rhs rhs)scope
 		if(    isBasicString!Rhs
-			&& isConstructable!(rhs, This)
+			&& isConstructable!(Rhs, This)
 			&& (isRef!rhs || !is(immutable This == immutable Rhs))
 		){
 			this(forward!rhs, Forward.init);
@@ -1020,32 +1016,47 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		}
 
 		/// ditto
-		public this(this This, Rhs)(auto ref scope const Rhs rhs, Forward)scope
-		if(isBasicString!Rhs && isConstructable!(rhs, This)){
-			static if(isMoveConstructable!(rhs, This)){    //TODO
+		public this(this This, Rhs)(auto ref scope Rhs rhs, Forward)scope
+		if(isBasicString!Rhs && isConstructable!(Rhs, This)){
 
-				static if(!hasStatelessAllocator)
-					this(move(rhs._allcoator));
+			static if(isMoveConstructable!(rhs, This)){
 
 				if(rhs.storage.external){
-					this.storage.heap.length = rhs.storage.heap.length;
-					this.storage.heap.capacity = rhs.storage.heap.capacity;
-					this.storage.heap.ptr = rhs.storage.heap.ptr;
-					rhs.reset();
+            		//heap -> heap:
+                    if(minimalCapacity <= Rhs.minimalCapacity || minimalCapacity < rhs.length){
+                        static if(!hasStatelessAllocator)
+                            this._allocator = move(rhs._allocator);
+
+						this.storage.setHeap(rhs.storage.heap);
+						rhs.storage.reset();
+					}
+	                //heap -> inline:
+					else{
+	                    assert(rhs.length <= minimalCapacity);
+
+						this._ctor(rhs.storage.heap.chars);
+
+						rhs.release();
+
+	                    static if(!hasStatelessAllocator)
+	                        this._allocator = move(rhs._allocator);
+					}
 				}
 				else{
-					const size_t len = rhs.storage.inline.length;
-					this.storage.inline.length = len;
-					this.storage.inline.chars[0 .. len] = rhs.storage.inline.chars[0 .. len];
+                    static if(!hasStatelessAllocator)
+                        this._allocator = move(rhs._allocator);
+
+                    //inline -> inline:
+                    //inline -> heap:
+                    this._ctor(rhs.storage.inline.chars);
 				}
 			}
-			else static if(isCopyConstructable!(rhs, This)){
+			else{
 				static if(!hasStatelessAllocator)
 					this._allocator = rhs._allocator;
 
 				this._ctor(rhs.storage.chars);
 			}
-			else static assert(0, "no impl");
 		}
 
 
@@ -1155,64 +1166,70 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				assert(str == "abc");
 				--------------------
 		*/
-		public ref typeof(this) opAssign(typeof(null) nil)scope pure nothrow @safe @nogc{
+		public void opAssign(typeof(null) nil)scope pure nothrow @safe @nogc{
 			this.clear();
-			return this;
 		}
 
 		/// ditto
-		public ref typeof(this) opAssign(scope const CharType[] slice)scope{
+		public void opAssign(scope const CharType[] slice)scope{
 			this.clear();
 
 			this.reserve(encodedLength!CharType(slice));
 			this.storage.length = slice.encodeTo(this.storage.allocatedChars);
-
-			return this;
 		}
 
 		/// ditto
-		public ref typeof(this) opAssign(C)(scope const C[] slice)scope
+		public void opAssign(C)(scope const C[] slice)scope
 		if(isSomeChar!C){
 			this.clear();
 
 			this.reserve(encodedLength!CharType(slice));
 			this.storage.length = slice.encodeTo(this.storage.allocatedChars);
-
-			return this;
 		}
 
 		/// ditto
-		public ref typeof(this) opAssign(C)(const C character)scope
+		public void opAssign(C)(const C character)scope
 		if(isSomeChar!C){
 			this.clear();
 
 			assert(character.encodedLength!CharType <= minimalCapacity);
 			this.storage.length = character.encodeTo(this.storage.allocatedChars);
-
-			return this;
 		}
 
 		/// ditto
-		public ref typeof(this) opAssign(I)(const I integer)scope
+		public void opAssign(I)(const I integer)scope
 		if(isIntegral!I){
 			this.clear();
 
 			assert(integer.encodedLength!CharType <= minimalCapacity);
 			this.storage.length = integer.encodeTo(this.storage.allocatedChars);
-
-			return this;
 		}
 
 		/// ditto
-		public ref typeof(this) opAssign(scope typeof(this) rhs)scope{
+		public void opAssign(scope typeof(this) rhs)scope{
 			this.proxySwap(rhs);
-			return this;
 		}
 
 		/// ditto
-		public ref typeof(this) opAssign(Rhs)(auto ref scope Rhs rhs)scope
-		if(isBasicString!Rhs){
-			return this.opAssign(rhs.storage.chars);
+		public void opAssign(Rhs)(auto ref scope Rhs rhs)scope
+		if(isBasicString!Rhs && isAssignable!(Rhs, typeof(this))){
+			static if(isMoveAssignable!(rhs, typeof(this))){
+
+	            if(rhs.storage.external){
+	                if(minimalCapacity <= Rhs.minimalCapacity || minimalCapacity < rhs.length){
+	                    static if(!hasStatelessAllocator)
+	                        this._allocator = move(rhs._allocator);
+
+	                    this.release();
+						this.storage.setHeap(rhs.storage.heap);
+						rhs.storage.reset();
+	                    return;
+	                }
+	            }
+			}
+			else{
+				return this.opAssign(rhs.storage.chars);
+			}
 		}
 
 
@@ -2532,89 +2549,87 @@ pure nothrow @safe @nogc unittest {
 
 private template Storage(T, size_t N){
 
-	version(BigEndian){
-		static assert(0, "big endian systems are not supported");
-	}
-	else version(LittleEndian){
-	}
-	else{
-		static assert(0, "no impl");
-	}
-
 	union Storage{
 		Inline _inline;
 		Heap _heap;
 
 		enum size_t minimalCapacity = Inline.capacity;
 
-		enum size_t maximalCapacity = ((size_t.max / T.sizeof) & ~cast(size_t)0x1);
+		enum size_t maximalCapacity = ((size_t.max / T.sizeof) & ~cast(size_t)InlineHeader.inlineFlag);
 
-		void reset(size_t len = 0)pure nothrow @safe @nogc{
-			assert(len <= minimalCapacity);
-			this._inline.header.flag = 0x1;
-			this._inline.length = len;
-		}
+		pragma(inline, true){
 
-		void setHeap(size_t capacity, size_t length, T* ptr)pure nothrow @trusted @nogc{
-			this._heap.capacity = capacity;
-			assert(this.external);
-			this._heap.length = length;
-			this._heap.ptr = ptr;
-		}
-
-		@property ref inout(Inline) inline()inout pure nothrow @trusted @nogc{
-			assert(!this.external);
-			return this._inline;
-		}
-
-		@property ref inout(Heap) heap()inout pure nothrow @trusted @nogc{
-			assert(this.external);
-			return this._heap;
-		}
-
-		@property size_t capacity()const pure nothrow @trusted @nogc{
-			return this.external
-				? this.heap.capacity
-				: this.inline.capacity;
-		}
-
-		@property size_t length()const pure nothrow @trusted @nogc{
-			return this.external
-				? this.heap.length
-				: this.inline.length;
-		}
-
-		@property void length(size_t n)pure nothrow @trusted @nogc{
-			if(this.external){
-				assert(n <= this.heap.capacity);
-				this.heap.length = n;
+			void reset(size_t len = 0)pure nothrow @safe @nogc{
+				assert(len <= minimalCapacity);
+				this._inline.header.flag = InlineHeader.inlineFlag;
+				this._inline.length = len;
 			}
-			else{
-				assert(n <= this.inline.capacity);
-				this.inline.length = cast(InlineLength)n;
+
+			void setHeap(size_t capacity, size_t length, T* ptr)pure nothrow @trusted @nogc{
+				assert(length <= capacity);
+				this._heap.capacity = capacity;
+				assert(this.external);
+				this._heap.length = length;
+				this._heap.ptr = ptr;
 			}
-		}
+			void setHeap(H)(ref H heap)pure nothrow @trusted @nogc{
+				this.setHeap(heap.capacity, heap.length, heap.ptr);
+			}
 
-		@property inout(T)* ptr()inout pure nothrow @trusted @nogc{
-			return this.external
-				? this.heap.ptr
-				: this.inline.ptr;
-		}
+			@property ref inout(Inline) inline()inout pure nothrow @trusted @nogc{
+				assert(!this.external);
+				return this._inline;
+			}
 
-		@property inout(T)[] chars()inout pure nothrow @trusted @nogc{
-			return this.external
-				? this.heap.chars
-				: this.inline.chars;
-		}
+			@property ref inout(Heap) heap()inout pure nothrow @trusted @nogc{
+				assert(this.external);
+				return this._heap;
+			}
 
-		@property inout(T)[] allocatedChars()inout pure nothrow @trusted @nogc{
-			return this.external
-				? this.heap.allocatedChars
-				: this.inline.allocatedChars;
-		}
+			@property size_t capacity()const pure nothrow @trusted @nogc{
+				return this.external
+					? this.heap.capacity
+					: this.inline.capacity;
+			}
 
-		@property bool external()const pure nothrow @safe @nogc{
-			return (this._inline.header.flag & 0x1) == 0;
+			@property size_t length()const pure nothrow @trusted @nogc{
+				return this.external
+					? this.heap.length
+					: this.inline.length;
+			}
+
+			@property void length(size_t n)pure nothrow @trusted @nogc{
+				if(this.external){
+					assert(n <= this.heap.capacity);
+					this.heap.length = n;
+				}
+				else{
+					assert(n <= this.inline.capacity);
+					this.inline.length = cast(InlineLength)n;
+				}
+			}
+
+			@property inout(T)* ptr()inout pure nothrow @trusted @nogc{
+				return this.external
+					? this.heap.ptr
+					: this.inline.ptr;
+			}
+
+			@property inout(T)[] chars()inout pure nothrow @trusted @nogc{
+				return this.external
+					? this.heap.chars
+					: this.inline.chars;
+			}
+
+			@property inout(T)[] allocatedChars()inout pure nothrow @trusted @nogc{
+				return this.external
+					? this.heap.allocatedChars
+					: this.inline.allocatedChars;
+			}
+
+			@property bool external()const pure nothrow @safe @nogc{
+				return (this._inline.header.flag & 0x1) == 0;
+			}
 		}
 	}
 
@@ -2638,40 +2653,57 @@ private template Storage(T, size_t N){
 		size_t length;
 		T* ptr;
 
-		@property inout(void)[] data()inout pure nothrow @trusted @nogc{
-			return (cast(inout(void)*)this.ptr)[0 .. capacity * T.sizeof];
-		}
+		pragma(inline, true){
+			
+			@property inout(void)[] data()inout pure nothrow @trusted @nogc{
+				return (cast(inout(void)*)this.ptr)[0 .. capacity * T.sizeof];
+			}
 
-		@property inout(T)[] chars()inout pure nothrow @trusted @nogc{
-			return this.ptr[0 .. length];
-		}
+			@property inout(T)[] chars()inout pure nothrow @trusted @nogc{
+				return this.ptr[0 .. length];
+			}
 
-		@property inout(T)[] allocatedChars()inout pure nothrow @trusted @nogc{
-			return this.ptr[0 .. capacity];
+			@property inout(T)[] allocatedChars()inout pure nothrow @trusted @nogc{
+				return this.ptr[0 .. capacity];
+			}
 		}
 	}
+
 
 
 	align(max(T.sizeof, InlineLength.sizeof))
 	struct InlineHeader{
-		ubyte flag = 0x1;
-		InlineLength length;
+		version(BigEndian){
+			static assert(0, "big endian systems are not supported");
+			//enum ubyte inlineFlag = 0x80;
+			//enum size_t heapMask = ~0x1uL;
+		}
+		else version(LittleEndian){
+			enum ubyte inlineFlag = 0x1;
+			enum size_t heapMask = ~0x1uL;
+		}
+		else{
+			static assert(0, "no impl");
+		}
+
+		ubyte flag = inlineFlag;
+		InlineLength length = 0;
 	}
 
-	size_t compute_capacity(){
+	size_t compute_inline_capacity(){
 		const size_t base_capacity = (Heap.sizeof - InlineHeader.sizeof) / T.sizeof;
 
-		const size_t additional_min_capacity = (base_capacity >= N)
+		const size_t additional_base_capacity = (base_capacity >= N)
 			? 0
 			: (N - base_capacity);
 
-		const size_t additional_size = (additional_min_capacity * T.sizeof);
+		const size_t additional_base_size = additional_base_capacity * T.sizeof;
 
-		const size_t additional_align = (Heap.alignof - (additional_size % Heap.alignof)) % 8;
+		const size_t additional_align_size = (Heap.alignof - (additional_base_size % Heap.alignof)) % 8;
 
-		const size_t additional_capacity = (additional_size + additional_align) / T.sizeof;
+		const size_t additional_capacity = (additional_base_size + additional_align_size) / T.sizeof;
 
-		const size_t final_capacity = (base_capacity + additional_capacity);
+		const size_t final_capacity = base_capacity + additional_capacity;
 
 		return (InlineLength.max < final_capacity)
 			? InlineLength.max
@@ -2681,136 +2713,128 @@ private template Storage(T, size_t N){
 	align(Heap.alignof)
 	struct Inline{
 		InlineHeader header;
-		//alias header this;
-		enum size_t capacity = compute_capacity();
-		static assert(capacity > 0);
+		enum size_t capacity = compute_inline_capacity();
 		T[capacity] elements;
 
+		pragma(inline, true){
 
-		@property size_t length()const pure nothrow @safe @nogc{
-			return this.header.length;
-		}
+			@property size_t length()const pure nothrow @safe @nogc{
+				return this.header.length;
+			}
 
-		@property void length(size_t n)pure nothrow @safe @nogc{
-			assert(n <= capacity);
-			this.header.length = cast(InlineLength)n;
-		}
+			@property void length(size_t n)pure nothrow @safe @nogc{
+				assert(n <= capacity);
+				this.header.length = cast(InlineLength)n;
+			}
 
-		@property inout(void)[] data()inout pure nothrow @trusted @nogc{
-			return (cast(inout(void)*)elements.ptr)[0 .. capacity * T.sizeof];
-		}
+			@property inout(void)[] data()inout pure nothrow @trusted @nogc{
+				return (cast(inout(void)*)this.elements.ptr)[0 .. this.capacity * T.sizeof];
+			}
 
-		@property inout(T)* ptr()inout pure nothrow @trusted @nogc{
-			return elements.ptr;
-		}
+			@property inout(T)* ptr()inout pure nothrow @trusted @nogc{
+				return this.elements.ptr;
+			}
 
-		@property inout(T)[] chars()inout pure nothrow @trusted @nogc{
-			return this.ptr[0 .. length];
-		}
+			@property inout(T)[] chars()inout pure nothrow @trusted @nogc{
+				return this.ptr[0 .. length];
+			}
 
-		@property inout(T)[] allocatedChars()inout pure nothrow @trusted @nogc{
-			return this.ptr[0 .. capacity];
+			@property inout(T)[] allocatedChars()inout pure nothrow @trusted @nogc{
+				return this.ptr[0 .. capacity];
+			}
 		}
 	}
+
+
 }
 
 //local traits:
 private {
 
-	//Constructable:
-	template isMoveConstructable(alias from, To){
-		import std.traits : CopyTypeQualifiers;
+	//copy ctor: (TODO not in use for now)
+	template hasCopyConstructor(From, To)
+	if(is(immutable From == immutable To)){
 
+		enum bool hasCopyConstructor = true
+			&& !is(From == shared)
+			&& isConstructable!(From, To)
+			&& (From.hasStatelessAllocator 
+				|| isCopyConstructableElement!(
+					GetAllocatorType!From,
+					GetAllocatorType!To
+				)
+			)
+			&& (From.hasStatelessAllocator 
+				|| isCopyConstructableElement!(
+					GetAllocatorType!From,
+					To.AllocatorType
+				)
+			);
+	}
+
+	//Move Constructable:
+	template isMoveConstructable(alias from, To){
 		alias From = typeof(from);
-		alias FromAllcoator = CopyTypeQualifiers!(From, From.AllocatorType);
-		alias ToAllcoator = CopyTypeQualifiers!(To, To.AllocatorType);
 
 		enum bool isMoveConstructable = true
-			&& !__traits(isRef, from)
-			&& is(immutable From.CharType == immutable To.CharType)
-			&& (From.minimalCapacity == To.minimalCapacity)
+			&& !isRef!from
+			&& isConstructable!(From, To)
+			&& is(GetCharType!From*: GetCharType!To*)
+			//&& (From.minimalCapacity == To.minimalCapacity)	//TODO remove
 			&& is(immutable From.AllocatorType == immutable To.AllocatorType)
-			&& is(CopyTypeQualifiers!(From, From.CharType)*: CopyTypeQualifiers!(To, To.CharType)*)
-			&&(false
-				|| From.hasStatelessAllocator //&& To.hasStatelessAllocator
-				|| is(typeof((FromAllcoator f){ToAllcoator t = move(f);}))
+			&& (From.hasStatelessAllocator 
+				|| isMoveConstructableElement!(
+						GetAllocatorType!From,
+						GetAllocatorType!To
+				)
 			);
 	}
-	template isCopyConstructable(alias from, To){
-		import std.traits : CopyTypeQualifiers;
 
+	//Move Assignable:
+	template isMoveAssignable(alias from, To){
 		alias From = typeof(from);
-		alias FromAllcoator = CopyTypeQualifiers!(From, From.AllocatorType);
-		alias ToAllcoator = CopyTypeQualifiers!(To, To.AllocatorType);
 
-		enum bool isCopyConstructable = true
+		enum isMoveAssignable = true
+			&& !isRef!from
+			&& isAssignable!(From, To)   
+			&& is(GetCharType!From*: GetCharType!To*)
+			//&& (From.minimalCapacity == To.minimalCapacity)	//TODO remove
 			&& is(immutable From.AllocatorType == immutable To.AllocatorType)
-			&&(false
-				|| From.hasStatelessAllocator //&& To.hasStatelessAllocator
-				|| is(typeof((ref FromAllcoator f){ToAllcoator t = f;}))
+			&& (From.hasStatelessAllocator 
+				|| isMoveAssignableElement!(
+						GetAllocatorType!From,
+						GetAllocatorType!To
+				)
 			);
 	}
-	template isConstructable(alias from, To){
-		enum bool isConstructable = false
-			|| isCopyConstructable!(from, To)
-			|| isMoveConstructable!(from, To);
+	
+	//Constructable:
+	template isConstructable(From, To){
+
+		enum isConstructable = true
+			&& !is(From == shared)
+			&& (From.hasStatelessAllocator
+				? is(immutable From.AllocatorType == immutable To.AllocatorType)
+				: is(immutable From.AllocatorType : immutable To.AllocatorType)
+			);
 	}
 
 	//Assignable:
 	template isAssignable(From, To){
 		import std.traits : isMutable;
-		enum bool isAssignable = isMutable!To
-			&& isConstructable!(From, To);
+
+		enum bool isAssignable = true
+			&& isMutable!To
+			&& !is(From == shared) && !is(To == shared);
 	}
 
-	//Allocator traits:
-	template hasMoveConstructableAllocator(alias from, To){
-		import core.lifetime : move;
-		import std.traits : CopyTypeQualifiers;
 
-		alias From = typeof(from);
-		alias F = CopyTypeQualifiers!(From, From.AllocatorType);
-		alias T = CopyTypeQualifiers!(To, To.AllocatorType);
-
-		enum bool hasMoveConstructableAllocator = true
-			&& !__traits(isRef, from)
-			&& is(F : T)
-			&& is(typeof((F f){T t = move(f);}));
+	template GetCharType(Vec){
+		alias GetCharType = CopyTypeQualifiers!(Vec, Vec.CharType);
 	}
-	template hasMoveAssignableAllocator(alias from, To){
-		import core.lifetime : move;
-		import std.traits : CopyTypeQualifiers;
 
-		alias From = typeof(from);
-		alias F = CopyTypeQualifiers!(From, From.AllocatorType);
-		alias T = CopyTypeQualifiers!(To, To.AllocatorType);
-
-		enum bool hasMoveAssignableAllocator = true
-			&& !__traits(isRef, from)
-			&& is(F : T)
-			&& is(typeof((F f, ref T t){t = move(f);}));
-	}
-	template hasCopyConstructableAllocator(alias from, To){
-		import std.traits : CopyTypeQualifiers;
-
-		alias From = typeof(from);
-		alias F = CopyTypeQualifiers!(From, From.AllocatorType);
-		alias T = CopyTypeQualifiers!(To, To.AllocatorType);
-
-		enum bool hasCopyConstructableAllocator = true
-			&& is(F : T)
-			&& is(typeof((ref F f){T t = f;}));
-	}
-	template hasCopyAssignableAllocator(alias from, To){
-		import std.traits : CopyTypeQualifiers;
-
-		alias From = typeof(from);
-		alias F = CopyTypeQualifiers!(From, From.AllocatorType);
-		alias T = CopyTypeQualifiers!(To, To.AllocatorType);
-
-		enum bool hasCopyAssignableAllocator = true
-			&& is(F : T)
-			&& is(typeof((ref F f, ref T t){t = f;}));
+	template GetAllocatorType(Vec){
+		alias GetAllocatorType = CopyTypeQualifiers!(Vec, Vec.AllocatorType);
 	}
 
 }
@@ -3723,7 +3747,6 @@ version(unittest){
 version(unittest){
 	version(BTL_BASIC_STRING_TESTS)
 	struct TestStatelessAllocator(bool Realloc){
-		import std.experimental.allocator.common : stateSize;
 
 		private struct Allocation{
 			void[] alloc;
@@ -3820,7 +3843,6 @@ version(unittest){
 
 	version(BTL_BASIC_STRING_TESTS)
 	class TestStateAllocator(bool Realloc){
-		import std.experimental.allocator.common : stateSize;
 
 		private struct Allocation{
 			void[] alloc;
@@ -4610,7 +4632,6 @@ version(unittest){
 	void unittest_impl(Allocator)(Allocator allocator = Allocator.init){
 		import std.stdio : writeln;
 		import std.range : only;
-		import std.experimental.allocator.common : stateSize;
 
 		static foreach(alias Char; AliasSeq!(char, wchar, dchar))
 			unittest_impl!Char(allocator);
@@ -4678,4 +4699,116 @@ version(unittest){
 }
 
 
+//move ctor
+pure nothrow unittest{
+	import std.range : iota, array;
+	import std.algorithm : map;
+	import core.lifetime : move;
 
+	alias Str1 = BasicString!(char, 1);
+	alias Str2 = BasicString!(char, 2);
+	alias Str128 = BasicString!(char, 128);
+
+	//heap -> heap
+	{
+		Str1 a = iota(0, Str1.minimalCapacity * 2)
+			.map!(i => i%2 ? 'a' : 'b')
+			.array;
+		void* ptr = a.ptr;
+		Str1 b = move(a);
+
+		assert(b.ptr is ptr);
+	}
+
+	//heap -> heap
+	{
+		Str1 a = iota(0, Str1.minimalCapacity * 2)
+			.map!(i => (i%2) ? 'a' : 'b')
+			.array;
+		void* ptr = a.ptr;
+		Str2 b = move(a);
+
+		assert(b.ptr is ptr);
+	}
+
+	//inline -> heap
+	{
+		Str128 a = iota(0, Str2.minimalCapacity * 2)
+			.map!(i => (i%2) ? 'a' : 'b')
+			.array;
+		void* ptr = a.ptr;
+		Str2 b = move(a);
+
+		assert(b.ptr !is ptr);
+	}
+
+	//heap -> inline
+	{
+		Str2 a = iota(0, Str2.minimalCapacity * 2)
+			.map!(i => (i%2) ? 'a' : 'b')
+			.array;
+		void* ptr = a.ptr;
+		Str128 b = move(a);
+
+		assert(b.ptr !is ptr);
+	}
+}
+
+//move assign
+pure nothrow unittest{
+	import std.range : iota, array;
+	import std.algorithm : map;
+	import core.lifetime : move;
+
+	alias Str1 = BasicString!(char, 1);
+	alias Str2 = BasicString!(char, 2);
+	alias Str128 = BasicString!(char, 128);
+
+	//heap -> heap
+	{
+		Str1 a = iota(0, Str1.minimalCapacity * 2)
+			.map!(i => i%2 ? 'a' : 'b')
+			.array;
+		void* ptr = a.ptr;
+		Str1 b;
+		b = move(a);
+
+		assert(b.ptr is ptr);
+	}
+
+	//heap -> heap
+	{
+		Str1 a = iota(0, Str1.minimalCapacity * 2)
+			.map!(i => (i%2) ? 'a' : 'b')
+			.array;
+		void* ptr = a.ptr;
+		Str2 b;
+		b = move(a);
+
+		assert(b.ptr is ptr);
+	}
+
+	//inline -> heap
+	{
+		Str128 a = iota(0, Str2.minimalCapacity * 2)
+			.map!(i => (i%2) ? 'a' : 'b')
+			.array;
+		void* ptr = a.ptr;
+		Str2 b;
+		b = move(a);
+
+		assert(b.ptr !is ptr);
+	}
+
+	//heap -> inline
+	{
+		Str2 a = iota(0, Str2.minimalCapacity * 2)
+			.map!(i => (i%2) ? 'a' : 'b')
+			.array;
+		void* ptr = a.ptr;
+		Str128 b;
+		b = move(a);
+
+		assert(b.ptr !is ptr);
+	}
+}

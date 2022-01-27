@@ -1378,7 +1378,7 @@ package template MakeEmplace(_Type, _DestructorType, _ControlType, _AllocatorTyp
 			import core.lifetime : forward, emplace;
 
 			static if(!hasStatelessAllocator){
-				static if(isConstructableFromRvalue!_AllocatorType)
+				static if(isMoveConstructableElement!_AllocatorType)
 					this.allocator = forward!a;
 				else
 					this.allocator = a;
@@ -1683,7 +1683,7 @@ package template MakeDynamicArray(_Type, _DestructorType, _ControlType, _Allocat
 			assert(vtable.valid, "vtables are not initialized");
 
 			static if(!hasStatelessAllocator){
-				static if(isConstructableFromRvalue!_AllocatorType)
+				static if(isMoveConstructableElement!_AllocatorType)
 					this.allocator = forward!a;
 				else
 					this.allocator = a;
@@ -1943,7 +1943,7 @@ if(isIntrusive!_Type == 1){
 			import core.lifetime : forward, emplace;
 
 			static if(!hasStatelessAllocator){
-				static if(isConstructableFromRvalue!_AllocatorType)
+				static if(isMoveConstructableElement!_AllocatorType)
 					this.allocator = forward!a;
 				else
 					this.allocator = a;
@@ -2253,7 +2253,7 @@ package template MakeDeleter(_Type, _DestructorType, _ControlType, DeleterType, 
 			assert(vtable.valid, "vtables are not initialized");
 
 			static if(!hasStatelessAllocator){
-				static if(isConstructableFromRvalue!_AllocatorType)
+				static if(isMoveConstructableElement!_AllocatorType)
 					this.allocator = forward!a;
 				else
 					this.allocator = a;
