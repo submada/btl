@@ -145,6 +145,17 @@ $('#symbolSearchPane').show();</script>
 					</tr>
 					<tr>
 						<td>
+							<a id="FixedString" class="public" href="../btl/string/FixedString.html">
+								<code>FixedString</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(Char,void,N)</code>
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
 							<a id="Forward" class="public" href="../btl/string/Forward.html">
 								<code>Forward</code>
 							</a>
@@ -157,14 +168,25 @@ $('#symbolSearchPane').show();</script>
 					</tr>
 					<tr>
 						<td>
+							<a id="LargeString" class="public" href="../btl/string/LargeString.html">
+								<code>LargeString</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(Char,_Allocator,0)</code>
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
 							<a id="String" class="public" href="../btl/string/String.html">
 								<code>String</code>
 							</a>
 						</td>
 						<td>
-							<code class="prettyprint lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(Char,Allcoator,N)</code>
+							<code class="prettyprint lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(char,std.experimental.allocator.mallocator.Mallocator,1L)</code>
 						</td>
-						<td>Standard string type (alias to <code class="lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code>).
+						<td>Standard string type (alias to <code class="lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">char</span></code>).
 </td>
 					</tr>
 				</table>

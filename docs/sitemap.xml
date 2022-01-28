@@ -197,6 +197,7 @@
 <url><loc>http://127.0.0.1/btl/string/BasicString.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.allocator.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.AllocatorType.html</loc></url>
+<url><loc>http://127.0.0.1/btl/string/BasicString.allowHeap.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.append.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.append.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.back.html</loc></url>
@@ -243,9 +244,9 @@
 <url><loc>http://127.0.0.1/btl/string/BasicString.opEquals.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.opEquals.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.opIndex.html</loc></url>
-<url><loc>http://127.0.0.1/btl/string/BasicString.opIndex.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.opIndexAssign.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.opOpAssign.html</loc></url>
+<url><loc>http://127.0.0.1/btl/string/BasicString.opSlice.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.opSlice.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.popBack.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.popBackCodePoint.html</loc></url>
@@ -281,9 +282,10 @@
 <url><loc>http://127.0.0.1/btl/string/BasicString.valid.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/DefaultAllocator.html</loc></url>
+<url><loc>http://127.0.0.1/btl/string/FixedString.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/Forward.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/isBasicString.html</loc></url>
-<url><loc>http://127.0.0.1/btl/string/String.html</loc></url>
+<url><loc>http://127.0.0.1/btl/string/LargeString.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/String.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/DefaultAllocator.html</loc></url>

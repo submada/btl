@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Function BasicString.opIndex</title>
+		<title>Alias FixedString</title>
 		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
@@ -70,28 +70,17 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Function BasicString.opIndex</h1><p>Returns character at specified location <code class="lang-d"><a href="../../btl/string/BasicString.opIndex.html#pos"><span class="pln">pos</span></a></code>.
-</p>
+			<h1>Alias FixedString</h1><p></p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<a href="../../btl/string/BasicString.CharType.html"><span class="typ">BasicString<wbr/></span><span class="pun">.<wbr/></span><span class="typ">CharType</span></a> <span class="pln">opIndex</span>
-			<span class="pun">(</span>
-			<br/>
-			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">size_t</span> <span class="pln">pos</span>
-			<br/>
-			<span class="pun">)</span><span class="pln"> </span><span class="kwd">const pure nothrow @nogc scope @trusted</span><span class="pun">;</span>
+			<span class="kwd">alias</span> <span class="pln">FixedString</span>(Char, <span class="typ">ulong</span> N)
+			 <span class="pun">=</span> <a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(Char,void,N)<span class="pun">;</span>
 					</div>
 				</code>
 			</div>
-			<section></section>
-
-			<section><h2>Examples</h2>
-<pre class="code"><code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">char </span><span class="pln">str </span><span class="pun">= </span><span class="str">"abcd"</span><span class="pun">;
-
-</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str</span><span class="pun">[</span><span class="lit">1</span><span class="pun">] == </span><span class="str">'b'</span><span class="pun">);</span></code></pre>
-</section>
-
+			
+			
 			<footer>
 				<table class="license-info">
 					<tr>

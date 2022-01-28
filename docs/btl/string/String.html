@@ -70,17 +70,13 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Alias String</h1><p>Standard string type (alias to <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code>).
+			<h1>Alias String</h1><p>Standard string type (alias to <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">char</span></code>).
 </p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="kwd">alias</span> <span class="pln">String</span>(Char, <span class="typ">ulong</span> N, Allcoator)
-			 <span class="pun">=</span> <a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(Char,Allcoator,N)<span class="pun">;</span>
-					</div>
-					<div class="single-prototype">
-			<span class="kwd">alias</span> <span class="pln">String</span>(Char, Allcoator, <span class="typ">ulong</span> N<span class="pln"> </span><span class="pun">= </span><span class="lit">1</span>)
-			 <span class="pun">=</span> <a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(Char,Allcoator,N)<span class="pun">;</span>
+			<span class="kwd">alias</span> <span class="pln">String</span>
+			 <span class="pun">=</span> <a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(char,std.experimental.allocator.mallocator.Mallocator,1L)<span class="pun">;</span>
 					</div>
 				</code>
 			</div>

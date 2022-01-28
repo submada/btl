@@ -96,7 +96,7 @@ template Vector(
     alias Storage = .Storage!(_Type, N, _supportGC, _allowHeap);
 
     enum bool _hasStatelessAllocator = isStatelessAllocator!_Allocator;
-    enum bool _allowHeap = !is(_Allocator : void);
+    enum bool _allowHeap = !is(immutable _Allocator == immutable void);
 
     struct Vector{
 

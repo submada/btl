@@ -89,7 +89,7 @@ $('#symbolSearchPane').show();</script>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="kwd">struct</span> <span class="typ">BasicString</span>(_Char, _Allocator, <span class="typ">ulong</span> N<span class="pln"> </span><span class="pun">= </span><span class="lit">0</span>)
+			<span class="kwd">struct</span> <span class="typ">BasicString</span>(_Char, _Allocator, <span class="typ">ulong</span> N<span class="pln"> </span><span class="pun">= </span><span class="lit">1</span>)
 			<br/>
 			&nbsp;&nbsp;
 			<br/>
@@ -433,16 +433,6 @@ $('#symbolSearchPane').show();</script>
 							<a href="../../btl/string/BasicString.opIndex.html" class="public">
 								<code>opIndex</code>
 							</a>
-							<span class="tableEntryAnnotation">()</span>
-						</td>
-						<td>Return slice of all character.
-</td>
-					</tr>
-					<tr>
-						<td>
-							<a href="../../btl/string/BasicString.opIndex.html" class="public">
-								<code>opIndex</code>
-							</a>
 							<span class="tableEntryAnnotation">(pos)</span>
 						</td>
 						<td>Returns character at specified location <code class="lang-d"><a href="../../btl/string/BasicString.opIndex.html#pos"><span class="pln">pos</span></a></code>.
@@ -456,6 +446,16 @@ $('#symbolSearchPane').show();</script>
 							<span class="tableEntryAnnotation">(val, pos)</span>
 						</td>
 						<td>Assign character at specified location <code class="lang-d"><a href="../../btl/string/BasicString.opIndexAssign.html#pos"><span class="pln">pos</span></a></code> to value <code class="lang-d"><a href="../../btl/string/BasicString.opIndexAssign.html#val"><span class="pln">val</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.opSlice.html" class="public">
+								<code>opSlice</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Return slice of all character.
 </td>
 					</tr>
 					<tr>
@@ -582,6 +582,15 @@ $('#symbolSearchPane').show();</script>
 							</a>
 						</td>
 						<td>Type of the allocator object used to define the storage allocation model. By default <code class="lang-d"><a href="../../btl/string/DefaultAllocator.html"><span class="typ">DefaultAllocator</span></a></code> is used.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.allowHeap.html" class="public">
+								<code>allowHeap</code>
+							</a>
+						</td>
+						<td>Allow heap (<code class="lang-d"><span class="kwd">false</span></code> only if <code class="lang-d"><span class="typ">Allcoator</span></code> is void)
 </td>
 					</tr>
 					<tr>
