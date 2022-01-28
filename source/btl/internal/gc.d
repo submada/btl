@@ -16,7 +16,7 @@ version(D_BetterC){
 }
 else{
     version(BTL_GC_RANGE_COUNT)
-        public __gshared long _conter_gc_ranges = 0;
+        public __gshared int _conter_gc_ranges = 0;
 
 
     version(BTL_GC_RANGE_TRACK)

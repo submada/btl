@@ -42,14 +42,6 @@ template isBasicString(T){
 
 
 /**
-	Standard utf-8 string type (alias to `BasicString!char`).
-*/
-alias String = BasicString!char;
-
-
-
-
-/**
 	The `BasicString` is the generalization of struct string for character of type `char`, `wchar` or `dchar`.
 
 	`BasicString` use utf-8, utf-16 or utf-32 encoding.
@@ -532,7 +524,9 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		*/
 		public void release()scope{
 			if(this.storage.external){
-				this._deallocate(this.storage.heap.allocatedChars);
+				//this._deallocate(this.storage.heap.allocatedChars);
+				const d = this._deallocate_heap(this.storage.heap);
+				assert(d, "deallocate fail");
 
 				this.storage.reset();
 			}
@@ -574,20 +568,24 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 					return old_capacity;
 
 				const size_t length = this.storage.inline.length;
-				const size_t new_capacity = max(old_capacity * 2, (n + 1)) & ~0x1;
+				//const size_t new_capacity = max(old_capacity * 2, (n + 1)) & ~0x1;
+				const size_t new_capacity = max(
+					Storage.heapCapacity(old_capacity * 2),
+					Storage.heapCapacity(n)
+				);
 
 				//assert(new_capacity >= max(old_capacity * 2, n));
-				assert(new_capacity % 2 == 0);
+				//assert(new_capacity % 2 == 0);
 
 
-				CharType[] cdata = this._allocate(new_capacity);
+				Storage.Heap heap;
+				const d = this._allocate_heap(heap, new_capacity);
+				if(!d)assert(0, "allocate fail");
 
-				()@trusted{
-					memCopy(cdata.ptr, this.storage.inline.ptr, length);
-					assert(this.storage.chars == cdata[0 .. length]);
+				memCopy(heap.ptr, this.storage.inline.ptr, length);
+				assert(this.storage.inline.chars == heap.chars);
 
-					this.storage.setHeap(new_capacity, length, cdata.ptr);
-				}();
+				this.storage.setHeap(heap);
 
 				return new_capacity;
 			}
@@ -601,16 +599,17 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 					return old_capacity;
 
 				const size_t length = this.storage.heap.length;
-				const size_t new_capacity = max(old_capacity * 2, (n + 1)) & ~0x1;
+				//const size_t new_capacity = max(old_capacity * 2, (n + 1)) & ~0x1;
+				const size_t new_capacity = max(
+					Storage.heapCapacity(old_capacity * 2),
+					Storage.heapCapacity(n)
+				);
 
 				//assert(new_capacity >= max(old_capacity * 2, n));
-				assert(new_capacity % 2 == 0);
+				//assert(new_capacity % 2 == 0);
 
-				CharType[] cdata = this._reallocate(this.storage.heap.allocatedChars, length, new_capacity);
-
-				()@trusted{
-					this.storage.setHeap(new_capacity, length, cdata.ptr);
-				}();
+				const d = this._reallocate_heap(this.storage.heap, new_capacity);
+				if(!d)assert(0, "reallocate fail");
 
 				return new_capacity;
 
@@ -677,51 +676,46 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				assert(str.capacity == BasicString!char.minimalCapacity);
 				--------------------
 		*/
-		public size_t shrinkToFit(bool realloc = true)scope{
+		public void shrinkToFit(bool realloc = true)()scope{
 			if(!this.storage.external)
-				return minimalCapacity;
+				return;
 
 			const size_t old_capacity = this.storage.heap.capacity;
 			const size_t length = this.storage.heap.length;
 
 
 			if(length == old_capacity)
-				return length;
+				return;
 
-			CharType[] cdata = this.storage.heap.allocatedChars;
 
 			if(length <= minimalCapacity){
+				auto heap = this.storage.heap;
+
 				this.storage.reset(length);
+				memCopy(this.storage.inline.ptr, heap.ptr, length);
 
-				()@trusted{
-					memCopy(this.storage.inline.ptr, cdata.ptr, length);
-				}();
-
-				this._deallocate(cdata);
+				const d = this._deallocate_heap(heap);
+				assert(d, "deallocate fail");
 
 				assert(!this.storage.external);
-				return minimalCapacity;
+				return;
 			}
 
 			if(realloc == false){
-				return old_capacity;
+				return;
 			}
 
-			const size_t new_capacity = (length + 1) & ~0x1;
+			const size_t new_capacity = Storage.heapCapacity(length);
 
 			if(new_capacity >= old_capacity)
-				return old_capacity;
+				return;
 
 			assert(new_capacity >= length);
-			assert(new_capacity % 2 == 0);
+			//assert(new_capacity % 2 == 0);
 
-			cdata = this._reallocate_optional(cdata, new_capacity);
+			cast(void)this._reallocate_heap!(!realloc)(this.storage.heap, new_capacity);
 
-			()@trusted{
-				this.storage.setHeap(new_capacity, length, cdata.ptr);
-			}();
-
-			return new_capacity;
+			return;
 		}
 
 
@@ -733,7 +727,8 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		*/
 		public ~this()scope{
 			if(this.storage.external){
-				this._deallocate(this.storage.heap.allocatedChars);
+				const d = this._deallocate_heap(this.storage.heap);
+				assert(d, "deallocate fail");
 				debug this.storage.reset();
 			}
 		}
@@ -1022,33 +1017,33 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			static if(isMoveConstructable!(rhs, This)){
 
 				if(rhs.storage.external){
-            		//heap -> heap:
-                    if(minimalCapacity <= Rhs.minimalCapacity || minimalCapacity < rhs.length){
-                        static if(!hasStatelessAllocator)
-                            this._allocator = move(rhs._allocator);
+					//heap -> heap:
+					if(minimalCapacity <= Rhs.minimalCapacity || minimalCapacity < rhs.length){
+						static if(!hasStatelessAllocator)
+							this._allocator = move(rhs._allocator);
 
 						this.storage.setHeap(rhs.storage.heap);
 						rhs.storage.reset();
 					}
-	                //heap -> inline:
+					//heap -> inline:
 					else{
-	                    assert(rhs.length <= minimalCapacity);
+						assert(rhs.length <= minimalCapacity);
 
 						this._ctor(rhs.storage.heap.chars);
 
 						rhs.release();
 
-	                    static if(!hasStatelessAllocator)
-	                        this._allocator = move(rhs._allocator);
+						static if(!hasStatelessAllocator)
+							this._allocator = move(rhs._allocator);
 					}
 				}
 				else{
-                    static if(!hasStatelessAllocator)
-                        this._allocator = move(rhs._allocator);
+					static if(!hasStatelessAllocator)
+						this._allocator = move(rhs._allocator);
 
-                    //inline -> inline:
-                    //inline -> heap:
-                    this._ctor(rhs.storage.inline.chars);
+					//inline -> inline:
+					//inline -> heap:
+					this._ctor(rhs.storage.inline.chars);
 				}
 			}
 			else{
@@ -1086,51 +1081,32 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 
 
-		private void _ctor(C)(const C character)scope
+		private void _ctor(this This, C)(const C character)scope
 		if(isSomeChar!C){
-			assert(!this.storage.external);
-			this.storage.inline.length = character.encodeTo(this.storage.inline.allocatedChars);
+			auto self = (()@trusted => cast(Unqual!This*)&this )();
+
+			assert(minimalCapacity >= encodedLength!CharType(character));
+			self.storage.inline.length = character.encodeTo(self.storage.inline.allocatedChars);
 		}
 
 		private void _ctor(this This, C)(scope const C[] str)scope
 		if(isSomeChar!C){
 			auto self = (()@trusted => cast(Unqual!This*)&this )();
-			assert(!self.storage.external);
 
-			const size_t str_length = encodedLength!CharType(str);
+			const size_t len = encodedLength!CharType(str);
 
-			if(str_length > self.storage.inline.capacity){
-
-				const size_t new_capacity = ((str_length + 1) & ~0x1);
-
-				assert(new_capacity >= str_length);
-				assert(new_capacity % 2 == 0);
-
-
-				CharType[] cdata = self._allocate(new_capacity);
-
-				()@trusted{
-					self.storage.setHeap(new_capacity, str[].encodeTo(cdata[]), cdata.ptr);
-				}();
-
-			}
-			else if(str.length != 0){
-				assert(!self.storage.external);
-
-				self.storage.inline.length = str[].encodeTo(self.storage.inline.allocatedChars);
-			}
-			else{
-				assert(!self.storage.external);
-				assert(self.storage.length == 0);
-			}
+			self.reserve(len);
+			self.storage.length = str[].encodeTo(self.storage.allocatedChars);
 		}
 
-		private void _ctor(I)(const I integer)scope
+		private void _ctor(this This, I)(const I integer)scope
 		if(isIntegral!I){
+			auto self = (()@trusted => cast(Unqual!This*)&this )();
+
 			const size_t len = encodedLength!CharType(integer);
 
-			this.reserve(len);
-			this.storage.length = integer.encodeTo(this.storage.allocatedChars);
+			self.reserve(len);
+			self.storage.length = integer.encodeTo(self.storage.allocatedChars);
 		}
 
 
@@ -1215,17 +1191,17 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		if(isBasicString!Rhs && isAssignable!(Rhs, typeof(this))){
 			static if(isMoveAssignable!(rhs, typeof(this))){
 
-	            if(rhs.storage.external){
-	                if(minimalCapacity <= Rhs.minimalCapacity || minimalCapacity < rhs.length){
-	                    static if(!hasStatelessAllocator)
-	                        this._allocator = move(rhs._allocator);
+				if(rhs.storage.external){
+					if(minimalCapacity <= Rhs.minimalCapacity || minimalCapacity < rhs.length){
+						static if(!hasStatelessAllocator)
+							this._allocator = move(rhs._allocator);
 
-	                    this.release();
+						this.release();
 						this.storage.setHeap(rhs.storage.heap);
 						rhs.storage.reset();
-	                    return;
-	                }
-	            }
+						return;
+					}
+				}
 			}
 			else{
 				return this.opAssign(rhs.storage.chars);
@@ -2283,17 +2259,22 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		private Storage storage;
 
 		//allocation:
-		private CharType[] _allocate(const size_t capacity){
-			void[] data = this._allocator.allocate(capacity * CharType.sizeof);
+		private bool _allocate_heap()(ref Storage.Heap heap, const size_t capacity){
+			assert(capacity == storage.heapCapacity(capacity));
 
-			return (()@trusted => (cast(CharType*)data.ptr)[0 .. capacity])();
+			void[] data = this._allocator.allocate(capacity * CharType.sizeof);
+			if(data.length == 0)
+				return false;
+
+			heap.ptr = (()@trusted => cast(CharType*)data.ptr )();
+			heap.capacity = capacity;
+			heap.length = length;
+
+			return true;
 		}
 
-		private bool _deallocate(scope CharType[] cdata){
-			void[] data = ()@trusted{
-				return (cast(void*)cdata.ptr)[0 .. cdata.length * CharType.sizeof];
-
-			}();
+		private bool _deallocate_heap()(const ref Storage.Heap heap){
+			void[] data = (()@trusted => cast(void[])heap.data )();
 
 			static if(safeAllocate)
 				return ()@trusted{
@@ -2303,8 +2284,9 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				return this._allocator.deallocate(data);
 		}
 
-		private CharType[] _reallocate(scope return CharType[] cdata, const size_t length, const size_t new_capacity){
-			void[] data = (()@trusted => (cast(void*)cdata.ptr)[0 .. cdata.length * CharType.sizeof] )();
+		private bool _reallocate_heap(bool optional = false)(ref Storage.Heap heap, size_t new_capacity){
+			assert(new_capacity == storage.heapCapacity(new_capacity));
+			void[] data = heap.data;
 
 			static if(hasMember!(typeof(_allocator), "reallocate")){
 				static if(safeAllocate)
@@ -2314,51 +2296,44 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				else
 					const bool reallocated = this._allocator.reallocate(data, new_capacity * CharType.sizeof);
 			}
-			else
-				enum bool reallocated = false;
+			else{
+				const bool reallocated = false;
+			}
 
 			if(reallocated){
-				assert(data.length / CharType.sizeof == new_capacity);
-				return (()@trusted => (cast(CharType*)data.ptr)[0 .. new_capacity])();
-			}
-
-			CharType[] new_cdata = this._allocate(new_capacity);
-			()@trusted{
-				memCopy(new_cdata.ptr, cdata.ptr, length);
-			}();
-
-			static if(safeAllocate)
 				()@trusted{
-					this._allocator.deallocate(data);
+					heap.ptr = cast(CharType*)data.ptr;
+					heap.capacity = new_capacity;
+
 				}();
-			else
-				this._allocator.deallocate(data);
-
-			return new_cdata;
-		}
-
-		private CharType[] _reallocate_optional(scope return CharType[] cdata, const size_t new_capacity)@trusted{
-			void[] data = (cast(void*)cdata.ptr)[0 .. cdata.length * CharType.sizeof];
-
-			static if(hasMember!(typeof(_allocator), "reallocate")){
-				static if(safeAllocate)
-					const bool reallocated = ()@trusted{
-						return this._allocator.reallocate(data, new_capacity * CharType.sizeof);
-					}();
-
-				else
-					const bool reallocated = this._allocator.reallocate(data, new_capacity * CharType.sizeof);
-
-				if(reallocated){
-					assert(data.length / CharType.sizeof == new_capacity);
-					return (cast(CharType*)data.ptr)[0 .. new_capacity];
-				}
+				assert(data.length / CharType.sizeof == new_capacity);
+				return true;
 			}
 
-			return cdata;
+			static if(optional){
+				return false;
+			}
+			else{
+				Storage.Heap heap_new;
+
+				{
+					const d = this._allocate_heap(heap_new, new_capacity);
+					if(!d)return false;
+
+					memCopy(heap_new.ptr, heap.ptr, heap.length);
+					heap_new.length = length;
+				}
+
+				{
+					const d = this._deallocate_heap(heap);
+					assert(d, "deallocate fail");
+				}
+
+				heap = heap_new;
+
+				return true;
+			}
 		}
-
-
 
 		//reduce/expand:
 		private void _reduce_move(const size_t pos, const size_t n)scope pure nothrow @system @nogc{
@@ -2546,22 +2521,67 @@ pure nothrow @safe @nogc unittest {
 }
 
 
+/**
+	Standard string type (alias to `BasicString`).
+*/
+alias String(Char, size_t N, Allcoator = DefaultAllocator) = BasicString!(Char, Allcoator, N);
+
+/// ditto
+alias String(Char, Allcoator = DefaultAllocator, size_t N = 1) = BasicString!(Char, Allcoator, N);
+
+
+struct StorageHeap(T, L = size_t){
+	L capacity;
+	L length;
+	T* ptr;
+
+	pragma(inline, true){
+
+		@property inout(void)[] data()inout pure nothrow @trusted @nogc{
+			return (cast(inout(void)*)this.ptr)[0 .. capacity * T.sizeof];
+		}
+
+		@property inout(T)[] chars()inout pure nothrow @trusted @nogc{
+			return this.ptr[0 .. length];
+		}
+
+		@property inout(T)[] allocatedChars()inout pure nothrow @trusted @nogc{
+			return this.ptr[0 .. capacity];
+		}
+	}
+}
 
 private template Storage(T, size_t N){
+
 
 	union Storage{
 		Inline _inline;
 		Heap _heap;
 
+		alias Char = T;
+
+		alias Inline = InlineImpl;
+
+		alias Heap = HeapImpl;
+
 		enum size_t minimalCapacity = Inline.capacity;
 
-		enum size_t maximalCapacity = ((size_t.max / T.sizeof) & ~cast(size_t)InlineHeader.inlineFlag);
+		enum size_t maximalCapacity = (size_t.max / T.sizeof);
+
+		enum size_t heapFlag = _heapFlag;
 
 		pragma(inline, true){
+			static size_t heapCapacity(size_t capacity)pure nothrow @safe @nogc{
+				capacity |= heapFlag;
+				assert(capacity > minimalCapacity);
+				assert(capacity <= maximalCapacity);
+
+				return capacity;
+			}
 
 			void reset(size_t len = 0)pure nothrow @safe @nogc{
 				assert(len <= minimalCapacity);
-				this._inline.header.flag = InlineHeader.inlineFlag;
+				this._inline.reset();
 				this._inline.length = len;
 			}
 
@@ -2628,19 +2648,23 @@ private template Storage(T, size_t N){
 			}
 
 			@property bool external()const pure nothrow @safe @nogc{
-				return (this._inline.header.flag & 0x1) == 0;
+				return (this._inline.header.length & heapFlag);
 			}
 		}
 	}
 
-	template InlineLengthImpl(){
-		static if(ubyte.max >= N)
+	enum size_t _heapFlag = 0x1;
+
+	enum size_t maxInlineLength(T) = T.max & (cast(T)~_heapFlag);
+
+	template InlineLengthImpl(){		
+		static if(maxInlineLength!ubyte >= N)
 			alias InlineLengthImpl = ubyte;
-		else static if(ushort.max >= N)
+		else static if(maxInlineLength!ushort >= N)
 			alias InlineLengthImpl = ushort;
-		else static if(uint.max >= N)
+		else static if(maxInlineLength!uint >= N)
 			alias InlineLengthImpl = uint;
-		else static if(ulong.max >= N)
+		else static if(maxInlineLength!ulong >= N)
 			alias InlineLengthImpl = ulong;
 		else
 			static assert(0, "no impl");
@@ -2648,50 +2672,19 @@ private template Storage(T, size_t N){
 
 	alias InlineLength = InlineLengthImpl!();
 
-	struct Heap{
-		size_t capacity;
-		size_t length;
-		T* ptr;
-
-		pragma(inline, true){
-			
-			@property inout(void)[] data()inout pure nothrow @trusted @nogc{
-				return (cast(inout(void)*)this.ptr)[0 .. capacity * T.sizeof];
-			}
-
-			@property inout(T)[] chars()inout pure nothrow @trusted @nogc{
-				return this.ptr[0 .. length];
-			}
-
-			@property inout(T)[] allocatedChars()inout pure nothrow @trusted @nogc{
-				return this.ptr[0 .. capacity];
-			}
-		}
-	}
-
-
+	alias HeapImpl = StorageHeap!(T, size_t);
 
 	align(max(T.sizeof, InlineLength.sizeof))
 	struct InlineHeader{
-		version(BigEndian){
-			static assert(0, "big endian systems are not supported");
-			//enum ubyte inlineFlag = 0x80;
-			//enum size_t heapMask = ~0x1uL;
-		}
-		else version(LittleEndian){
-			enum ubyte inlineFlag = 0x1;
-			enum size_t heapMask = ~0x1uL;
-		}
-		else{
-			static assert(0, "no impl");
-		}
-
-		ubyte flag = inlineFlag;
 		InlineLength length = 0;
+
+		enum size_t maxLength = maxInlineLength!InlineLength;
+		
+		static assert(maxLength >= N);
 	}
 
 	size_t compute_inline_capacity(){
-		const size_t base_capacity = (Heap.sizeof - InlineHeader.sizeof) / T.sizeof;
+		const size_t base_capacity = (HeapImpl.sizeof - InlineHeader.sizeof) / T.sizeof;
 
 		const size_t additional_base_capacity = (base_capacity >= N)
 			? 0
@@ -2699,32 +2692,38 @@ private template Storage(T, size_t N){
 
 		const size_t additional_base_size = additional_base_capacity * T.sizeof;
 
-		const size_t additional_align_size = (Heap.alignof - (additional_base_size % Heap.alignof)) % 8;
+		const size_t additional_align_size = (HeapImpl.alignof - (additional_base_size % HeapImpl.alignof)) % 8;
 
 		const size_t additional_capacity = (additional_base_size + additional_align_size) / T.sizeof;
 
 		const size_t final_capacity = base_capacity + additional_capacity;
 
-		return (InlineLength.max < final_capacity)
-			? InlineLength.max
+		const size_t max_inline_length = InlineHeader.maxLength;
+
+		return (max_inline_length < final_capacity)
+			? max_inline_length
 			: final_capacity;
 	}
 
-	align(Heap.alignof)
-	struct Inline{
+	align(HeapImpl.alignof)
+	struct InlineImpl{
 		InlineHeader header;
+
 		enum size_t capacity = compute_inline_capacity();
 		T[capacity] elements;
 
 		pragma(inline, true){
+			void reset()pure nothrow @safe @nogc{
+				this.header.length = 0;
+			}
 
 			@property size_t length()const pure nothrow @safe @nogc{
-				return this.header.length;
+				return (cast(size_t)this.header.length) >> 1;
 			}
 
 			@property void length(size_t n)pure nothrow @safe @nogc{
 				assert(n <= capacity);
-				this.header.length = cast(InlineLength)n;
+				this.header.length = cast(InlineLength)(n << 1);
 			}
 
 			@property inout(void)[] data()inout pure nothrow @trusted @nogc{
@@ -2747,6 +2746,7 @@ private template Storage(T, size_t N){
 
 
 }
+
 
 //local traits:
 private {
@@ -3975,7 +3975,7 @@ version(unittest){
 			//----------------------------
 			const size_t new_capacity = str.capacity * 2 + 1;
 			str.reserve(new_capacity);
-			assert(str.capacity > new_capacity);
+			assert(str.capacity >= new_capacity);
 			//----------------------------
 			str.clear();
 			assert(str.empty);

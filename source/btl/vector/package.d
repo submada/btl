@@ -2555,8 +2555,10 @@ template Vector(
             return true;
         }
 
-        private bool _deallocate_heap()(ref Storage.Heap heap)scope nothrow{
-            void[] data = heap.data;
+        private bool _deallocate_heap()(const ref Storage.Heap heap)scope nothrow{
+            void[] data = ()@trusted{
+                return cast(void[])heap.data;
+            }();
 
             static if(supportGC)
                 gcRemoveRange(data);
@@ -2837,8 +2839,8 @@ private{
             : 0;
 
         struct Storage{
-
             alias Inline = InlineStorage!(T, N);
+
             alias Heap = HeapStorage!(T, gcRange);
 
             enum size_t minimalCapacity = Inline.capacity;
@@ -3005,7 +3007,7 @@ private{
                 return ptr[0 .. capacity];
             }
 
-            @property void[] data()pure nothrow @trusted @nogc{
+            @property inout(void)[] data()inout pure nothrow @trusted @nogc{
                 return (cast(void*)ptr)[0 .. capacity * T.sizeof];
             }
         }

@@ -150,19 +150,7 @@ $('#symbolSearchPane').show();</script>
 			<br/>
 			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope scope</span>
 			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isVector</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; </span><span class="pln">isConstructable</span><span class="pun">!(</span><span class="typ">Rhs</span><span class="pun">, </span><span class="typ">This</span><span class="pun">, </span><span class="kwd">false</span><span class="pun">) &amp;&amp; (</span><span class="pln">isRef</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">|| !</span><span class="kwd">is</span><span class="pun">(</span><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">This</span><span class="pun">) == </span><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">Rhs</span><span class="pun">)))</span><span class="pun">);</span>
-			<br/>
-			<br/>
-			<span class="pln">this</span>(Rhs, This)
-			<span class="pun">(</span>
-			<br/>
-			&nbsp;&nbsp;<span class="kwd">auto scope ref </span><span class="typ">Rhs</span> <span class="pln">rhs</span><span class="pun">,</span>
-			<br/>
-			&nbsp;&nbsp;<a href="../../btl/vector/Vector.AllocatorType.html"><span class="typ">Vector<wbr/></span><span class="pun">.<wbr/></span><span class="typ">AllocatorType</span></a> <span class="pln">allocator</span>
-			<br/>
-			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope scope</span>
-			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isVector</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; </span><span class="pln">isConstructable</span><span class="pun">!(</span><span class="typ">Rhs</span><span class="pun">, </span><span class="typ">This</span><span class="pun">, </span><span class="kwd">false</span><span class="pun">)</span><span class="pun">);</span>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isVector</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; </span><span class="pln">isConstructable</span><span class="pun">!(</span><span class="typ">Rhs</span><span class="pun">, </span><span class="typ">This</span><span class="pun">) &amp;&amp; (</span><span class="pln">isRef</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">|| !</span><span class="kwd">is</span><span class="pun">(</span><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">This</span><span class="pun">) == </span><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">Rhs</span><span class="pun">)))</span><span class="pun">);</span>
 					</div>
 				</code>
 			</div>
@@ -209,7 +197,7 @@ $('#symbolSearchPane').show();</script>
 			<br/>
 			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope scope</span>
 			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">hasLength</span><span class="pun">!</span><span class="pln">R </span><span class="pun">&amp;&amp; </span><span class="pln">isInputRange</span><span class="pun">!</span><span class="pln">R </span><span class="pun">&amp;&amp; </span><span class="kwd">is</span><span class="pun">(</span><span class="typ">ElementEncodingType</span><span class="pun">!</span><span class="pln">R </span><span class="pun">: </span><span class="typ">CopyTypeQualifiers</span><span class="pun">!(</span><span class="typ">This</span><span class="pun">, </span><span class="typ">ElementType</span><span class="pun">))</span><span class="pun">);</span>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">hasLength</span><span class="pun">!</span><span class="pln">R </span><span class="pun">&amp;&amp; </span><span class="pln">isInputRange</span><span class="pun">!</span><span class="pln">R </span><span class="pun">&amp;&amp; </span><span class="kwd">is</span><span class="pun">(</span><span class="typ">ElementEncodingType</span><span class="pun">!</span><span class="pln">R </span><span class="pun">: </span><span class="typ">GetElementType</span><span class="pun">!</span><span class="typ">This</span><span class="pun">)</span><span class="pun">);</span>
 			<br/>
 			<br/>
 			<span class="pln">this</span>(R, This)
@@ -221,7 +209,7 @@ $('#symbolSearchPane').show();</script>
 			<br/>
 			<span class="pun">)</span><span class="pln"> </span><span class="kwd">return</span>
 			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">hasLength</span><span class="pun">!</span><span class="pln">R </span><span class="pun">&amp;&amp; </span><span class="pln">isInputRange</span><span class="pun">!</span><span class="pln">R </span><span class="pun">&amp;&amp; </span><span class="kwd">is</span><span class="pun">(</span><span class="typ">ElementEncodingType</span><span class="pun">!</span><span class="pln">R </span><span class="pun">: </span><span class="typ">CopyTypeQualifiers</span><span class="pun">!(</span><span class="typ">This</span><span class="pun">, </span><span class="typ">ElementType</span><span class="pun">))</span><span class="pun">);</span>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">hasLength</span><span class="pun">!</span><span class="pln">R </span><span class="pun">&amp;&amp; </span><span class="pln">isInputRange</span><span class="pun">!</span><span class="pln">R </span><span class="pun">&amp;&amp; </span><span class="kwd">is</span><span class="pun">(</span><span class="typ">ElementEncodingType</span><span class="pun">!</span><span class="pln">R </span><span class="pun">: </span><span class="typ">GetElementType</span><span class="pun">!</span><span class="typ">This</span><span class="pun">)</span><span class="pun">);</span>
 					</div>
 				</code>
 			</div>

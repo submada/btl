@@ -2343,10 +2343,10 @@ package template MakeDeleter(_Type, _DestructorType, _ControlType, DeleterType, 
 
 
 version(BTL_AUTOPTR_COUNT_ALLOCATIONS)
-	public __gshared long _conter_allocations = 0;
+	public __gshared int _conter_allocations = 0;
 
 version(BTL_AUTOPTR_COUNT_CONSTRUCTIONS)
-	public __gshared long _conter_constructs = 0;
+	public __gshared int _conter_constructs = 0;
 
 version(BTL_AUTOPTR_COUNT_ALLOCATIONS)
 	enum bool BTL_AUTOPTR_COUNT = true;

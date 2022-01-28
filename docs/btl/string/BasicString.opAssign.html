@@ -75,7 +75,7 @@ $('#symbolSearchPane').show();</script>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="kwd">ref </span><span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)</span> <span class="pln">opAssign</span>
+			<span class="typ">void</span> <span class="pln">opAssign</span>
 			<span class="pun">(</span>
 			<br/>
 			&nbsp;&nbsp;<span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">null</span><span class="pun">)</span> <span class="pln">nil</span>
@@ -83,7 +83,7 @@ $('#symbolSearchPane').show();</script>
 			<span class="pun">)</span><span class="pln"> </span><span class="kwd">pure nothrow @nogc scope @safe</span><span class="pun">;</span>
 			<br/>
 			<br/>
-			<span class="kwd">ref </span><span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)</span> <span class="pln">opAssign</span>
+			<span class="typ">void</span> <span class="pln">opAssign</span>
 			<span class="pun">(</span>
 			<br/>
 			&nbsp;&nbsp;<span class="kwd">scope const </span><a href="../../btl/string/BasicString.CharType.html"><span class="typ">BasicString<wbr/></span><span class="pun">.<wbr/></span><span class="typ">CharType</span></a><span class="pun">[]</span> <span class="pln">slice</span>
@@ -91,7 +91,7 @@ $('#symbolSearchPane').show();</script>
 			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span><span class="pun">;</span>
 			<br/>
 			<br/>
-			<span class="kwd">ref </span><span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)</span> <span class="pln">opAssign</span>(C)
+			<span class="typ">void</span> <span class="pln">opAssign</span>(C)
 			<span class="pun">(</span>
 			<br/>
 			&nbsp;&nbsp;<span class="kwd">scope const </span><span class="pln">C</span><span class="pun">[]</span> <span class="pln">slice</span>
@@ -101,7 +101,7 @@ $('#symbolSearchPane').show();</script>
 			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isSomeChar</span><span class="pun">!</span><span class="pln">C</span><span class="pun">);</span>
 			<br/>
 			<br/>
-			<span class="kwd">ref </span><span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)</span> <span class="pln">opAssign</span>(C)
+			<span class="typ">void</span> <span class="pln">opAssign</span>(C)
 			<span class="pun">(</span>
 			<br/>
 			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">C</span> <span class="pln">character</span>
@@ -111,7 +111,7 @@ $('#symbolSearchPane').show();</script>
 			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isSomeChar</span><span class="pun">!</span><span class="pln">C</span><span class="pun">);</span>
 			<br/>
 			<br/>
-			<span class="kwd">ref </span><span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)</span> <span class="pln">opAssign</span>(I)
+			<span class="typ">void</span> <span class="pln">opAssign</span>(I)
 			<span class="pun">(</span>
 			<br/>
 			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">I</span> <span class="pln">integer</span>
@@ -121,7 +121,7 @@ $('#symbolSearchPane').show();</script>
 			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isIntegral</span><span class="pun">!</span><span class="pln">I</span><span class="pun">);</span>
 			<br/>
 			<br/>
-			<span class="kwd">ref </span><span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)</span> <span class="pln">opAssign</span>
+			<span class="typ">void</span> <span class="pln">opAssign</span>
 			<span class="pun">(</span>
 			<br/>
 			&nbsp;&nbsp;<span class="kwd">scope </span><span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)</span> <span class="pln">rhs</span>
@@ -129,14 +129,14 @@ $('#symbolSearchPane').show();</script>
 			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span><span class="pun">;</span>
 			<br/>
 			<br/>
-			<span class="kwd">ref </span><span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)</span> <span class="pln">opAssign</span>(Rhs)
+			<span class="typ">void</span> <span class="pln">opAssign</span>(Rhs)
 			<span class="pun">(</span>
 			<br/>
 			&nbsp;&nbsp;<span class="kwd">auto scope ref </span><span class="typ">Rhs</span> <span class="pln">rhs</span>
 			<br/>
 			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
 			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isBasicString</span><span class="pun">!</span><span class="typ">Rhs</span><span class="pun">);</span>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isBasicString</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; </span><span class="pln">isAssignable</span><span class="pun">!(</span><span class="typ">Rhs</span><span class="pun">, </span><span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">))</span><span class="pun">);</span>
 					</div>
 				</code>
 			</div>

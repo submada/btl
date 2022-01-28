@@ -747,7 +747,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 				import std.algorithm : all;
 				assert(arr.get.all!(x => x == -1));
 
-				for(long i = 0; i < 6; ++i)
+				for(int i = 0; i < 6; ++i)
 					arr.get[i] = i;
 
 				assert(arr.get == [0, 1, 2, 3, 4, 5]);
@@ -907,7 +907,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 				import std.algorithm : all;
 				assert(arr.get.all!(x => x == -1));
 
-				for(long i = 0; i < 6; ++i)
+				for(int i = 0; i < 6; ++i)
 					arr.get[i] = i;
 
 				assert(arr.get == [0, 1, 2, 3, 4, 5]);
@@ -2038,7 +2038,7 @@ unittest{
 		assert(a.get.length == 10);
 		assert(a.get.all!(x => x == -1));
 
-		for(long i = 0; i < a.length; ++i){
+		for(int i = 0; i < a.length; ++i){
 			a.get[i] = i;
 		}
 		assert(a.get[] == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
@@ -3333,7 +3333,7 @@ version(unittest){
 			import std.algorithm : all;
 			assert(arr.get.all!(x => x == -1));
 
-			for(long i = 0; i < 6; ++i)
+			for(int i = 0; i < 6; ++i)
 				arr.get[i] = i;
 
 			assert(arr.get == [0, 1, 2, 3, 4, 5]);
@@ -3558,7 +3558,7 @@ version(unittest){
 			import std.algorithm : all;
 			assert(arr.get.all!(x => x == -1));
 
-			for(long i = 0; i < 6; ++i)
+			for(int i = 0; i < 6; ++i)
 				arr.get[i] = i;
 
 			assert(arr.get == [0, 1, 2, 3, 4, 5]);
