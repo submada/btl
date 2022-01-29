@@ -286,6 +286,7 @@
 <url><loc>http://127.0.0.1/btl/string/Forward.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/isBasicString.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/LargeString.html</loc></url>
+<url><loc>http://127.0.0.1/btl/string/SmallString.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/String.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/DefaultAllocator.html</loc></url>

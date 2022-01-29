@@ -200,6 +200,7 @@ var symbols = [
 {name: 'btl.string.Forward', kind: "aliasdeclaration", path: './btl/string/Forward.html', attributes: []},
 {name: 'btl.string.isBasicString', kind: "enummemberdeclaration", path: './btl/string/isBasicString.html', attributes: []},
 {name: 'btl.string.LargeString', kind: "aliasdeclaration", path: './btl/string/LargeString.html', attributes: []},
+{name: 'btl.string.SmallString', kind: "aliasdeclaration", path: './btl/string/SmallString.html', attributes: []},
 {name: 'btl.string.String', kind: "aliasdeclaration", path: './btl/string/String.html', attributes: []},
 {name: 'btl.vector', kind: "module", path: './btl/vector.html', attributes: []},
 {name: 'btl.vector.DefaultAllocator', kind: "aliasdeclaration", path: './btl/vector/DefaultAllocator.html', attributes: []},
