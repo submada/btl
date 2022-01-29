@@ -537,9 +537,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		public void release()scope{
 			if(this.storage.external){
 				//this._deallocate(this.storage.heap.allocatedChars);
-				const d = this._deallocate_heap(this.storage.heap);
-				assert(d, "deallocate fail");
-
+				this._deallocate_heap(this.storage.heap);
 			}
 			this.storage.reset();
 		}
@@ -578,18 +576,14 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 				const size_t length = this.storage.length;
 				//const size_t new_capacity = max(old_capacity * 2, (n + 1)) & ~0x1;
-				const size_t new_capacity = max(
-					Storage.heapCapacity(old_capacity * 2),
-					Storage.heapCapacity(n)
-				);
+				const size_t new_capacity = _grow_capacity(old_capacity, n);
 
 				//assert(new_capacity >= max(old_capacity * 2, n));
 				//assert(new_capacity % 2 == 0);
 
 
 				Storage.Heap heap;
-				const d = this._allocate_heap(heap, new_capacity);
-				if(!d)assert(0, "allocate fail");
+				this._allocate_heap(heap, new_capacity);
 
 				memCopy(heap.ptr, this.storage.ptr, length);
 				assert(this.storage.chars == heap.chars);
@@ -609,18 +603,12 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 				const size_t length = this.storage.heap.length;
 				//const size_t new_capacity = max(old_capacity * 2, (n + 1)) & ~0x1;
-				const size_t new_capacity = max(
-					Storage.heapCapacity(old_capacity * 2),
-					Storage.heapCapacity(n)
-				);
+				const size_t new_capacity = _grow_capacity(old_capacity, n);
 
 				//assert(new_capacity >= max(old_capacity * 2, n));
 				//assert(new_capacity % 2 == 0);
 
-				const d = this._reallocate_heap(this.storage.heap, new_capacity);
-				if(!d)assert(0, "reallocate fail");
-
-				//return new_capacity;
+				this._reallocate_heap(this.storage.heap, new_capacity);
 			}
 
 			return (this.storage.small)
@@ -670,8 +658,6 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 			This function has no effect on the string length and cannot alter its content.
 
-			Returns new capacity.
-
 			Examples:
 				--------------------
 				BasicString!char str = "123";
@@ -702,8 +688,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				this.storage.reset(length);
 				memCopy(this.storage.inline.ptr, heap.ptr, length);
 
-				const d = this._deallocate_heap(heap);
-				assert(d, "deallocate fail");
+				this._deallocate_heap(heap);
 
 				assert(!this.storage.external);
 				return;
@@ -713,7 +698,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				return;
 			}
 
-			const size_t new_capacity = Storage.heapCapacity(length);
+			const size_t new_capacity = length;
 
 			if(new_capacity >= old_capacity)
 				return;
@@ -721,9 +706,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			assert(new_capacity >= length);
 			//assert(new_capacity % 2 == 0);
 
-			cast(void)this._reallocate_heap!(!realloc)(this.storage.heap, new_capacity);
-
-			return;
+			this._reallocate_heap!(!realloc)(this.storage.heap, new_capacity);
 		}
 
 
@@ -735,8 +718,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		*/
 		public ~this()scope{
 			if(this.storage.external){
-				const d = this._deallocate_heap(this.storage.heap);
-				assert(d, "deallocate fail");
+				this._deallocate_heap(this.storage.heap);
 				debug this.storage.reset();
 			}
 		}
@@ -2271,39 +2253,52 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 		private Storage storage;
 
-		//allocation:
-		private bool _allocate_heap()(ref Storage.Heap heap, const size_t capacity){
-			assert(capacity == storage.heapCapacity(capacity));
+        //grow:
+        private static size_t _grow_capacity(size_t old_capacity, size_t new_capacity)pure nothrow @safe @nogc{
+            static if(minimalCapacity == 0)
+                return max(2, old_capacity * 2, new_capacity);
+            else
+                return max(old_capacity * 2, new_capacity);
+        }
 
-			void[] data = this._allocator.allocate(capacity * CharType.sizeof);
-			if(data.length == 0)
-				return false;
+        //enforce:
+        private void _enforce(bool con, string msg)const pure nothrow @safe @nogc{
+            if(!con)assert(0, msg);
+        }
+
+		//allocation:
+		private void _allocate_heap()(ref Storage.Heap heap, size_t new_capacity){
+            new_capacity = Storage.heapCapacity(new_capacity);  //assert(new_capacity == storage.heapCapacity(new_capacity));
+
+			void[] data = this._allocator.allocate(new_capacity * CharType.sizeof);
+
+            _enforce(data.length != 0, "allocation fail");
 
 			heap.ptr = (()@trusted => cast(CharType*)data.ptr )();
-			heap.capacity = capacity;
+			heap.capacity = new_capacity;
 			heap.length = length;
-
-			return true;
 		}
 
-		private bool _deallocate_heap()(const ref Storage.Heap heap){
+		private void _deallocate_heap()(const ref Storage.Heap heap){
 			void[] data = (()@trusted => cast(void[])heap.data )();
 
 			static if(N == 0){
 				if(data.length == 0)
-					return true;
+					return;
 			}
 
 			static if(safeAllocate)
-				return ()@trusted{
+				const d = ()@trusted{
 					return this._allocator.deallocate(data);
 				}();
 			else
-				return this._allocator.deallocate(data);
+				const d = this._allocator.deallocate(data);
+
+            _enforce(d, "deallocation fail");
 		}
 
-		private bool _reallocate_heap(bool optional = false)(ref Storage.Heap heap, size_t new_capacity){
-			assert(new_capacity == storage.heapCapacity(new_capacity));
+		private void _reallocate_heap(bool optional = false)(ref Storage.Heap heap, size_t new_capacity){
+			new_capacity = Storage.heapCapacity(new_capacity);  //assert(new_capacity == storage.heapCapacity(new_capacity));
 			void[] data = heap.data;
 
 			static if(hasMember!(typeof(_allocator), "reallocate")){
@@ -2325,31 +2320,22 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 				}();
 				assert(data.length / CharType.sizeof == new_capacity);
-				return true;
+				return;
 			}
 
-			static if(optional){
-				return false;
-			}
-			else{
+			static if(!optional){
 				Storage.Heap heap_new;
 
 				{
-					const d = this._allocate_heap(heap_new, new_capacity);
-					if(!d)return false;
+					this._allocate_heap(heap_new, new_capacity);
 
 					memCopy(heap_new.ptr, heap.ptr, heap.length);
-					heap_new.length = length;
+					heap_new.length = heap.length;
 				}
 
-				{
-					const d = this._deallocate_heap(heap);
-					assert(d, "deallocate fail");
-				}
+				this._deallocate_heap(heap);
 
 				heap = heap_new;
-
-				return true;
 			}
 		}
 
@@ -2410,7 +2396,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			}();
 		}
 
-
+        //bounds check:
 		private pragma(inline, true) void _bounds_check(const size_t pos)const pure nothrow @safe @nogc{
 			assert(pos < this.length);
 

@@ -95,7 +95,7 @@ template Vector(
     import std.range : empty, front, popFront, isInputRange, ElementEncodingType, hasLength;
     import std.traits : Unqual, hasElaborateDestructor, hasIndirections, isDynamicArray;
 
-    alias Storage = .Storage!(_Type, N, _supportGC, _allowHeap);
+    alias Storage = .Storage!(_Type, N, _allowHeap);
 
     enum bool _hasStatelessAllocator = isStatelessAllocator!_Allocator;
     enum bool _allowHeap = !is(immutable _Allocator == immutable void);
@@ -399,7 +399,7 @@ template Vector(
                             this._allocator = move(rhs._allocator);
 
                         //this.release();
-                        this.storage._length = rhs.storage._length;
+                        this.storage.length = rhs.storage.length;
                         this.storage.heap = rhs.storage.heap;
                         rhs.storage.reset();
 
@@ -443,7 +443,8 @@ template Vector(
                                 rhs.length
                             );
 
-                            this.storage._length = rhs.storage._length;
+                            this.storage.length = rhs.storage.length;
+                            rhs.storage.reset();
                         }
 
                         assert(!this.storage.external);
@@ -681,7 +682,7 @@ template Vector(
 
                         this.release();
 
-                        this.storage._length = rhs.storage._length;
+                        this.storage.length = rhs.storage.length;
                         this.storage.heap = rhs.storage.heap;
                         rhs.storage.reset();
                         return;
@@ -864,6 +865,25 @@ template Vector(
             this.storage.reset();
         }
 
+        private void _release_impl()scope nothrow{
+            const bool is_external = this.storage.external;
+
+            destructRangeImpl!false(this.storage.elements);
+
+            static if(allowHeap)
+                if(is_external){
+
+                    static if(minimalCapacity == 0){
+                        const size_t cap = this.storage.heap.capacity;
+                        if(cap == 0)
+                            return;
+
+                    }
+
+                    this._deallocate_heap(this.storage.heap);
+                }
+        }
+
 
 
         /**
@@ -897,14 +917,13 @@ template Vector(
                 if(n <= old_capacity)
                     return;
 
-                const size_t new_capacity = max(old_capacity * 2, n);
+                const size_t new_capacity = _grow_capacity(old_capacity, n);
 
 
                 Storage.Heap heap;   // = this._heap_storage_ptr(); //(()@trusted => &this.storage.heap() )();
                 auto inline_elements = (()@trusted => this.storage.inline.elements(this.length) )();
 
-                const bool d = this._allocate_heap(heap, new_capacity);
-                if(!d)assert(0, "reallocate fail");
+                this._allocate_heap(heap, new_capacity);
 
                 moveEmplaceRangeImpl!false(
                     (()@trusted => heap.ptr )(),
@@ -912,7 +931,7 @@ template Vector(
                     this.length
                 );
 
-                this.storage.external = true;
+                //this.storage.external = true;
                 this.storage.heap = heap;
             }
 
@@ -924,19 +943,13 @@ template Vector(
                 if(n <= old_capacity)
                     return;
 
-                static if(minimalCapacity == 0)
-                    const new_capacity = max(2, old_capacity * 2, n);
-                else
-                    const new_capacity = max(old_capacity * 2, n);
+                const new_capacity = _grow_capacity(old_capacity , n);
 
                 if(minimalCapacity > 0 || old_capacity > 0){
-
-                    const bool d = this._reallocate_heap(this.storage.heap, new_capacity, this.length);
-                    if(!d)assert(0, "reallocate fail");
+                    this._reallocate_heap(this.storage.heap, new_capacity, this.length);
                 }
                 else{
-                    const bool d = this._allocate_heap(this.storage.heap, new_capacity);
-                    if(!d)assert(0, "allocate fail");
+                    this._allocate_heap(this.storage.heap, new_capacity);
                 }
 
 
@@ -1079,8 +1092,6 @@ template Vector(
 
             This function has no effect on the vector length and cannot alter its content.
 
-            Returns new capacity.
-
             Examples:
                 --------------------
                 Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3);
@@ -1094,9 +1105,9 @@ template Vector(
                 assert(vec.capacity == typeof(vec).minimalCapacity);
                 --------------------
         */
-        public size_t shrinkToFit(const bool reallocate = true)scope{
+        public void shrinkToFit(const bool reallocate = true)scope{
             if(!this.storage.external)
-                return minimalCapacity;
+                return;
 
             static if(allowHeap){
                 const size_t old_capacity = this.storage.heap.capacity;
@@ -1118,19 +1129,12 @@ template Vector(
                     this.storage.external = false;
                     assert(this.capacity == minimalCapacity);
 
-                    const bool d = this._deallocate_heap(hs_data);
-                    assert(d, "deallocate of memory fail");
-
-
-                    return minimalCapacity;
+                    this._deallocate_heap(hs_data);
                 }
                 else{
                     if(reallocate && length < old_capacity){
-                        if(this._reallocate_heap!false(this.storage.heap, length, length))
-                            return length;
+                        this._reallocate_heap!true(this.storage.heap, length, length);
                     }
-
-                    return old_capacity;
                 }
             }
             else{
@@ -1433,17 +1437,19 @@ template Vector(
         public void proxySwap()(ref scope typeof(this) rhs)scope{
             import std.algorithm.mutation : swap;
 
+            //heap <-> heap
             if(this.storage.external && rhs.storage.external){
                 static if(!hasStatelessAllocator)
                     swap(this._allocator, rhs._allocator);
 
 
                 ()@trusted {
-                    swap(this.storage._length, rhs.storage._length);
+                    swap(this.storage.length, rhs.storage.length);
                     swap(this.storage.heap, rhs.storage.heap);
                 }();
 
             }
+            //inline <-> inline
             else if(!this.storage.external && !rhs.storage.external){
                 auto small = (()@trusted => (this.length < rhs.length) ?  &this : &rhs )();
                 auto large = (()@trusted => (this.length < rhs.length) ?  &rhs : &this )();
@@ -1460,30 +1466,41 @@ template Vector(
                     (large.length - small.length)
                 );
 
-                swap(this.storage._length, rhs.storage._length);
+                swap(this.storage.length, rhs.storage.length);
             }
+            //heap <-> inline || inline <-> heap
             else{
                 assert(this.storage.external != rhs.storage.external);
 
                 auto heap = (()@trusted => this.storage.external ? &this : &rhs )();
                 auto inline = (()@trusted => this.storage.external ? &rhs : &this )();
 
-                Storage.Heap heap_storage = heap.storage.heap;
-                const inline_len  = inline.storage._length;
-                const heap_len  = heap.storage._length;
+                Storage.Heap tmp_heap = heap.storage.heap;
+                heap.storage.external = false;
 
-                heap.storage._length = inline_len;  //change external to false
-                assert(!inline.storage.external);
+                //const inline_len  = inline.storage._length;
+                //const heap_len  = heap.storage._length;
+
+                //heap.storage._length = inline_len;  //change external to false
+                //assert(!inline.storage.external);
 
                 moveEmplaceRangeImpl(
                     (()@trusted => heap.storage.inline.ptr )(),
                     (()@trusted => inline.storage.inline.ptr )(),
-                    inline_len
+                    inline.storage.length
                 );
 
+                swap(inline.storage.length, heap.storage.length);
+                inline.storage.heap = tmp_heap;
+
+                assert(!heap.storage.external);
+                assert(inline.storage.external);
+
+                /+
                 inline.storage._length = heap_len;  //change external to true
                 assert(inline.storage.external);
                 inline.storage.heap = heap_storage;
+                +/
             }
         }
 
@@ -2484,26 +2501,107 @@ template Vector(
         else
             private AllocatorType _allocator;
 
-        private void _release_impl()scope nothrow{
-            const bool is_external = this.storage.external;
 
-            destructRangeImpl!false(this.storage.elements);
-
-            static if(allowHeap)
-                if(is_external){
-
-                    static if(minimalCapacity == 0){
-                        const size_t cap = this.storage.heap.capacity;
-                        if(cap == 0)
-                            return;
-
-                    }
-
-                    const bool d = this._deallocate_heap(this.storage.heap);
-                    assert(d, "deallocate of memory fail");
-                }
+        //enforce:
+        private void _enforce(bool con, string msg)const pure nothrow @safe @nogc{
+            if(!con)assert(0, msg);
         }
 
+        //grow:
+        private static size_t _grow_capacity(size_t old_capacity, size_t new_capacity)pure nothrow @safe @nogc{
+            static if(minimalCapacity == 0)
+                return max(2, old_capacity * 2, new_capacity);
+            else
+                return max(old_capacity * 2, new_capacity);
+        }
+
+        //allocation:
+        private void _allocate_heap()(ref Storage.Heap heap, size_t new_capacity)scope nothrow{
+            new_capacity = Storage.heapCapacity(new_capacity);
+
+            void[] data = _allocator.allocate(new_capacity * ElementType.sizeof);
+
+            _enforce(data.length != 0, "allocation fail");
+
+            static if(supportGC)
+                gcAddRange(data);
+
+            heap.ptr = (()@trusted => cast(ElementType*)data.ptr )();
+            heap.capacity = new_capacity;
+        }
+
+        private void _deallocate_heap()(const ref Storage.Heap heap)scope nothrow{
+            void[] data = ()@trusted{
+                return cast(void[])heap.data;
+            }();
+
+            static if(supportGC)
+                gcRemoveRange(data);
+
+            static if(safeAllcoate!(typeof(_allocator)))
+                const d = ()@trusted{
+                    return _allocator.deallocate(data);
+                }();
+
+            else
+                const d = _allocator.deallocate(data);
+
+            _enforce(d, "deallocation fail");
+        }
+
+        private void _reallocate_heap(bool optional = false)(ref Storage.Heap heap, size_t new_capacity, const size_t length)scope nothrow{
+            new_capacity = Storage.heapCapacity(new_capacity);
+
+            import std.traits : hasElaborateMove;
+
+            if(heap.capacity >= new_capacity)
+                return;
+
+            void[] data = heap.data;
+            void[] old_data = data;
+
+            static if(!hasElaborateMove!ElementType){
+                static if(safeAllcoate!(typeof(_allocator)))
+                    const bool reallcoated = ()@trusted{
+                        return _allocator.reallocate(data, new_capacity * ElementType.sizeof);
+                    }();
+                else
+                    const bool reallcoated = _allocator.reallocate(data, new_capacity * ElementType.sizeof);
+
+                if(reallcoated){
+                    heap.ptr = (()@trusted => cast(ElementType*)data.ptr )();
+                    heap.capacity = new_capacity;
+
+                    static if(supportGC){
+                        gcRemoveRange(old_data);
+                        gcAddRange(data);
+                    }
+
+                    return;
+                }
+            }
+
+
+            static if(!optional){
+                Storage.Heap heap_new;
+
+                {
+                    this._allocate_heap(heap_new, new_capacity);
+
+                    moveEmplaceRangeImpl!false(
+                        (()@trusted => heap_new.ptr )(),
+                        (()@trusted => heap.ptr )(),
+                        length
+                    );
+                }
+
+                this._deallocate_heap(heap);
+
+                heap = heap_new;
+            }
+        }
+
+        //bounds check:
         private pragma(inline, true) void _bounds_check(const size_t pos)const pure nothrow @safe @nogc{
             assert(pos < this.length);
 
@@ -2542,103 +2640,6 @@ template Vector(
             }
         }
 
-        private bool _allocate_heap()(ref Storage.Heap heap, size_t capacity)scope nothrow{
-            void[] data = _allocator.allocate(capacity * ElementType.sizeof);
-
-            if(data.length == 0)
-                return false;
-
-            static if(supportGC)
-                gcAddRange(data);
-
-            heap.ptr = (()@trusted => cast(ElementType*)data.ptr )();
-            heap.capacity = capacity;
-
-            return true;
-        }
-
-        private bool _deallocate_heap()(const ref Storage.Heap heap)scope nothrow{
-            void[] data = ()@trusted{
-                return cast(void[])heap.data;
-            }();
-
-            static if(supportGC)
-                gcRemoveRange(data);
-
-            static if(safeAllcoate!(typeof(_allocator)))
-                return ()@trusted{
-                    return _allocator.deallocate(data);
-                }();
-
-            else
-                return _allocator.deallocate(data);
-        }
-
-        private bool _reallocate_heap(bool force = true)(ref Storage.Heap heap, size_t new_capacity, size_t length)scope nothrow{
-            import std.traits : hasElaborateMove;
-
-            if(heap.capacity >= new_capacity)
-                return true;
-
-            void[] data = heap.data;
-            void[] old_data = data;
-
-            static if(!hasElaborateMove!ElementType){
-                static if(safeAllcoate!(typeof(_allocator)))
-                    const bool reallcoated = ()@trusted{
-                        return _allocator.reallocate(data, new_capacity * ElementType.sizeof);
-                    }();
-                else
-                    const bool reallcoated = _allocator.reallocate(data, new_capacity * ElementType.sizeof);
-
-                if(reallcoated){
-                    heap.ptr = (()@trusted => cast(ElementType*)data.ptr )();
-                    heap.capacity = new_capacity;
-
-                    static if(supportGC){
-                        gcRemoveRange(old_data);
-                        gcAddRange(data);
-                    }
-
-                    return true;
-                }
-            }
-
-
-            static if(force){
-                data = _allocator.allocate(new_capacity * ElementType.sizeof);
-                if(data.length == 0)
-                    return false;
-
-                moveEmplaceRangeImpl!false(
-                    (()@trusted => cast(ElementType*)data.ptr )(),
-                    (()@trusted => heap.ptr )(),
-                    length
-                );
-
-                static if(supportGC){
-                    gcAddRange(data);
-                    gcRemoveRange(old_data);
-                }
-
-                static if(safeAllcoate!(typeof(_allocator)))
-                    const bool d = ()@trusted{
-                        return _allocator.deallocate(old_data);
-                    }();
-                else
-                    const bool d = _allocator.deallocate(old_data);
-
-                ()@trusted{
-                    heap.ptr = cast(ElementType*)data.ptr;
-                    heap.capacity = new_capacity;
-                }();
-
-                return d;
-            }
-            else{
-                return false;
-            }
-        }
     }
 
 
@@ -3089,8 +3090,8 @@ version(unittest){
             assert(vec.capacity == cap);
 
             vec.release();
-            assert(vec.capacity < cap);
             assert(vec.capacity == typeof(vec).minimalCapacity);
+            assert(vec.capacity < cap);
         }
 
         //Vector.reserve

@@ -32,12 +32,12 @@ if(isUnsigned!L){
         //public enum Length heapFlag = _heapFlag;
 
         pragma(inline, true){
-            public static Length heapCapacity(Length capacity)pure nothrow @safe @nogc{
-                capacity |= heapFlag;
-                assert(capacity > minimalCapacity);
-                assert(capacity <= maximalCapacity);
+            public static Length heapCapacity(Length new_capacity)pure nothrow @safe @nogc{
+                new_capacity |= heapFlag;
+                assert(new_capacity > minimalCapacity);
+                assert(new_capacity <= maximalCapacity);
 
-                return capacity;
+                return new_capacity;
             }
 
             public void reset(Length len = 0)pure nothrow @trusted @nogc{
@@ -138,7 +138,6 @@ if(isUnsigned!L){
                 }
                 else
                     return true;
-
             }
         }
     }
@@ -262,6 +261,7 @@ if(isUnsigned!L){
 }
 
 struct HeapStorage(T, L, bool allowHeap){
+
     static if(allowHeap){
         public L capacity;
         public L length;
@@ -281,11 +281,11 @@ struct HeapStorage(T, L, bool allowHeap){
     pragma(inline, true){
 
         public @property inout(void)[] data()inout pure nothrow @trusted @nogc{
-            return (cast(inout(void)*)this.ptr)[0 .. capacity * T.sizeof];
+            return (cast(inout(void)*)ptr)[0 .. capacity * T.sizeof];
         }
 
         public @property inout(T)[] chars()inout pure nothrow @trusted @nogc{
-            return this.ptr[0 .. length];
+            return ptr[0 .. length];
         }
 
         public @property inout(T)[] allocatedChars()inout pure nothrow @trusted @nogc{
