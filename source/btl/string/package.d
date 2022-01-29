@@ -2253,26 +2253,26 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 		private Storage storage;
 
-        //grow:
-        private static size_t _grow_capacity(size_t old_capacity, size_t new_capacity)pure nothrow @safe @nogc{
-            static if(minimalCapacity == 0)
-                return max(2, old_capacity * 2, new_capacity);
-            else
-                return max(old_capacity * 2, new_capacity);
-        }
+		//grow:
+		private static size_t _grow_capacity(size_t old_capacity, size_t new_capacity)pure nothrow @safe @nogc{
+			static if(minimalCapacity == 0)
+				return max(2, old_capacity * 2, new_capacity);
+			else
+				return max(old_capacity * 2, new_capacity);
+		}
 
-        //enforce:
-        private void _enforce(bool con, string msg)const pure nothrow @safe @nogc{
-            if(!con)assert(0, msg);
-        }
+		//enforce:
+		private void _enforce(bool con, string msg)const pure nothrow @safe @nogc{
+			if(!con)assert(0, msg);
+		}
 
 		//allocation:
 		private void _allocate_heap()(ref Storage.Heap heap, size_t new_capacity){
-            new_capacity = Storage.heapCapacity(new_capacity);  //assert(new_capacity == storage.heapCapacity(new_capacity));
+			new_capacity = Storage.heapCapacity(new_capacity);  //assert(new_capacity == storage.heapCapacity(new_capacity));
 
 			void[] data = this._allocator.allocate(new_capacity * CharType.sizeof);
 
-            _enforce(data.length != 0, "allocation fail");
+			_enforce(data.length != 0, "allocation fail");
 
 			heap.ptr = (()@trusted => cast(CharType*)data.ptr )();
 			heap.capacity = new_capacity;
@@ -2294,7 +2294,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			else
 				const d = this._allocator.deallocate(data);
 
-            _enforce(d, "deallocation fail");
+			_enforce(d, "deallocation fail");
 		}
 
 		private void _reallocate_heap(bool optional = false)(ref Storage.Heap heap, size_t new_capacity){
@@ -2396,7 +2396,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			}();
 		}
 
-        //bounds check:
+		//bounds check:
 		private pragma(inline, true) void _bounds_check(const size_t pos)const pure nothrow @safe @nogc{
 			assert(pos < this.length);
 
@@ -2531,6 +2531,14 @@ pure nothrow @safe @nogc unittest {
 
 */
 alias FixedString(Char, size_t N) = BasicString!(Char, void, N);
+
+
+
+/**
+	TODO
+
+*/
+alias SmallString(Char, size_t N, _Allocator = DefaultAllocator) = BasicString!(Char, _Allocator, (N ? N : 1));
 
 
 
