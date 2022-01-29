@@ -71,7 +71,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 	enum bool _allowHeap = !is(immutable _Allocator == immutable void);
 
-	alias Storage = .Storage!(_Char, N, _allowHeap);
+	alias Storage = .Storage!(_Char, N, size_t, _allowHeap);
 
 	struct BasicString{
 
@@ -594,7 +594,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				memCopy(heap.ptr, this.storage.ptr, length);
 				assert(this.storage.chars == heap.chars);
 
-				this.storage.setHeap(heap);
+				this.storage.heap = heap;
 
 				//return new_capacity;
 			}
@@ -1031,7 +1031,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 						static if(!hasStatelessAllocator)
 							this._allocator = move(rhs._allocator);
 
-						this.storage.setHeap(rhs.storage.heap);
+						this.storage.heap = rhs.storage.heap; //this.storage.setHeap(rhs.storage.heap);
 						rhs.storage.reset();
 					}
 					//heap -> inline:
@@ -1206,7 +1206,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 							this._allocator = move(rhs._allocator);
 
 						this.release();
-						this.storage.setHeap(rhs.storage.heap);
+						this.storage.heap = rhs.storage.heap; //this.storage.setHeap(rhs.storage.heap);
 						rhs.storage.reset();
 						return;
 					}

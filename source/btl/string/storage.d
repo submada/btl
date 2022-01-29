@@ -1,9 +1,11 @@
 module btl.string.storage;
 
+import std.traits : Select, isUnsigned;
+
 import btl.internal.traits;
 
-package template Storage(T, size_t N, bool allowHeap){
-    import std.traits : Select;
+package template Storage(T, size_t N, L, bool allowHeap)
+if(isUnsigned!L){
 
     struct Storage{
         union{
@@ -17,20 +19,20 @@ package template Storage(T, size_t N, bool allowHeap){
             }
         }
 
-        alias Inline = InlineImpl;
+        public alias Inline = InlineImpl;
 
-        alias Heap = HeapImpl;
+        public alias Heap = HeapImpl;
 
-        enum size_t minimalCapacity = N ? Inline.capacity : 0;
+        public enum Length minimalCapacity = Inline.capacity;
 
-        enum size_t maximalCapacity = allowHeap
-            ? (size_t.max / T.sizeof)
-            : N;
+        public enum Length maximalCapacity = allowHeap
+            ? (L.max / T.sizeof)
+            : Inline.capacity;
 
-        enum size_t heapFlag = _heapFlag;
+        //public enum Length heapFlag = _heapFlag;
 
         pragma(inline, true){
-            static size_t heapCapacity(size_t capacity)pure nothrow @safe @nogc{
+            public static Length heapCapacity(Length capacity)pure nothrow @safe @nogc{
                 capacity |= heapFlag;
                 assert(capacity > minimalCapacity);
                 assert(capacity <= maximalCapacity);
@@ -38,7 +40,7 @@ package template Storage(T, size_t N, bool allowHeap){
                 return capacity;
             }
 
-            void reset(size_t len = 0)pure nothrow @trusted @nogc{
+            public void reset(Length len = 0)pure nothrow @trusted @nogc{
                 assert(len <= minimalCapacity);
 
                 static if(N){
@@ -53,50 +55,46 @@ package template Storage(T, size_t N, bool allowHeap){
                 }
             }
 
-            void setHeap(size_t capacity, size_t length, T* ptr)pure nothrow @trusted @nogc{
+            public @property ref inout(Inline) inline()inout pure nothrow @trusted @nogc{
+                assert(!this.external);
+                return this._inline;
+            }
+
+            public @property ref inout(Heap) heap()inout pure nothrow @trusted @nogc{
+                assert(this.external);
+                return this._heap;
+            }
+            public @property void heap(Heap h)pure nothrow @trusted @nogc{
                 static if(allowHeap){
-                    assert(length <= capacity);
-                    this._heap.capacity = capacity;
+                    assert(h.length <= h.capacity);
+                    this._heap.capacity = h.capacity;
                     assert(this.external);
-                    this._heap.length = length;
-                    this._heap.ptr = ptr;
+                    this._heap.length = h.length;
+                    this._heap.ptr = h.ptr;
                 }
                 else{
                     assert(0, "no impl");
                 }
             }
-            void setHeap(H)(ref H heap)pure nothrow @trusted @nogc{
-                this.setHeap(heap.capacity, heap.length, heap.ptr);
-            }
 
-            @property ref inout(Inline) inline()inout pure nothrow @trusted @nogc{
-                assert(!this.external);
-                return this._inline;
-            }
-
-            @property ref inout(Heap) heap()inout pure nothrow @trusted @nogc{
-                assert(this.external);
-                return this._heap;
-            }
-
-            @property size_t capacity()const pure nothrow @trusted @nogc{
+            public @property Length capacity()const pure nothrow @trusted @nogc{
                 return this.external
                     ? this.heap.capacity
                     : this.inline.capacity;
             }
 
-            @property size_t length()const pure nothrow @trusted @nogc{
+            public @property Length length()const pure nothrow @trusted @nogc{
                 return this.external
                     ? this.heap.length
                     : this.inline.length;
             }
 
-            @property void length(size_t n)pure nothrow @trusted @nogc{
+            public @property void length(Length n)pure nothrow @trusted @nogc{
                 if(this.external){
                     assert(n <= this.heap.capacity);
 
                     static if(allowHeap)
-                        this.heap.length = n;
+                        this.heap.length = cast(L)n;
                     else
                         assert(0, "no impl");
                 }
@@ -106,32 +104,32 @@ package template Storage(T, size_t N, bool allowHeap){
                 }
             }
 
-            @property inout(T)* ptr()inout pure nothrow @trusted @nogc{
+            public @property inout(T)* ptr()inout pure nothrow @trusted @nogc{
                 return this.external
                     ? this.heap.ptr
                     : this.inline.ptr;
             }
 
-            @property inout(T)[] chars()inout pure nothrow @trusted @nogc{
+            public @property inout(T)[] chars()inout pure nothrow @trusted @nogc{
                 return this.external
                     ? this.heap.chars
                     : this.inline.chars;
             }
 
-            @property inout(T)[] allocatedChars()inout pure nothrow @trusted @nogc{
+            public @property inout(T)[] allocatedChars()inout pure nothrow @trusted @nogc{
                 return this.external
                     ? this.heap.allocatedChars
                     : this.inline.allocatedChars;
             }
 
-            @property bool external()const pure nothrow @safe @nogc{
+            public @property bool external()const pure nothrow @safe @nogc{
                 static if(allowHeap && N)
                     return (this._inline.header.length & heapFlag);
                 else
                     return allowHeap;
             }
 
-            @property bool small()const pure nothrow @trusted @nogc{
+            public @property bool small()const pure nothrow @trusted @nogc{
                 static if(allowHeap){
                     static if(N == 0)
                         return (this._heap.capacity == 0);
@@ -145,11 +143,11 @@ package template Storage(T, size_t N, bool allowHeap){
         }
     }
 
-    enum size_t _heapFlag = allowHeap
+    enum L heapFlag = allowHeap
         ? 0x1   //heap capacity must be odd
         : 0;
 
-    enum size_t maxInlineLength(U) = U.max & (cast(U)~_heapFlag);
+    enum size_t maxInlineLength(U) = (U.max & (cast(U)~heapFlag));
 
     template InlineLengthImpl(){
         static if(maxInlineLength!ubyte >= N)
@@ -166,43 +164,15 @@ package template Storage(T, size_t N, bool allowHeap){
 
     alias InlineLength = InlineLengthImpl!();
 
-    struct HeapImpl{
-        static if(allowHeap){
-            size_t capacity;
-            size_t length;
-            T* ptr;
-        }
-        else{
-            size_t capacity()const pure nothrow @safe @nogc{return 0;}
-            size_t length()const pure nothrow @safe @nogc{return 0;}
-            inout(T)* ptr()inout pure nothrow @safe @nogc{return null;}
+    alias Length = Select!(L.sizeof > InlineLength.sizeof, L, InlineLength);
 
-            void capacity(size_t)pure nothrow @safe @nogc{assert(0, "no impl");}
-            void length(size_t)pure nothrow @safe @nogc{assert(0, "no impl");}
-            void ptr(T*)pure nothrow @safe @nogc{assert(0, "no impl");}
-        }
-
-        pragma(inline, true){
-
-            @property inout(void)[] data()inout pure nothrow @trusted @nogc{
-                return (cast(inout(void)*)this.ptr)[0 .. capacity * T.sizeof];
-            }
-
-            @property inout(T)[] chars()inout pure nothrow @trusted @nogc{
-                return this.ptr[0 .. length];
-            }
-
-            @property inout(T)[] allocatedChars()inout pure nothrow @trusted @nogc{
-                return this.ptr[0 .. capacity];
-            }
-        }
-    }
+    alias HeapImpl = .HeapStorage!(T, L, allowHeap);
 
     align(max(T.sizeof, InlineLength.alignof))
     struct InlineHeader{
-        InlineLength length = 0;
+        private InlineLength length = 0;
 
-        enum size_t maxLength = maxInlineLength!InlineLength;
+        private enum Length maxLength = maxInlineLength!InlineLength;
 
         static assert(maxLength >= N);
     }
@@ -241,23 +211,27 @@ package template Storage(T, size_t N, bool allowHeap){
     struct InlineImpl{
         private InlineHeader header;
 
-        enum size_t capacity = compute_inline_capacity();
+        public enum Length capacity = compute_inline_capacity();
         private T[capacity] elements;
 
         pragma(inline, true){
-            void reset()pure nothrow @safe @nogc{
+            public void reset()pure nothrow @safe @nogc{
                 this.header.length = 0;
             }
 
-            @property size_t length()const pure nothrow @safe @nogc{
-                static if(allowHeap)
-                    return (cast(size_t)this.header.length) >> 1;
+            public @property Length length()const pure nothrow @safe @nogc{
+                static if(allowHeap){
+                    static if(InlineHeader.sizeof >= uint.sizeof)
+                        return cast(Length)(header.length >> 1);
+                    else
+                        return cast(Length)((cast(size_t)this.header.length) >> 1);
+                }
                 else
                     return this.header.length;
 
             }
 
-            @property void length(size_t n)pure nothrow @safe @nogc{
+            public @property void length(Length n)pure nothrow @safe @nogc{
                 assert(n <= capacity);
 
                 static if(allowHeap)
@@ -266,19 +240,19 @@ package template Storage(T, size_t N, bool allowHeap){
                     this.header.length = cast(InlineLength)n;
             }
 
-            @property inout(void)[] data()inout pure nothrow @trusted @nogc{
+            public @property inout(void)[] data()inout pure nothrow @trusted @nogc{
                 return (cast(inout(void)*)this.elements.ptr)[0 .. this.capacity * T.sizeof];
             }
 
-            @property inout(T)* ptr()inout pure nothrow @trusted @nogc{
+            public @property inout(T)* ptr()inout pure nothrow @trusted @nogc{
                 return this.elements.ptr;
             }
 
-            @property inout(T)[] chars()inout pure nothrow @trusted @nogc{
+            public @property inout(T)[] chars()inout pure nothrow @trusted @nogc{
                 return this.ptr[0 .. length];
             }
 
-            @property inout(T)[] allocatedChars()inout pure nothrow @trusted @nogc{
+            public @property inout(T)[] allocatedChars()inout pure nothrow @trusted @nogc{
                 return this.ptr[0 .. capacity];
             }
         }
@@ -287,3 +261,35 @@ package template Storage(T, size_t N, bool allowHeap){
 
 }
 
+struct HeapStorage(T, L, bool allowHeap){
+    static if(allowHeap){
+        public L capacity;
+        public L length;
+        public T* ptr;
+    }
+    else{
+        public @property L capacity()const pure nothrow @safe @nogc{return 0;}
+        public @property void capacity(size_t)pure nothrow @safe @nogc{assert(0, "no impl");}
+
+        public @property L length()const pure nothrow @safe @nogc{return 0;}
+        public @property void length(size_t)pure nothrow @safe @nogc{assert(0, "no impl");}
+
+        public @property inout(T)* ptr()inout pure nothrow @safe @nogc{return null;}
+        public @property void ptr(T*)pure nothrow @safe @nogc{assert(0, "no impl");}
+    }
+
+    pragma(inline, true){
+
+        public @property inout(void)[] data()inout pure nothrow @trusted @nogc{
+            return (cast(inout(void)*)this.ptr)[0 .. capacity * T.sizeof];
+        }
+
+        public @property inout(T)[] chars()inout pure nothrow @trusted @nogc{
+            return this.ptr[0 .. length];
+        }
+
+        public @property inout(T)[] allocatedChars()inout pure nothrow @trusted @nogc{
+            return this.ptr[0 .. capacity];
+        }
+    }
+}
