@@ -13,7 +13,9 @@ This is colection of packages:
   - [SmallVector](https://submada.github.io/btl/btl/vector/SmallVector.html) sequence container with growable capacity that implements small buffer optimization for `N` elements.
   - [FixedVector](https://submada.github.io/btl/btl/vector/FixedVector.html) sequence container with max `N` elements.
 - **btl:string** mutable string with small string optimization like c++ `std::basic_string` and `std::string`
-  - [BasicString](https://submada.github.io/btl/btl/string/BasicString.html) The `BasicString` is the generalization of struct string for character type char, wchar and dchar.
+  - [BasicString](https://submada.github.io/btl/btl/string/BasicString.html) Generalization of struct string with small string optimization for min `N` characters of type char, wchar and dchar.
+  - [FixedString](https://submada.github.io/btl/btl/string/FixedString.html) Generalization of struct string with max `N` characters of type char, wchar and dchar.
+  - [LargeString](https://submada.github.io/btl/btl/string/LargeString.html) Generalization of struct string without small string optimization for characters of type char, wchar and dchar.
   - [String](https://submada.github.io/btl/btl/string/String.html) alias to `BasicString!char`.
 
 ## Documentation
