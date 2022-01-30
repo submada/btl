@@ -110,6 +110,9 @@ public template DtorType(Type){
         static if(is(Unqual!Type == void)){
             //nothing
         }
+        else static if(is(Type == interface) || is(Type == class)){
+            //nothing
+        }
         else{
             Unqual!Type tmp;
         }
