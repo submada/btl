@@ -148,7 +148,7 @@ private struct InlineStorage(T, size_t N){
             return cast(inout(T)*)storage.ptr;
         }
 
-        public @property void[] data()pure nothrow @system @nogc{
+        public @property inout(void)[] data()inout pure nothrow @system @nogc{
             return storage[];
         }
 
@@ -180,7 +180,7 @@ private struct HeapStorage(T, bool allowHeap){
     pragma(inline, true){
 
         public @property inout(void)[] data()inout pure nothrow @trusted @nogc{
-            return (cast(void*)ptr)[0 .. capacity * T.sizeof];
+            return (cast(inout void*)ptr)[0 .. capacity * T.sizeof];
         }
 
         public @property inout(T)[] elements(size_t length)inout pure nothrow @system @nogc{

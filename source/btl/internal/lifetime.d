@@ -80,6 +80,7 @@ if(is(Type == class)){
     import std.traits : Unqual, BaseClassesTuple;
     import std.meta : AliasSeq;
 
+    alias Get(T) = T;
     static void impl()(Evoid*){
         // generate a body that calls all the destructors in the chain,
         // compiler should infer the intersection of attributes
@@ -95,7 +96,7 @@ if(is(Type == class)){
         }
     }
 
-    alias ClassDtorType = typeof(&impl!());
+    alias ClassDtorType = Get!(typeof(&impl!()));
 }
 
 public template DtorType(Type){
@@ -104,6 +105,7 @@ public template DtorType(Type){
     import std.range : ElementEncodingType;
     import std.meta : AliasSeq;
 
+    alias Get(T) = T;
     static void impl()(Evoid*){
         static if(is(Unqual!Type == void)){
             //nothing
@@ -113,7 +115,7 @@ public template DtorType(Type){
         }
     }
 
-    alias DtorType = typeof(&impl!());
+    alias DtorType = Get!(typeof(&impl!()));
 }
 
 

@@ -2444,7 +2444,7 @@ template Vector(
             }();
         }
 
-        private void _build_impl(Args...)(auto ref Args args)scope @safe{
+        private void _build_impl(Args...)(auto ref Args args)scope{
             import std.traits : isArray;
 
             assert(this.empty);
@@ -3720,7 +3720,7 @@ version(unittest){
             }
         }
 
-        ~this()pure nothrow @safe @nogc{
+        ~this()scope pure nothrow @safe @nogc{
             if(counter){
                 counter.objects -= 1;
                 counter.dtor += 1;

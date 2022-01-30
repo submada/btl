@@ -2172,7 +2172,8 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 			result._build_impl(forward!args);
 
-			return move(result);
+            //return move(result);
+			return (()@trusted => move(*&result) )();
 		}
 
 		/// ditto
@@ -2183,7 +2184,8 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 			result._build_impl(forward!args);
 
-			return move(result);
+			//return move(result);
+            return (()@trusted => move(*&result) )();
 		}
 
 		private void _build_impl(Args...)(auto ref scope const Args args)scope{
