@@ -76,42 +76,42 @@ unittest{
 	Destructor type of destructors of types `Types` ( void function(Evoid*)@destructor_attributes ).
 */
 public template DestructorType(Types...){
-    import std.traits : Unqual, isDynamicArray, BaseClassesTuple;
-    import std.range : ElementEncodingType;
-    import std.meta : AliasSeq;
+	import std.traits : Unqual, isDynamicArray, BaseClassesTuple;
+	import std.range : ElementEncodingType;
+	import std.meta : AliasSeq;
 
-    static void fn_body(Evoid*)pure nothrow @safe @nogc{}
+	static void fn_body(Evoid*)pure nothrow @safe @nogc{}
 
-    static void impl()(Evoid*){
+	static void impl()(Evoid*){
 
-        static foreach(alias Type; Types){
-            static if(is(Type == class)){
-                {
-                    ClassDtorType!Type fn = &fn_body;
-                    fn(null);
-                }
-            }
-            else static if(isDynamicArray!Type){
-                {
-                    ElementEncodingType!(Unqual!Type) tmp;
-                }
-            }
-            else static if(is(void function(Evoid*)pure nothrow @safe @nogc : Unqual!Type)){
-                {
-                    Unqual!Type fn = &fn_body;
-                    fn(null);
-                }
-            }
-            else{
-                {
-                    DtorType!Type fn = &fn_body;
-                    fn(null);
-                }
-            }
-        }
-    }
+		static foreach(alias Type; Types){
+			static if(is(Type == class)){
+				{
+					ClassDtorType!Type fn = &fn_body;
+					fn(null);
+				}
+			}
+			else static if(isDynamicArray!Type){
+				{
+					ElementEncodingType!(Unqual!Type) tmp;
+				}
+			}
+			else static if(is(void function(Evoid*)pure nothrow @safe @nogc : Unqual!Type)){
+				{
+					Unqual!Type fn = &fn_body;
+					fn(null);
+				}
+			}
+			else{
+				{
+					DtorType!Type fn = &fn_body;
+					fn(null);
+				}
+			}
+		}
+	}
 
-    alias DestructorType = typeof(&impl!());
+	alias DestructorType = typeof(&impl!());
 }
 
 
@@ -789,28 +789,28 @@ import core.lifetime : forward, move;
 
 */
 public template apply(alias fn){
-    auto impl(Args...)(scope Args args){
-        pragma(inline, true); @property auto elm(alias arg)()@trusted{
-            return arg.element();
-        }
+	auto impl(Args...)(scope Args args){
+		pragma(inline, true); @property auto elm(alias arg)()@trusted{
+			return arg.element();
+		}
 
-        return fn(staticMap!(elm, args));
-    }
+		return fn(staticMap!(elm, args));
+	}
 
-    auto apply(Args...)(scope auto ref Args args)
-    if(    allSatisfy!(isSmartPtr, Args)
-        && allSatisfy!(isMutable, staticMap!(GetControlType, Args))
-    ){
-        pragma(inline, true); @property auto ref param(alias arg)()@trusted{
-            static assert(!is(typeof(arg) == shared));
+	auto apply(Args...)(scope auto ref Args args)
+	if(    allSatisfy!(isSmartPtr, Args)
+		&& allSatisfy!(isMutable, staticMap!(GetControlType, Args))
+	){
+		pragma(inline, true); @property auto ref param(alias arg)()@trusted{
+			static assert(!is(typeof(arg) == shared));
 
-            static if(arg.isWeak)
-                return arg.lock();
-            else
-                return forward!arg;
-        }
-        return impl(staticMap!(param, args));
-    }
+			static if(arg.isWeak)
+				return arg.lock();
+			else
+				return forward!arg;
+		}
+		return impl(staticMap!(param, args));
+	}
 }
 
 
@@ -884,9 +884,9 @@ package template GetElementType(Ptr){
 }
 
 package template GetElementReferenceType(Ptr){
-    import std.traits : CopyTypeQualifiers;
+	import std.traits : CopyTypeQualifiers;
 
-    alias GetElementReferenceType = ElementReferenceTypeImpl!(GetElementType!Ptr);
+	alias GetElementReferenceType = ElementReferenceTypeImpl!(GetElementType!Ptr);
 }
 
 
@@ -1477,15 +1477,15 @@ package template MakeEmplace(_Type, _DestructorType, _ControlType, _AllocatorTyp
 				void* data_ptr = this.data.ptr;
 
 				//btl.internal.lifetime.destruct!(_Type, DestructorType!void)(data_ptr);
-                static if(is(_Type == struct)){
-                    _Type* data = ((ref data)@trusted => cast(_Type*)data.ptr)(this.data);
-                    destructImpl!(false, DtorType!void)(*data);
-                }
-                else static if(is(_Type == class)){
-                    _Type data = ((ref data)@trusted => cast(_Type)data.ptr)(this.data);
-                    destructImpl!(false, DtorType!void)(data);
-                }
-                else static assert(0, "no impl");
+				static if(is(_Type == struct)){
+					_Type* data = ((ref data)@trusted => cast(_Type*)data.ptr)(this.data);
+					destructImpl!(false, DtorType!void)(*data);
+				}
+				else static if(is(_Type == class)){
+					_Type data = ((ref data)@trusted => cast(_Type)data.ptr)(this.data);
+					destructClassImpl!(false, DtorType!void)(data);
+				}
+				else static assert(0, "no impl");
 
 				static if(!allocatorGCRange && dataGCRange){
 					gcRemoveRange(data_ptr);
@@ -1504,7 +1504,7 @@ package template MakeEmplace(_Type, _DestructorType, _ControlType, _AllocatorTyp
 
 		private void deallocate()pure nothrow @system @nogc{
 			void* self = cast(void*)&this;
-            destructImpl!(false, DtorType!void)(this);//btl.internal.lifetime.destruct!(typeof(this), DestructorType!void)(self);
+			destructImpl!(false, DtorType!void)(this);//btl.internal.lifetime.destruct!(typeof(this), DestructorType!void)(self);
 
 			void[] raw = self[0 .. typeof(this).sizeof];
 
@@ -1729,7 +1729,7 @@ package template MakeDynamicArray(_Type, _DestructorType, _ControlType, _Allocat
 		}
 
 		private void destruct()pure nothrow @system @nogc{
-            destructRangeImpl!(false, DtorType!void)(this.data);
+			destructRangeImpl!(false, DtorType!void)(this.data);
 
 			static if(!allocatorGCRange && dataGCRange){
 				gcRemoveRange(this.data.ptr);
@@ -2014,15 +2014,15 @@ if(isIntrusive!_Type == 1){
 				void* data_ptr = this.data.ptr;
 				//btl.internal.lifetime.destruct!(_Type, DestructorType!void)(data_ptr);
 
-                static if(is(_Type == struct)){
-                    _Type* data = ((ref data)@trusted => cast(_Type*)data.ptr)(this.data);
-                    destructImpl!(false, DtorType!void)(*data);
-                }
-                else static if(is(_Type == class)){
-                    _Type data = ((ref data)@trusted => cast(_Type)data.ptr)(this.data);
-                    destructImpl!(false, DtorType!void)(data);
-                }
-                else static assert(0, "no impl");
+				static if(is(_Type == struct)){
+					_Type* data = ((ref data)@trusted => cast(_Type*)data.ptr)(this.data);
+					destructImpl!(false, DtorType!void)(*data);
+				}
+				else static if(is(_Type == class)){
+					_Type data = ((ref data)@trusted => cast(_Type)data.ptr)(this.data);
+					destructClassImpl!(false, DtorType!void)(data);
+				}
+				else static assert(0, "no impl");
 
 				static if(!allocatorGCRange && dataGCRange){
 					gcRemoveRange(data_ptr);
@@ -2041,7 +2041,7 @@ if(isIntrusive!_Type == 1){
 
 		private void deallocate()pure nothrow @system @nogc{
 			void* self = cast(void*)&this;
-            destructImpl!(false, DtorType!void)(this);//btl.internal.lifetime.destruct!(typeof(this), DestructorType!void)(self);
+			destructImpl!(false, DtorType!void)(this);//btl.internal.lifetime.destruct!(typeof(this), DestructorType!void)(self);
 
 			void[] raw = self[0 .. typeof(this).sizeof];
 
@@ -2310,7 +2310,7 @@ package template MakeDeleter(_Type, _DestructorType, _ControlType, DeleterType, 
 
 		private void deallocate()pure nothrow @system @nogc{
 			void* self = cast(void*)&this;
-            destructImpl!(false, DtorType!void)(this);    //btl.internal.lifetime.destruct!(typeof(this), DestructorType!void)(self);
+			destructImpl!(false, DtorType!void)(this);    //btl.internal.lifetime.destruct!(typeof(this), DestructorType!void)(self);
 
 			void[] raw = self[0 .. typeof(this).sizeof];
 
