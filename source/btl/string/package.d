@@ -61,8 +61,8 @@ template isBasicString(T){
 */
 template BasicString(
 	_Char,
-	_Allocator = DefaultAllocator,
-	size_t N = 1,
+    size_t N = 1,
+	_Allocator = DefaultAllocator
 )
 if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 	import std.range : isInputRange, ElementEncodingType, isRandomAccessRange;
@@ -2438,114 +2438,116 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 	}
 }
 
-/// Alias to `BasicString` with different order of template parameters
-template BasicString(
-	_Char,
-	size_t N,
-	_Allocator = DefaultAllocator
-)
-if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
-	alias BasicString = .BasicString!(_Char, _Allocator, N);
-}
-
-
 
 ///
 pure nothrow @safe @nogc unittest {
-	alias String = BasicString!(
-		char,               //character type
-		DefaultAllocator,   //allocator type (can be stateless or with state)
-		32                  //additional padding to increas max size of small string (small string does not allocate memory).
-	);
+    alias String = BasicString!(
+        char,               //character type
+        32,                 //additional padding to increas max size of small string (small string does not allocate memory).
+        DefaultAllocator    //allocator type (can be stateless or with state)
+    );
 
 
-	//copy:
-	{
-		String a = "123";
-		String b = a;
+    //copy:
+    {
+        String a = "123";
+        String b = a;
 
-		a = "456"d;
+        a = "456"d;
 
-		assert(a == "456");
-		assert(b == "123");
-	}
+        assert(a == "456");
+        assert(b == "123");
+    }
 
 
-	//append:
-	{
-		String str = "12";
+    //append:
+    {
+        String str = "12";
 
-		str.append("34");   //same as str += "34"
-		str.append("56"w);  //same as str += "56"w
-		str.append(7);      //same as str += 7;
-		str.append('8');
+        str.append("34");   //same as str += "34"
+        str.append("56"w);  //same as str += "56"w
+        str.append(7);      //same as str += 7;
+        str.append('8');
 
-		assert(str == "12345678");
+        assert(str == "12345678");
 
-		str.clear();
+        str.clear();
 
-		assert(str.empty);
-	}
+        assert(str.empty);
+    }
 
-	//erase:
-	{
-		String str = "123456789";
+    //erase:
+    {
+        String str = "123456789";
 
-		str.erase(2, 2);
+        str.erase(2, 2);
 
-		assert(str == "1256789");
-	}
+        assert(str == "1256789");
+    }
 
-	//insert:
-	{
-		String str = "123456789";
+    //insert:
+    {
+        String str = "123456789";
 
-		str.insert(1, "xyz");
+        str.insert(1, "xyz");
 
-		assert(str == "1xyz23456789");
-	}
+        assert(str == "1xyz23456789");
+    }
 
-	//replace:
-	{
-		String str = "123456789";
+    //replace:
+    {
+        String str = "123456789";
 
-		str.replace(1, 2, "xyz");
+        str.replace(1, 2, "xyz");
 
-		assert(str == "1xyz456789");
-	}
+        assert(str == "1xyz456789");
+    }
 
-	//slice to string:
-	()@trusted{
-		String str = "123456789";
+    //slice to string:
+    ()@trusted{
+        String str = "123456789";
 
-		const(char)[] dstr = str[];
+        const(char)[] dstr = str[];
 
-		assert(str == dstr);
-	}();
+        assert(str == dstr);
+    }();
+}
+
+
+/**
+    Alias to `BasicString` with different order of template parameters
+*/
+template BasicString(
+	_Char,
+    _Allocator,
+	size_t N = 1
+)
+if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
+	alias BasicString = .BasicString!(_Char, N, _Allocator);
 }
 
 
 
-/**
-	TODO
-
-*/
-alias FixedString(Char, size_t N) = BasicString!(Char, void, N);
-
 
 
 /**
-	TODO
-
+    Alias to `BasicString` with `void` allcoator (fixed capacity to `N` characters).
 */
-alias SmallString(Char, size_t N, _Allocator = DefaultAllocator) = BasicString!(Char, _Allocator, (N ? N : 1));
+alias FixedString(Char, size_t N) = BasicString!(Char, N, void);
 
 
 
 /**
-	TODO
+    Alias to `BasicString` with forced small string optimization fot min `N` characters.
 */
-alias LargeString(Char, _Allocator = DefaultAllocator) = BasicString!(Char, _Allocator, 0);
+alias SmallString(Char, size_t N, _Allocator = DefaultAllocator) = BasicString!(Char, max(N, 1), _Allocator);
+
+
+
+/**
+    Alias to `BasicString` without small string optimization (`N` == 0).
+*/
+alias LargeString(Char, _Allocator = DefaultAllocator) = BasicString!(Char, 0, _Allocator);
 
 
 

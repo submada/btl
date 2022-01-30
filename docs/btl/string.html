@@ -126,7 +126,7 @@ $('#symbolSearchPane').show();</script>
 							</a>
 						</td>
 						<td>
-							<code class="prettyprint lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(_Char,_Allocator,N)</code>
+							<code class="prettyprint lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(_Char,N,_Allocator)</code>
 						</td>
 						<td>Alias to <code class="lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> with different order of template parameters
 </td>
@@ -150,9 +150,9 @@ $('#symbolSearchPane').show();</script>
 							</a>
 						</td>
 						<td>
-							<code class="prettyprint lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(Char,void,N)</code>
+							<code class="prettyprint lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(Char,N,void)</code>
 						</td>
-						<td>TODO
+						<td>Alias to <code class="lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> with <code class="lang-d"><span class="typ">void</span></code> allcoator (fixed capacity to <code class="lang-d"><span class="pln">N</span></code> characters).
 </td>
 					</tr>
 					<tr>
@@ -174,9 +174,9 @@ $('#symbolSearchPane').show();</script>
 							</a>
 						</td>
 						<td>
-							<code class="prettyprint lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(Char,_Allocator,0)</code>
+							<code class="prettyprint lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(Char,0,_Allocator)</code>
 						</td>
-						<td>TODO
+						<td>Alias to <code class="lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> without small string optimization (<code class="lang-d"><span class="pln">N</span></code> == 0).
 </td>
 					</tr>
 					<tr>
@@ -186,9 +186,9 @@ $('#symbolSearchPane').show();</script>
 							</a>
 						</td>
 						<td>
-							<code class="prettyprint lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(Char,_Allocator,N?N:1)</code>
+							<code class="prettyprint lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(Char,max(N,1),_Allocator)</code>
 						</td>
-						<td>TODO
+						<td>Alias to <code class="lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> with forced small string optimization fot min <code class="lang-d"><span class="pln">N</span></code> characters.
 </td>
 					</tr>
 					<tr>
@@ -198,7 +198,7 @@ $('#symbolSearchPane').show();</script>
 							</a>
 						</td>
 						<td>
-							<code class="prettyprint lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(char,std.experimental.allocator.mallocator.Mallocator,1L)</code>
+							<code class="prettyprint lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(char,1L,std.experimental.allocator.mallocator.Mallocator)</code>
 						</td>
 						<td>Standard string type (alias to <code class="lang-d"><a href="../btl/string/BasicString.html"><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">char</span></code>).
 </td>

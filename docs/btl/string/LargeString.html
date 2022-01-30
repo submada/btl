@@ -70,13 +70,13 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Alias LargeString</h1><p>TODO
+			<h1>Alias LargeString</h1><p>Alias to <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> without small string optimization (<code class="lang-d"><span class="pln">N</span></code> == 0).
 </p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
 			<span class="kwd">alias</span> <span class="pln">LargeString</span>(Char, _Allocator)
-			 <span class="pun">=</span> <a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(Char,_Allocator,0)<span class="pun">;</span>
+			 <span class="pun">=</span> <a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(Char,0,_Allocator)<span class="pun">;</span>
 					</div>
 				</code>
 			</div>
