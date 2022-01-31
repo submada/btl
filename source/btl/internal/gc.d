@@ -10,6 +10,13 @@ else{
 }
 
 
+template shouldAddGCRange(T){
+	import std.traits;
+	
+	enum shouldAddGCRange = true
+		&& platformSupportGC
+		&& hasIndirections!T;
+}
 
 
 version(D_BetterC){

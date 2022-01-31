@@ -6,7 +6,7 @@
 */
 module btl.autoptr.shared_ptr;
 
-import btl.internal.mallocator;
+import btl.internal.allocator;
 import btl.internal.traits;
 import btl.internal.gc;
 
@@ -118,7 +118,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 
 	enum bool hasSharedCounter = _ControlType.hasSharedCounter;
 
-	enum bool referenceElementType = isReferenceType!_Type || isDynamicArray!_Type;
+	enum bool referenceElementType = isClassOrInterface!_Type || isDynamicArray!_Type;
 
 	static if(isDynamicArray!_Type)
 		alias ElementDestructorType = .DestructorType!void;
@@ -2378,8 +2378,8 @@ nothrow unittest{
 */
 public UnqualSmartPtr!Ptr.ChangeElementType!T dynCastMove(T, Ptr)(auto ref scope Ptr ptr)
 if(    isSharedPtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
-	&& isReferenceType!T && __traits(getLinkage, T) == "D"
-	&& isReferenceType!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
+	&& isClassOrInterface!T && __traits(getLinkage, T) == "D"
+	&& isClassOrInterface!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
 ){
 	import std.traits : CopyTypeQualifiers;
 	import core.lifetime : forward, move;
@@ -2445,8 +2445,8 @@ unittest{
 */
 public UnqualSmartPtr!Ptr.ChangeElementType!T dynCast(T, Ptr)(auto ref scope Ptr ptr)
 if(    isSharedPtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
-	&& isReferenceType!T && __traits(getLinkage, T) == "D"
-	&& isReferenceType!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
+	&& isClassOrInterface!T && __traits(getLinkage, T) == "D"
+	&& isClassOrInterface!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
 ){
 	import std.traits : CopyTypeQualifiers;
 	import core.lifetime : forward;

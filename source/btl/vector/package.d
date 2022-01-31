@@ -11,22 +11,13 @@ import std.meta : AliasSeq;
 import std.traits : Select;
 
 import btl.internal.traits;
-import btl.internal.mallocator;
-import btl.internal.null_allocator;
+import btl.internal.allocator;
 import btl.internal.forward;
 import btl.internal.gc;
 import btl.internal.lifetime;
 
 import btl.vector.storage;
 
-
-//debug import std.stdio : writeln;
-
-
-/**
-    TODO nepouzivat _length vo Vectore
-    TODO refactorovat Storage
-*/
 
 /**
     Type used in forward constructors.
@@ -88,7 +79,7 @@ template Vector(
     _Type,
     size_t N = 0,
     _Allocator = DefaultAllocator,
-    bool _supportGC = platformSupportGC
+    bool _supportGC = shouldAddGCRange!_Type
 ){
 
     import core.lifetime : emplace, forward, move;
@@ -394,17 +385,14 @@ template Vector(
                 if(rhs.storage.external){
                     //heap -> heap:
                     if(minimalCapacity <= Rhs.minimalCapacity || minimalCapacity < rhs.length){
-                        //debug writeln(minimalCapacity, " <= ", Rhs.minimalCapacity, " || ", minimalCapacity, " < ", rhs.length);
                         static if(!hasStatelessAllocator)
                             this._allocator = move(rhs._allocator);
 
-                        //this.release();
                         this.storage.length = rhs.storage.length;
                         this.storage.heap = rhs.storage.heap;
                         rhs.storage.reset();
 
                         assert(this.storage.external);
-                        //debug writeln("heap -> heap:");
                     }
                     //heap -> inline:
                     else{
@@ -425,7 +413,6 @@ template Vector(
                             this.storage.length = rhs.storage.length;
                         }
 
-                        //debug writeln("heap -> inline:");
                         assert(!this.storage.external);
                     }
                 }
@@ -448,7 +435,6 @@ template Vector(
                         }
 
                         assert(!this.storage.external);
-                        //debug writeln("inline -> inline:");
                     }
                     //inline -> heap
                     else{
@@ -463,7 +449,6 @@ template Vector(
 
                         this.storage.length = rhs.storage.length;
                         assert(this.storage.external);
-                        //debug writeln("inline -> heap:");
                     }
                 }
             }
@@ -479,7 +464,6 @@ template Vector(
                 this.reserve(new_length);
 
                 const size_t old_length = this.length;
-
 
                 //move asign elements from range
                 moveAssignRange(this._trusted_elements, range);
@@ -1442,18 +1426,15 @@ template Vector(
                 static if(!hasStatelessAllocator)
                     swap(this._allocator, rhs._allocator);
 
-
-                ()@trusted {
-                    swap(this.storage.length, rhs.storage.length);
-                    swap(this.storage.heap, rhs.storage.heap);
-                }();
-
+                swap(this.storage.length, rhs.storage.length);
+                swap(this.storage.heap, rhs.storage.heap);
             }
             //inline <-> inline
             else if(!this.storage.external && !rhs.storage.external){
                 auto small = (()@trusted => (this.length < rhs.length) ?  &this : &rhs )();
                 auto large = (()@trusted => (this.length < rhs.length) ?  &rhs : &this )();
 
+                //TODO range swap generalization:
                 for(size_t i = 0; i < this.length; ++i)
                     swap(
                         *(()@trusted => small.storage.inline.ptr + i )(),
@@ -1475,32 +1456,25 @@ template Vector(
                 auto heap = (()@trusted => this.storage.external ? &this : &rhs )();
                 auto inline = (()@trusted => this.storage.external ? &rhs : &this )();
 
+                //copy heap to tmp:
                 Storage.Heap tmp_heap = heap.storage.heap;
+
+                //copy inline to old heap:
                 heap.storage.external = false;
-
-                //const inline_len  = inline.storage._length;
-                //const heap_len  = heap.storage._length;
-
-                //heap.storage._length = inline_len;  //change external to false
-                //assert(!inline.storage.external);
-
                 moveEmplaceRangeImpl(
                     (()@trusted => heap.storage.inline.ptr )(),
                     (()@trusted => inline.storage.inline.ptr )(),
                     inline.storage.length
                 );
 
+                //swap lengths:
                 swap(inline.storage.length, heap.storage.length);
+
+                //copy tmp heap to new heap:
                 inline.storage.heap = tmp_heap;
 
                 assert(!heap.storage.external);
                 assert(inline.storage.external);
-
-                /+
-                inline.storage._length = heap_len;  //change external to true
-                assert(inline.storage.external);
-                inline.storage.heap = heap_storage;
-                +/
             }
         }
 
@@ -2672,7 +2646,7 @@ template Vector(
             assert(slice.length == count);
 
             foreach(ref elm; slice){
-                emplaceImpl(elm, val);   //emplaceElement(elm, val);
+                emplaceImpl(elm, val);
                 emplaced += 1;
             }
         }
@@ -2682,7 +2656,7 @@ template Vector(
             assert(slice.length == 1);
 
             foreach(ref elm; slice){
-                emplaceImpl(elm, val);   //emplaceElement(elm, val);
+                emplaceImpl(elm, val);
                 emplaced += 1;
             }
         }
@@ -2697,7 +2671,7 @@ template Vector(
             while(!range.empty){
                 debug assert(ptr < end_ptr);
 
-                emplaceImpl(*ptr, range.front);   //emplaceElement(*ptr, range.front);
+                emplaceImpl(*ptr, range.front);
                 emplaced += 1;
 
                 range.popFront();
@@ -2716,7 +2690,7 @@ template Vector(
 
             /// TODO emplaceRangeImpl if nothrow ctors
             foreach(ref elm; slice){
-                emplaceImpl(elm);   //emplaceElement(elm, val);
+                emplaceImpl(elm);
                 emplaced += 1;
             }
         }
@@ -2725,7 +2699,7 @@ template Vector(
 
             /// TODO emplaceRangeImpl if nothrow ctors
             foreach(ref elm; slice){
-                emplaceImpl(elm, args);   //emplaceElement(elm, val);
+                emplaceImpl(elm, args);
                 emplaced += 1;
             }
         }
@@ -2733,7 +2707,7 @@ template Vector(
 
 
         static void initElements(T)(T[] elements)nothrow{
-            enum has_init = __traits(compiles, () => emplaceElement(elm));
+            enum has_init = __traits(compiles, (ref _Type elm) => emplaceElement(elm));
 
             static if(has_init){
                 foreach(ref elm; elements)
@@ -2755,7 +2729,7 @@ template Vector(
 template Vector(
     _Type,
     _Allocator,
-    bool _supportGC = platformSupportGC
+    bool _supportGC = shouldAddGCRange!_Type
 ){
     alias Vector = .Vector!(_Type, 0, _Allocator, _supportGC);
 }
@@ -2814,7 +2788,7 @@ pure nothrow @nogc unittest{
 template FixedVector(
     _Type,
     size_t N ,
-    bool _supportGC = platformSupportGC
+    bool _supportGC = shouldAddGCRange!_Type
 )
 if(N > 0){
     alias FixedVector = .Vector!(_Type, N, void, _supportGC);
@@ -2826,7 +2800,7 @@ template SmallVector(
     _Type,
     size_t N ,
     _Allocator = DefaultAllocator,
-    bool _supportGC = platformSupportGC
+    bool _supportGC = shouldAddGCRange!_Type
 )
 if(N > 0){
     alias SmallVector = .Vector!(_Type, N, _Allocator, _supportGC);

@@ -12,7 +12,6 @@ in(isFunctionPointer!T || isDelegate!T){
     return cast(SetFunctionAttributes!(T, functionLinkage!T, attrs)) t;
 }
 
-
 public auto assumePure(T)(T t)@trusted
 in(isFunctionPointer!T || isDelegate!T){
     import std.traits : functionAttributes, FunctionAttribute, SetFunctionAttributes, functionLinkage;
@@ -20,7 +19,6 @@ in(isFunctionPointer!T || isDelegate!T){
     enum attrs = functionAttributes!T | FunctionAttribute.pure_;
     return cast(SetFunctionAttributes!(T, functionLinkage!T, attrs)) t;
 }
-
 
 public auto assumePureNoGc(T)(T t)@trusted
 in(isFunctionPointer!T || isDelegate!T){
@@ -30,7 +28,6 @@ in(isFunctionPointer!T || isDelegate!T){
     return cast(SetFunctionAttributes!(T, functionLinkage!T, attrs)) t;
 }
 
-
 public auto assumePureNoGcNothrow(T)(T t)@trusted
 in(isFunctionPointer!T || isDelegate!T){
     import std.traits : functionAttributes, FunctionAttribute, SetFunctionAttributes, functionLinkage;
@@ -38,7 +35,6 @@ in(isFunctionPointer!T || isDelegate!T){
     enum attrs = functionAttributes!T | FunctionAttribute.pure_ | FunctionAttribute.nogc | FunctionAttribute.nothrow_;
     return cast(SetFunctionAttributes!(T, functionLinkage!T, attrs)) t;
 }
-
 
 public enum bool isRef(alias var) = false
     || __traits(isRef, var)
@@ -90,37 +86,16 @@ public template classHasIndirections(T){
 
 
 //alias to `T` if `T` is class or interface, otherwise `T*`.
-public template PtrOrRef(T){
+/+public template PtrOrRef(T){
     static if(is(T == class) || is(T == interface))
         alias PtrOrRef = T;
     else
         alias PtrOrRef = T*;
-}
+}+/
 
 
 //`true` if `T` is class or interface.
-public enum bool isReferenceType(T) = is(T == class) || is(T == interface);
-
-
-public template isStatelessAllocator(T){
-    import std.experimental.allocator.common : stateSize;
-
-    enum isStatelessAllocator = (stateSize!T == 0);
-}
-
-//alias to stateless allocator instance
-public template statelessAllcoator(T){
-    import std.experimental.allocator.common : stateSize;
-    import std.traits : hasStaticMember;
-
-    static assert(isStatelessAllocator!T);
-
-    static if(hasStaticMember!(T, "instance"))
-        alias statelessAllcoator = T.instance;
-    else 
-        enum T statelessAllcoator = T.init;   
-}
-
+public enum bool isClassOrInterface(T) = is(T == class) || is(T == interface);
 
 //Size of instance, if `T` is class then `__traits(classInstanceSize, T)`, otherwise `T.sizeof`
 public template instanceSize(T){

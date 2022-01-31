@@ -6,7 +6,7 @@
 */
 module btl.autoptr.unique_ptr;
 
-import btl.internal.mallocator;
+import btl.internal.allocator;
 import btl.internal.traits;
 
 static import btl.autoptr.rc_ptr;

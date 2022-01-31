@@ -14,7 +14,7 @@ public struct Evoid{
 }
 
 //generate `DestructorTypes` alias
-version(D_BetterC){}else
+/+version(D_BetterC){}else
 private string genDestructorTypes(){
     string result;
     result.reserve(16*40);
@@ -31,7 +31,7 @@ private string genDestructorTypes(){
             ~ ",\n";
 
     return result;
-}
+}+/
 
 
 //create all possible DestructorType types, DestructorType can return type with some hidden information and comparsion with it can fail (bug in D compiler).
@@ -127,12 +127,21 @@ public template DtorType(Type){
 public{
     void emplaceImpl(T, Args...)(ref T elm, auto ref Args args){
         static if(is(T == class) || is(T == interface)){
-            static if(Args.length == 0)
-                elm = null;
-            else static if(Args.length == 1)
-                elm = args[0];
-            else
-                static assert(0, "use emplaceClassImpl instead");
+            import std.traits : Unqual;
+
+            static if(Args.length == 0){
+                *(()@trusted => cast(Unqual!T*)&elm )() = null;
+            }
+            else static if(Args.length == 1 && is(Args[0] : T)){
+                T src = args[0];
+
+                ()@trusted{
+                    *cast(Unqual!T*)&elm = cast(Unqual!T)src;
+                }();
+            }
+            else{
+                static assert(0, "cannot emplace class with parameters " ~ args.stringof ~ ", try emplaceClassImpl instead");
+            }
         }
         else{
             import core.lifetime : forward;
@@ -140,6 +149,14 @@ public{
 
             emplaceRef!T(elm, forward!args);
         }
+    }
+
+    void emplaceImpl(T, S)(ref T elm, return ref S src)
+    if(is(T == struct) && is(S == struct) && is(immutable T == immutable S)){
+        import core.internal.lifetime : emplaceRef;
+
+        emplaceRef!T(elm, src);
+
     }
 
     void emplaceRangeImpl(T, Args...)(T[] slice, auto ref Args args){
@@ -434,12 +451,12 @@ public{
         {
             static if (T.length)
             {
-                moveEmplaceRangeImpl!false(
+                /+moveEmplaceRangeImpl!false(
                     (()@trusted => target.ptr )(),
                     (()@trusted => source.ptr )(),
                     T.length
-                );
-                /+static if (!hasElaborateMove!T &&
+                );+/
+                static if (!hasElaborateMove!T &&
                            !hasElaborateDestructor!T &&
                            !hasElaborateCopyConstructor!T)
                 {
@@ -454,7 +471,7 @@ public{
                 {
                     for (size_t i = 0; i < source.length; ++i)
                         moveEmplaceImpl(target[i], source[i]);
-                }+/
+                }
 
             }
         }
@@ -709,7 +726,8 @@ public{
     // https://github.com/dlang/druntime/blob/master/src/core/lifetime.d : copyEmplace
     void copyEmplaceImpl(S, T)(ref T target, return ref S source)
     if (is(immutable S == immutable T)){
-        import core.internal.traits : BaseElemOf, hasElaborateCopyConstructor, Unconst, Unqual;
+        emplaceImpl(target, source);
+        /+import core.internal.traits : BaseElemOf, hasElaborateCopyConstructor, Unconst, Unqual;
 
         // cannot have the following as simple template constraint due to nested-struct special case...
         static if (!__traits(compiles, (ref S src) { T tgt = src; }))
@@ -781,7 +799,7 @@ public{
         else
         {
             *mutableTarget = *mutableSource;
-        }
+        }+/
     }
 
     void copyEmplaceImpl(S, T)(ref T target, return ref S source)

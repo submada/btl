@@ -10,8 +10,7 @@ module btl.string;
 import std.traits : Unqual, Unconst, CopyTypeQualifiers, isSomeChar, isSomeString, isIntegral;
 import std.meta : AliasSeq;
 
-import btl.internal.mallocator;
-import btl.internal.null_allocator;
+import btl.internal.allocator;
 import btl.internal.traits;
 import btl.internal.forward;
 

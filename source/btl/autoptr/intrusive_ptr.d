@@ -6,7 +6,7 @@
 */
 module btl.autoptr.intrusive_ptr;
 
-import btl.internal.mallocator;
+import btl.internal.allocator;
 import btl.internal.traits;
 import btl.internal.gc;
 
@@ -2226,8 +2226,8 @@ nothrow unittest{
 public UnqualSmartPtr!Ptr.ChangeElementType!T dynCast(T, Ptr)(ref scope Ptr ptr)
 if(    isIntrusive!T
     && isIntrusivePtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
-    && isReferenceType!T && __traits(getLinkage, T) == "D"
-    && isReferenceType!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
+    && isClassOrInterface!T && __traits(getLinkage, T) == "D"
+    && isClassOrInterface!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
 ){
     static assert(isCopyConstructable!(Ptr, UnqualSmartPtr!Ptr));
 
@@ -2243,8 +2243,8 @@ if(    isIntrusive!T
 public UnqualSmartPtr!Ptr.ChangeElementType!T dynCast(T, Ptr)(scope Ptr ptr)
 if(    isIntrusive!T
     && isIntrusivePtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
-    && isReferenceType!T && __traits(getLinkage, T) == "D"
-    && isReferenceType!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
+    && isClassOrInterface!T && __traits(getLinkage, T) == "D"
+    && isClassOrInterface!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
 ){
     static assert(isMoveConstructable!(Ptr, UnqualSmartPtr!Ptr));
 
@@ -2255,8 +2255,8 @@ if(    isIntrusive!T
 public UnqualSmartPtr!Ptr.ChangeElementType!T dynCastMove(T, Ptr)(auto ref scope Ptr ptr)
 if(    isIntrusive!T
     && isIntrusivePtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
-    && isReferenceType!T && __traits(getLinkage, T) == "D"
-    && isReferenceType!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
+    && isClassOrInterface!T && __traits(getLinkage, T) == "D"
+    && isClassOrInterface!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
 ){
     static assert(isMoveConstructable!(Ptr, UnqualSmartPtr!Ptr));
 

@@ -9,10 +9,11 @@ module btl.autoptr.common;
 import std.meta : AliasSeq;
 
 import btl.internal.traits;
-import btl.internal.mallocator;
+import btl.internal.allocator;
 import btl.internal.forward;
 import btl.internal.gc;
 import btl.internal.lifetime;
+
 
 
 /**
@@ -1072,7 +1073,7 @@ unittest{
 
 //std dynamic cast.
 package auto dynCastElement(To, From)(return From from)pure nothrow @trusted @nogc
-if(isReferenceType!From && isReferenceType!To){
+if(isClassOrInterface!From && isClassOrInterface!To){
 	import std.traits : CopyTypeQualifiers, Unqual;
 
 	alias Result = CopyTypeQualifiers!(From, To);
@@ -1304,8 +1305,8 @@ package template MakeEmplace(_Type, _DestructorType, _ControlType, _AllocatorTyp
 			return &this.control;
 		}
 
-		public @property PtrOrRef!_Type get()pure nothrow @trusted @nogc{
-			return cast(PtrOrRef!_Type)this.data.ptr;
+		public @property Select!(isClassOrInterface!_Type, _Type, _Type*) get()pure nothrow @trusted @nogc{
+			return cast(typeof(return))this.data.ptr;
 		}
 
 
@@ -1406,7 +1407,7 @@ package template MakeEmplace(_Type, _DestructorType, _ControlType, _AllocatorTyp
 
 					foreach(ref ElementEncodingType!_Type d; (*data)[]){
 
-						static if(isReferenceType!(ElementEncodingType!_Type)){
+						static if(isClassOrInterface!(ElementEncodingType!_Type)){
 							static if(args.length == 0)
 								d = null;
 							else static if(args.length == 1)
@@ -1421,7 +1422,7 @@ package template MakeEmplace(_Type, _DestructorType, _ControlType, _AllocatorTyp
 				}
 			}
 			else{
-				static if(isReferenceType!_Type)
+				static if(isClassOrInterface!_Type)
 					auto data = ((ref data)@trusted => cast(_Type)data.ptr)(this.data);
 				else
 					auto data = ((ref data)@trusted => cast(_Type*)data.ptr)(this.data);
@@ -1547,7 +1548,7 @@ package template MakeDynamicArray(_Type, _DestructorType, _ControlType, _Allocat
 
 	enum bool hasSharedCounter = _ControlType.hasSharedCounter;
 
-	//enum bool referenceElementType = isReferenceType!_Type;
+	//enum bool referenceElementType = isClassOrInterface!_Type;
 
 	enum bool allocatorGCRange = supportGC
 		&& !hasStatelessAllocator
@@ -1820,7 +1821,7 @@ if(isIntrusive!_Type == 1){
 
 
 		private @property ref auto control()return pure nothrow @trusted @nogc{
-			static if(isReferenceType!_Type)
+			static if(isClassOrInterface!_Type)
 				auto control = intrusivControlBlock(cast(_Type)this.data.ptr);
 			else 
 				auto control = intrusivControlBlock(*cast(_Type*)this.data.ptr);
@@ -1876,8 +1877,8 @@ if(isIntrusive!_Type == 1){
 				);
 			}
 
-		public @property PtrOrRef!_Type get()return pure nothrow @trusted @nogc{
-			return cast(PtrOrRef!_Type)this.data.ptr;
+		public @property Select!(isClassOrInterface!_Type, _Type, _Type*) get()return pure nothrow @trusted @nogc{
+			return cast(typeof(return))this.data.ptr;
 		}
 
 

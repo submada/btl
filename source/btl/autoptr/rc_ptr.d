@@ -6,7 +6,7 @@
 */
 module btl.autoptr.rc_ptr;
 
-import btl.internal.mallocator;
+import btl.internal.allocator;
 import btl.internal.traits;
 import btl.internal.gc;
 
@@ -114,7 +114,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 
     enum bool hasSharedCounter = _ControlType.hasSharedCounter;
 
-    enum bool referenceElementType = isReferenceType!_Type || isDynamicArray!_Type;
+    enum bool referenceElementType = isClassOrInterface!_Type || isDynamicArray!_Type;
 
     static assert(!isIntrusive!_Type);
 
@@ -2241,8 +2241,8 @@ nothrow unittest{
 */
 public UnqualSmartPtr!Ptr.ChangeElementType!T dynCast(T, Ptr)(ref scope Ptr ptr)
 if(    isRcPtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
-    && isReferenceType!T && __traits(getLinkage, T) == "D"
-    && isReferenceType!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
+    && isClassOrInterface!T && __traits(getLinkage, T) == "D"
+    && isClassOrInterface!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
 ){
     if(auto element = dynCastElement!T(ptr._element)){
         return typeof(return)(ptr._control, element);
@@ -2254,8 +2254,8 @@ if(    isRcPtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
 /// ditto
 public UnqualSmartPtr!Ptr.ChangeElementType!T dynCast(T, Ptr)(scope Ptr ptr)
 if(    isRcPtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
-    && isReferenceType!T && __traits(getLinkage, T) == "D"
-    && isReferenceType!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
+    && isClassOrInterface!T && __traits(getLinkage, T) == "D"
+    && isClassOrInterface!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
 ){
     return dynCastMove!T(ptr);
 }
@@ -2263,8 +2263,8 @@ if(    isRcPtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
 /// ditto
 public UnqualSmartPtr!Ptr.ChangeElementType!T dynCastMove(T, Ptr)(auto ref scope Ptr ptr)
 if(    isRcPtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
-    && isReferenceType!T && __traits(getLinkage, T) == "D"
-    && isReferenceType!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
+    && isClassOrInterface!T && __traits(getLinkage, T) == "D"
+    && isClassOrInterface!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
 ){
     if(auto element = dynCastElement!T(ptr._element)){
         ()@trusted{
@@ -2494,7 +2494,7 @@ private{
         static if(is(Unqual!(From.ElementType) == Unqual!(To.ElementType)))
             enum bool overlapable = true;
 
-        else static if(isReferenceType!(From.ElementType) && isReferenceType!(To.ElementType))
+        else static if(isClassOrInterface!(From.ElementType) && isClassOrInterface!(To.ElementType))
             enum bool overlapable = true
                 && (__traits(getLinkage, From.ElementType) == "D")
                 && (__traits(getLinkage, To.ElementType) == "D");
