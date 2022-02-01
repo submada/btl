@@ -60,7 +60,7 @@ template isBasicString(T){
 */
 template BasicString(
 	_Char,
-    size_t N = 1,
+	size_t N = 1,
 	_Allocator = DefaultAllocator
 )
 if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
@@ -2520,7 +2520,7 @@ pure nothrow @safe @nogc unittest {
 */
 template BasicString(
 	_Char,
-    _Allocator,
+	_Allocator,
 	size_t N = 1
 )
 if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
