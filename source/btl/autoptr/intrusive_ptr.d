@@ -3749,3 +3749,4 @@ unittest{
     auto a = IntrusivePtr!Foo.make(1);
     a = a;
 }
+

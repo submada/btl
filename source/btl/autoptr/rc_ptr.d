@@ -95,10 +95,22 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
         " : " ~ _DestructorType.stringof
     );
 
+    /*
     static assert(is(DestructorType!_Type : _DestructorType),
         "destructor of type '" ~ _Type.stringof ~
         "' doesn't support specified finalizer " ~ _DestructorType.stringof
     );
+    */
+
+    void check_dtor()(){
+
+        static assert(!isIntrusive!_Type);
+
+        static assert(is(DestructorType!_Type : _DestructorType),
+            "destructor of type '" ~ _Type.stringof ~
+            "' doesn't support specified finalizer " ~ _DestructorType.stringof
+        );
+    }
 
     import std.meta : AliasSeq;
     import std.range : ElementEncodingType;
@@ -115,8 +127,6 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
     enum bool hasSharedCounter = _ControlType.hasSharedCounter;
 
     enum bool referenceElementType = isClassOrInterface!_Type || isDynamicArray!_Type;
-
-    static assert(!isIntrusive!_Type);
 
 
     enum bool _isLockFree = !isDynamicArray!_Type;
@@ -645,6 +655,8 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
         */
         public static auto make(AllocatorType = DefaultAllocator, bool supportGC = platformSupportGC, Args...)(auto ref Args args)
         if(!isDynamicArray!ElementType){
+            check_dtor();
+
             alias ReturnType = RcPtr!(
                 ElementType,
                 .DestructorType!(
@@ -691,6 +703,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
         */
         public static auto make(AllocatorType = DefaultAllocator, bool supportGC = platformSupportGC, Args...)(const size_t n, auto ref Args args)
         if(isDynamicArray!ElementType){
+            check_dtor();
 
             alias ReturnType = RcPtr!(
                 ElementType,
@@ -762,6 +775,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
         */
         public static auto alloc(bool supportGC = platformSupportGC, AllocatorType, Args...)(AllocatorType a, auto ref Args args)
         if(!isDynamicArray!ElementType){
+            check_dtor();
 
             alias ReturnType = RcPtr!(
                 ElementType,
@@ -810,6 +824,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
         */
         public static auto alloc(bool supportGC = platformSupportGC, AllocatorType, Args...)(AllocatorType a, const size_t n, auto ref Args args)
         if(isDynamicArray!ElementType){
+            check_dtor();
 
             alias ReturnType = RcPtr!(
                 ElementType,
@@ -3668,4 +3683,14 @@ unittest{
 unittest{
     auto a = RcPtr!long.make(1);
     a = a;
+}
+
+version(unittest){
+//debug{
+    private struct Cycle{
+
+        RcPtr!(Cycle, DestructorType!void, SharedControlBlock) cycle;
+
+        ~this()pure nothrow @safe @nogc{}
+    }
 }

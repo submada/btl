@@ -82,7 +82,8 @@ public template SharedPtr(
 )
 if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 
-	static assert(_ControlType.hasSharedCounter || is(_ControlType == immutable),
+
+    static assert(_ControlType.hasSharedCounter || is(_ControlType == immutable),
 		"_ControlType must be `ControlBlock` with shared counter or `ControlBlock` must be immutable."
 	);
 
@@ -100,10 +101,17 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 		" : " ~ _DestructorType.stringof
 	);
 
-	static assert(is(DestructorType!_Type : _DestructorType),
+	/*static assert(is(DestructorType!_Type : _DestructorType),
 		"destructor of type '" ~ _Type.stringof ~
 		"' doesn't support specified finalizer " ~ _DestructorType.stringof
-	);
+	);*/
+
+    void check_dtor()(){
+        static assert(is(DestructorType!_Type : _DestructorType),
+            "destructor of type '" ~ _Type.stringof ~
+            "' doesn't support specified finalizer " ~ _DestructorType.stringof
+        );
+    }
 
 	import std.meta : AliasSeq;
 	import std.range : ElementEncodingType;
@@ -121,9 +129,9 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 	enum bool referenceElementType = isClassOrInterface!_Type || isDynamicArray!_Type;
 
 	static if(isDynamicArray!_Type)
-		alias ElementDestructorType = .DestructorType!void;
+		alias ElementDestructorType() = .DestructorType!void;
 	else
-		alias ElementDestructorType = .DestructorType!_Type;
+		alias ElementDestructorType() = .DestructorType!_Type;
 
 
 	enum bool _isLockFree = false;
@@ -668,11 +676,12 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 		*/
 		public static auto make(AllocatorType = DefaultAllocator, bool supportGC = platformSupportGC, Args...)(auto ref Args args)
 		if(!isDynamicArray!ElementType){
+            check_dtor();
 
 			alias ReturnType = SharedPtr!(
 				ElementType,
 				.DestructorType!(
-					ElementDestructorType,
+					ElementDestructorType!(),
 					DestructorType,
 					DestructorAllocatorType!AllocatorType
 				),
@@ -707,11 +716,12 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 		*/
 		public static auto make(AllocatorType = DefaultAllocator, bool supportGC = platformSupportGC, DeleterType)(ElementReferenceType element, DeleterType deleter)
 		if(isCallable!DeleterType){
+            check_dtor();
 
 			alias ReturnType = SharedPtr!(
 				ElementType,
 				.DestructorType!(
-					ElementDestructorType,
+					ElementDestructorType!(),
 					DestructorType,
 					DestructorAllocatorType!AllocatorType,
 					DestructorDeleterType!(ElementType, DeleterType)
@@ -755,11 +765,12 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 		*/
 		public static auto make(AllocatorType = DefaultAllocator, bool supportGC = platformSupportGC, Args...)(const size_t n, auto ref Args args)
 		if(isDynamicArray!ElementType){
+            check_dtor();
 
 			alias ReturnType = SharedPtr!(
 				ElementType,
 				.DestructorType!(
-					ElementDestructorType,
+					ElementDestructorType!(),
 					DestructorType,
 					DestructorAllocatorType!AllocatorType
 				),
@@ -825,11 +836,12 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 		*/
 		public static auto alloc(bool supportGC = platformSupportGC, AllocatorType, Args...)(AllocatorType a, auto ref Args args)
 		if(!isDynamicArray!ElementType){
+            check_dtor();
 
 			alias ReturnType = SharedPtr!(
 				ElementType,
 				.DestructorType!(
-					ElementDestructorType,
+					ElementDestructorType!(),
 					DestructorType,
 					DestructorAllocatorType!AllocatorType
 				),
@@ -866,11 +878,12 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 		*/
 		public static auto alloc(bool supportGC = platformSupportGC, AllocatorType, DeleterType)(AllocatorType allocator, ElementReferenceType element, DeleterType deleter)
 		if(isCallable!DeleterType){
+            check_dtor();
 
 			alias ReturnType = SharedPtr!(
 				ElementType,
 				.DestructorType!(
-					ElementDestructorType,
+					ElementDestructorType!(),
 					DestructorType,
 					DestructorAllocatorType!AllocatorType,
 					DestructorDeleterType!(ElementType, DeleterType)
@@ -915,11 +928,12 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 		*/
 		public static auto alloc(bool supportGC = platformSupportGC, AllocatorType, Args...)(AllocatorType a, const size_t n, auto ref Args args)
 		if(isDynamicArray!ElementType){
+            check_dtor();
 
 			alias ReturnType = SharedPtr!(
 				ElementType,
 				.DestructorType!(
-					ElementDestructorType,
+					ElementDestructorType!(),
 					DestructorType,
 					DestructorAllocatorType!AllocatorType
 				),
@@ -4013,4 +4027,15 @@ unittest{
 		})(p, w);
 	}
 
+}
+
+
+version(unittest){
+//debug{
+    private struct Cycle{
+
+        SharedPtr!(Cycle, DestructorType!void, SharedControlBlock) cycle;
+
+        ~this()pure nothrow @safe @nogc{}
+    }
 }
