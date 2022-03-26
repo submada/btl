@@ -2587,11 +2587,11 @@ template Vector(
         }
 
         private pragma(inline, true) void _bounds_check(const size_t pos, const size_t len)const pure nothrow @safe @nogc{
-            assert(pos < this.length);
+            assert(pos <= this.length);
             assert((pos + len) <= this.length);
 
             version(BTL_VECTOR_BOUNDS_CHECK){
-                if(pos >= this.length){
+                if(pos > this.length){
                     assert(0, "btl.vector bounds check error");
                 }
                 if((pos + len) > this.length){
@@ -2601,11 +2601,11 @@ template Vector(
         }
 
         private pragma(inline, true) void _bounds_check(const size_t[2] index)const pure nothrow @safe @nogc{
-            assert(index[0] < this.length);
+            assert(index[0] <= this.length);
             assert(index[1] <= this.length);
 
             version(BTL_VECTOR_BOUNDS_CHECK){
-                if(index[0] >= this.length){
+                if(index[0] > this.length){
                     assert(0, "btl.vector bounds check error");
                 }
                 if(index[1] > this.length){
