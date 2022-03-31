@@ -242,7 +242,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 		/**
 			Forward constructor (merge move and copy constructor).
 		*/
-		public this(Rhs, this This)(auto ref scope Rhs rhs, Forward)@trusted //if rhs is rvalue then dtor is called on empty rhs
+		public this(Rhs, this This)(scope auto ref Rhs rhs, Forward)@trusted //if rhs is rvalue then dtor is called on empty rhs
 		if(    isSmartPtr!Rhs	//(isSharedPtr!Rhs || isRcPtr!Rhs || isIntrusivePtr!Rhs)
 			&& isConstructable!(rhs, This)
 			&& !is(Rhs == shared)
@@ -315,7 +315,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 				assert(foo.get == 3.14);
 				--------------------
 		*/
-		public this(Rhs, Elm, this This)(auto ref scope Rhs rhs, Elm element)@trusted	//if rhs is rvalue then dtor is called on empty rhs
+		public this(Rhs, Elm, this This)(scope auto ref Rhs rhs, Elm element)@trusted	//if rhs is rvalue then dtor is called on empty rhs
 		if(    isSharedPtr!Rhs
 			&& is(Elm : GetElementReferenceType!This)
 			&& isAliasable!(Rhs, This)
@@ -409,7 +409,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 				}
 				--------------------
 		*/
-		public this(Rhs, this This)(auto ref scope Rhs rhs)@trusted //if rhs is rvalue then dtor is called on empty rhs
+		public this(Rhs, this This)(scope auto ref Rhs rhs)@trusted //if rhs is rvalue then dtor is called on empty rhs
 		if(    isSmartPtr!Rhs   //(isSharedPtr!Rhs || isRcPtr!Rhs || isIntrusivePtr!Rhs)
 			&& isConstructable!(rhs, This)
 			&& !is(Rhs == shared)
@@ -569,7 +569,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 				}
 				--------------------
 		*/
-		public void opAssign(MemoryOrder order = MemoryOrder.seq, Rhs, this This)(auto ref scope Rhs desired)scope
+		public void opAssign(MemoryOrder order = MemoryOrder.seq, Rhs, this This)(scope auto ref Rhs desired)scope
 		if(    isSharedPtr!Rhs
 			&& isAssignable!(desired, This)
 			&& !is(Rhs == shared)
@@ -577,7 +577,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 			// shared assign:
 			static if(is(This == shared)){
 				this.lockSmartPtr!(
-					(ref scope self, auto ref scope Rhs x) => self.opAssign!order(forward!x)
+					(ref scope self, scope auto ref Rhs x) => self.opAssign!order(forward!x)
 				)(forward!desired);
 			}
 			// copy assign or non identity move assign:
@@ -616,7 +616,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 		}
 
 		///ditto
-		public void opAssign(MemoryOrder order = MemoryOrder.seq, Rhs, this This)(auto ref scope Rhs desired)scope
+		public void opAssign(MemoryOrder order = MemoryOrder.seq, Rhs, this This)(scope auto ref Rhs desired)scope
 		if(    (isSmartPtr!Rhs && !isSharedPtr!Rhs) //(isRcPtr!Rhs || isIntrusivePtr!Rhs)
 			&& isAssignable!(desired, This)
 			&& !is(Rhs == shared)
@@ -1700,7 +1700,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 		}
 
 		/// ditto
-		public bool opEquals(Rhs)(auto ref scope const Rhs rhs)const @safe scope pure nothrow @nogc
+		public bool opEquals(Rhs)(scope auto ref const Rhs rhs)const @safe scope pure nothrow @nogc
 		if(isSharedPtr!Rhs && !is(Rhs == shared)){
 			return this.opEquals(rhs._element);
 		}
@@ -1788,7 +1788,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 		}
 
 		/// ditto
-		public sizediff_t opCmp(Rhs)(auto ref scope const Rhs rhs)const @trusted scope pure nothrow @nogc
+		public sizediff_t opCmp(Rhs)(scope auto ref const Rhs rhs)const @trusted scope pure nothrow @nogc
 		if(isSharedPtr!Rhs && !is(Rhs == shared)){
 			return this.opCmp(rhs._element);
 		}
@@ -2390,7 +2390,7 @@ nothrow unittest{
 	If `ptr` is null or dynamic cast fail then result `SharedPtr` is null.
 	Otherwise, the new `SharedPtr` will share ownership with the initial value of `ptr`.
 */
-public UnqualSmartPtr!Ptr.ChangeElementType!T dynCastMove(T, Ptr)(auto ref scope Ptr ptr)
+public UnqualSmartPtr!Ptr.ChangeElementType!T dynCastMove(T, Ptr)(scope auto ref Ptr ptr)
 if(    isSharedPtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
 	&& isClassOrInterface!T && __traits(getLinkage, T) == "D"
 	&& isClassOrInterface!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
@@ -2457,7 +2457,7 @@ unittest{
 	If `ptr` is null or dynamic cast fail then result `SharedPtr` is null.
 	Otherwise, the new `SharedPtr` will share ownership with the initial value of `ptr`.
 */
-public UnqualSmartPtr!Ptr.ChangeElementType!T dynCast(T, Ptr)(auto ref scope Ptr ptr)
+public UnqualSmartPtr!Ptr.ChangeElementType!T dynCast(T, Ptr)(scope auto ref Ptr ptr)
 if(    isSharedPtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
 	&& isClassOrInterface!T && __traits(getLinkage, T) == "D"
 	&& isClassOrInterface!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
@@ -2518,7 +2518,7 @@ unittest{
 /**
 	Create `SharedPtr` from parameter `ptr` of type `SharedPtr`, `RcPtr` or `IntrusivePtr`.
 */
-auto sharedPtr(Ptr)(auto ref scope Ptr ptr)@trusted
+auto sharedPtr(Ptr)(scope auto ref Ptr ptr)@trusted
 if(!is(Ptr == shared)
 	&& isSmartPtr!Ptr   //(isSharedPtr!Ptr || isRcPtr!Ptr || isIntrusivePtr!Ptr)
 ){
@@ -2606,7 +2606,7 @@ pure nothrow @nogc unittest{
 
 	Type of parameter `ptr` must be `SharedPtr` with `shared(ControlType)` and `shared`/`immutable` `ElementType` .
 */
-public shared(Ptr) share(Ptr)(auto ref scope Ptr ptr)
+public shared(Ptr) share(Ptr)(scope auto ref Ptr ptr)
 if(isSharedPtr!Ptr){
 	import core.lifetime : forward;
 

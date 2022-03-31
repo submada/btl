@@ -41,7 +41,6 @@ template isBasicString(T){
 }
 
 
-
 /**
 	The `BasicString` is the generalization of struct string for character of type `char`, `wchar` or `dchar`.
 
@@ -64,7 +63,7 @@ template BasicString(
 	_Allocator = DefaultAllocator
 )
 if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
-	import std.range : isInputRange, ElementEncodingType, isRandomAccessRange;
+	import std.range : empty, ElementEncodingType, isInputRange, isRandomAccessRange, hasLength;
 	import std.traits : Unqual, isIntegral, hasMember, isArray, isSafe;
 	import core.lifetime: forward, move;
 
@@ -985,7 +984,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				}
 				--------------------
 		*/
-		public this(this This, Rhs)(auto ref scope Rhs rhs)scope
+		public this(this This, Rhs)(scope auto ref Rhs rhs)scope
 		if(    isBasicString!Rhs
 			&& isConstructable!(Rhs, This)
 			&& (isRef!rhs || !is(immutable This == immutable Rhs))
@@ -994,14 +993,14 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		}
 
 		/// ditto
-		public this(this This, Rhs)(auto ref scope const Rhs rhs, AllocatorType allocator)scope
+		public this(this This, Rhs)(scope auto ref const Rhs rhs, AllocatorType allocator)scope
 		if(isBasicString!Rhs){
 			this(forward!allocator);
 			this._ctor(rhs.storage.chars);
 		}
 
 		/// ditto
-		public this(this This, Rhs)(auto ref scope Rhs rhs, Forward)scope
+		public this(this This, Rhs)(scope auto ref Rhs rhs, Forward)scope
 		if(isBasicString!Rhs && isConstructable!(Rhs, This)){
 
 			static if(isMoveConstructable!(rhs, This)){
@@ -1177,7 +1176,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		}
 
 		/// ditto
-		public void opAssign(Rhs)(auto ref scope Rhs rhs)scope
+		public void opAssign(Rhs)(scope auto ref Rhs rhs)scope
 		if(isBasicString!Rhs && isAssignable!(Rhs, typeof(this))){
 			static if(isMoveAssignable!(rhs, typeof(this))){
 
@@ -1241,7 +1240,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		}
 
 		/// ditto
-		public typeof(this) opBinary(string op, Rhs)(auto ref scope const Rhs rhs)scope
+		public typeof(this) opBinary(string op, Rhs)(scope auto ref const Rhs rhs)scope
 		if((op == "+" || op == "~")
 			&& (isBasicString!Rhs || isSomeChar!Rhs || isSomeString!Rhs || isCharArray!Rhs || isIntegral!Rhs)
 		){
@@ -1282,7 +1281,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		}
 
 		/// ditto
-		public typeof(this) opBinaryRight(string op, Lhs)(auto ref scope const Lhs lhs)scope
+		public typeof(this) opBinaryRight(string op, Lhs)(scope auto ref const Lhs lhs)scope
 		if((op == "+" || op == "~")
 			&& (isSomeChar!Lhs || isSomeString!Lhs || isCharArray!Lhs || isIntegral!Lhs)
 		){
@@ -1337,7 +1336,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		}
 
 		/// ditto
-		public bool opEquals(Rhs)(auto ref scope Rhs rhs)const scope
+		public bool opEquals(Rhs)(scope auto ref Rhs rhs)const scope
 		if(isBasicString!Rhs || isSomeChar!Rhs || isSomeString!Rhs || isCharArray!Rhs || isIntegral!Rhs || isInputCharRange!Rhs){
 
 			static if(isBasicString!Rhs){
@@ -1363,10 +1362,8 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		}
 
 		//
-		private bool _op_equals(Range)(auto ref scope Range rhs)const scope
+		private bool _op_equals(Range)(scope auto ref Range rhs)const scope
 		if(isInputCharRange!Range){
-			import std.range : empty, hasLength, ElementEncodingType;
-
 			alias RhsChar = Unqual!(ElementEncodingType!Range);
 			auto lhs = this.storage.chars;
 
@@ -1434,7 +1431,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		}
 
 		/// ditto
-		public int opCmp(Rhs)(auto ref scope Rhs rhs)const scope
+		public int opCmp(Rhs)(scope auto ref Rhs rhs)const scope
 		if(isBasicString!Rhs || isSomeChar!Rhs || isSomeString!Rhs || isCharArray!Rhs || isIntegral!Rhs || isInputCharRange!Rhs){
 
 			static if(isBasicString!Val){
@@ -1625,6 +1622,19 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 
 
+
+        /+public size_t appendMore(Params...)(scope auto ref Params params)scope{
+            size_t result = 0;
+
+            static foreach(alias param; params){
+                result += this.append(param);
+            }
+
+            return result;
+        }+/
+
+
+
 		/**
 			Extends the `BasicString` by appending additional characters at the end of string.
 
@@ -1672,11 +1682,10 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		}
 
 		/// ditto
-		public size_t append(Val)(auto ref scope const Val val, const size_t count = 1)scope
+		public size_t append(Val)(scope auto ref Val val, const size_t count = 1)scope
 		if(isBasicString!Val || isSomeChar!Val || isSomeString!Val || isCharArray!Val || isIntegral!Val){
-
 			static if(isBasicString!Val){
-				return this._append_impl(val.storage.chars, count);
+                return this._append_impl(val.storage.chars, count);
 			}
 			else static if(isSomeString!Val || isCharArray!Val){
 				return this._append_impl(val[], count);
@@ -1688,6 +1697,23 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				static assert(0, "invalid type '" ~ Val.stringof ~ "'");
 			}
 		}
+
+        /// ditto
+        public size_t append(Val)(scope Val val)scope
+        if(!isArray!Val && isInputCharRange!Val){
+            size_t result = 0;
+
+            static if(hasLength!Val){
+                this.reserve(this.length + val.length);
+            }
+
+            while(!val.empty){
+                result += this._append_impl(val.front, 1);
+                val.popFront();
+            }
+
+            return result;
+        }
 
 		private size_t _append_impl(Val)(const Val val, const size_t count)scope
 		if(isSomeChar!Val || isSomeString!Val || isIntegral!Val){
@@ -2014,7 +2040,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		}
 
 		/// ditto
-		public ref typeof(this) replace(Val)(const size_t pos, const size_t len, auto ref scope const Val val, const size_t count = 1)return scope
+		public ref typeof(this) replace(Val)(const size_t pos, const size_t len, scope auto ref const Val val, const size_t count = 1)return scope
 		if(isBasicString!Val || isSomeChar!Val || isSomeString!Val || isIntegral!Val || isCharArray!Val){
 
 			static if(isBasicString!Val || isSomeString!Val || isCharArray!Val){
@@ -2037,7 +2063,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		}
 
 		/// ditto
-		public ref typeof(this) replace(Val)(scope const CharType[] slice, auto ref scope const Val val, const size_t count = 1)return scope
+		public ref typeof(this) replace(Val)(scope const CharType[] slice, scope auto ref const Val val, const size_t count = 1)return scope
 		if(isBasicString!Val || isSomeChar!Val || isSomeString!Val || isIntegral!Val || isCharArray!Val){
 
 			static if(isBasicString!Val || isSomeString!Val || isCharArray!Val){
@@ -2163,7 +2189,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				assert(str == "12345678");
 				--------------------
 		*/
-		public static typeof(this) build(Args...)(auto ref scope const Args args)
+		public static typeof(this) build(Args...)(scope auto ref const Args args)
 		if(Args.length > 0 && !is(immutable Args[0] == immutable AllocatorType)){
 			import core.lifetime : forward;
 
@@ -2176,7 +2202,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		}
 
 		/// ditto
-		public static typeof(this) build(Args...)(AllocatorType allocator, auto ref scope const Args args){
+		public static typeof(this) build(Args...)(AllocatorType allocator, scope auto ref const Args args){
 			import core.lifetime : forward;
 
 			auto result = BasicString(forward!allocator);
@@ -2187,7 +2213,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
             return (()@trusted => move(*&result) )();
 		}
 
-		private void _build_impl(Args...)(auto ref scope const Args args)scope{
+		private void _build_impl(Args...)(scope auto ref const Args args)scope{
 			import std.traits : isArray;
 
 			assert(this.empty);
@@ -3750,13 +3776,13 @@ version(unittest){
 
 
 	version(BTL_BASIC_STRING_TESTS){
-		private auto trustedSlice(S)(auto ref scope S str)@trusted{
+		private auto trustedSlice(S)(scope auto ref S str)@trusted{
 			return str[];
 		}
-		private auto trustedSlice(S)(auto ref scope S str, size_t b, size_t e)@trusted{
+		private auto trustedSlice(S)(scope auto ref S str, size_t b, size_t e)@trusted{
 			return str[b .. e];
 		}
-		private auto trustedSliceToEnd(S)(auto ref scope S str, size_t b)@trusted{
+		private auto trustedSliceToEnd(S)(scope auto ref S str, size_t b)@trusted{
 			return str[b .. $];
 		}
 
@@ -4688,3 +4714,39 @@ pure nothrow @safe @nogc unittest{
 
 	///str ~= 'y';
 }
+
+//append range
+unittest{
+    import std.range : ElementEncodingType, isInputRange, isRandomAccessRange;
+
+    String str;
+
+    struct Range{
+        int i;
+        this(int i){this.i = i;}
+        char front(){return 'x';}
+        void popFront(){i -= 1;}
+        bool empty(){return i == 0;}
+        int length(){return i;}
+
+    }
+    static assert(isInputRange!Range);
+    str.append(Range(4));
+
+    assert(str == "xxxx");
+
+}
+
+/+
+//appendMore
+unittest{
+    import std.range : ElementEncodingType, isInputRange, isRandomAccessRange;
+
+    String str;
+
+    str.appendMore(1, 2, '-', "lol");
+
+    assert(str == "12-lol");
+
+}
++/

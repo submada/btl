@@ -927,7 +927,7 @@ package template ElementReferenceTypeImpl(T){
 
 
 package static auto lockSmartPtr(alias fn, Ptr, Args...)
-(auto ref scope shared Ptr ptr, auto ref scope Args args){
+(scope auto ref shared Ptr ptr, scope auto ref Args args){
 	import std.traits : CopyConstness, CopyTypeQualifiers, Unqual;
 	import core.lifetime : forward;
 	import btl.internal.mutex : getMutex;

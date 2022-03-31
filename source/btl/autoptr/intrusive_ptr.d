@@ -218,7 +218,7 @@ public template IntrusivePtr(
         /**
             Forward constructor (merge move and copy constructor).
         */
-        public this(Rhs, this This)(auto ref scope Rhs rhs, Forward)@trusted
+        public this(Rhs, this This)(scope auto ref Rhs rhs, Forward)@trusted
         if(    isIntrusivePtr!Rhs
             && isConstructable!(rhs, This)
             && !is(Rhs == shared)
@@ -338,7 +338,7 @@ public template IntrusivePtr(
                 }
                 --------------------
         */
-        public this(Rhs, this This)(auto ref scope Rhs rhs)@trusted
+        public this(Rhs, this This)(scope auto ref Rhs rhs)@trusted
         if(    isIntrusivePtr!Rhs
             && isConstructable!(rhs, This)
             && !is(Rhs == shared)
@@ -505,7 +505,7 @@ public template IntrusivePtr(
                 }
                 --------------------
         */
-        public void opAssign(MemoryOrder order = MemoryOrder.seq, Rhs, this This)(auto ref scope Rhs desired)scope
+        public void opAssign(MemoryOrder order = MemoryOrder.seq, Rhs, this This)(scope auto ref Rhs desired)scope
         if(    isIntrusivePtr!Rhs
             && isAssignable!(desired, This)
             && !is(Rhs == shared)
@@ -537,7 +537,7 @@ public template IntrusivePtr(
                 }
                 else{
                     this.lockSmartPtr!(
-                        (ref scope self, auto ref scope Rhs x) => self.opAssign!order(forward!x)
+                        (ref scope self, scope auto ref Rhs x) => self.opAssign!order(forward!x)
                     )(forward!desired);
                 }
             }
@@ -1682,7 +1682,7 @@ public template IntrusivePtr(
         }
 
         /// ditto
-        public bool opEquals(Rhs)(auto ref scope const Rhs rhs)const @safe scope pure nothrow @nogc
+        public bool opEquals(Rhs)(scope auto ref const Rhs rhs)const @safe scope pure nothrow @nogc
         if(isIntrusivePtr!Rhs && !is(Rhs == shared)){
             return this.opEquals(rhs._element);
         }
@@ -1779,7 +1779,7 @@ public template IntrusivePtr(
         }
 
         /// ditto
-        public sizediff_t opCmp(Rhs)(auto ref scope const Rhs rhs)const @trusted scope pure nothrow @nogc
+        public sizediff_t opCmp(Rhs)(scope auto ref const Rhs rhs)const @trusted scope pure nothrow @nogc
         if(isIntrusivePtr!Rhs && !is(Rhs == shared)){
             return this.opCmp(rhs._element);
         }
@@ -2252,7 +2252,7 @@ if(    isIntrusive!T
 }
 
 /// ditto
-public UnqualSmartPtr!Ptr.ChangeElementType!T dynCastMove(T, Ptr)(auto ref scope Ptr ptr)
+public UnqualSmartPtr!Ptr.ChangeElementType!T dynCastMove(T, Ptr)(scope auto ref Ptr ptr)
 if(    isIntrusive!T
     && isIntrusivePtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
     && isClassOrInterface!T && __traits(getLinkage, T) == "D"
@@ -2334,7 +2334,7 @@ pure nothrow @safe @nogc unittest{
 
     Type of parameter `ptr` must be `IntrusivePtr` with `shared(ControlType)` and `shared`/`immutable` `ElementType` .
 */
-public shared(Ptr) share(Ptr)(auto ref scope Ptr ptr)
+public shared(Ptr) share(Ptr)(scope auto ref Ptr ptr)
 if(isIntrusivePtr!Ptr){
     import core.lifetime : forward;
     static if(is(Ptr == shared)){
