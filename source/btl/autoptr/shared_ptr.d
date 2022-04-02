@@ -1615,8 +1615,6 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 		/**
 			Checks if `this` stores a non-null pointer, i.e. whether `this != null`.
 
-			BUG: qualfied variable of struct with dtor cannot be inside other struct (generated dtor will use opCast to mutable before dtor call ). opCast is renamed to opCastImpl
-
 			Examples:
 				--------------------
 				SharedPtr!long x = SharedPtr!long.make(123);
@@ -1627,10 +1625,24 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 				assert(!x);             //implicit cast
 				--------------------
 		*/
-		public bool opCastImpl(To : bool)()const scope pure nothrow @safe @nogc
+		public bool opCast(To : bool)()const scope pure nothrow @safe @nogc
 		if(is(To : bool)){ //docs
 			return (this != null);
 		}
+
+
+        /**
+            Support for quelifier cast.
+        */
+        public ref To opCast(To, this This)()return scope pure nothrow @nogc
+        if(is(immutable To : immutable typeof(this))){
+            static if(is(This : To)){
+                return *(()@trusted => cast(To*)&this )();
+            }
+            else{
+                return *(()@system => cast(To*)&this )();
+            }
+        }
 
 
 		/**
@@ -3750,7 +3762,6 @@ version(unittest){
 	}
 
 	//opCast bool
-	/+TODO
 	@safe pure nothrow @nogc unittest{
 		SharedPtr!long x = SharedPtr!long.make(123);
 		assert(cast(bool)x);    //explicit cast
@@ -3759,7 +3770,7 @@ version(unittest){
 		assert(!cast(bool)x);   //explicit cast
 		assert(!x);             //implicit cast
 	}
-	+/
+
 
 	//opCast SharedPtr
 	/+TODO

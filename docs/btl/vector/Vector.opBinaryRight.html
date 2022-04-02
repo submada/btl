@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Alias Forward</title>
+		<title>Function Vector.opBinaryRight</title>
 		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
@@ -70,13 +70,19 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Alias Forward</h1><p>Type used in forward constructors.
+			<h1>Function Vector.opBinaryRight</h1><p>Operator <code class="lang-d"><span class="kwd">in</span></code>
 </p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="kwd">alias</span> <span class="pln">Forward</span>
-			 <span class="pun">=</span> <span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">internal<wbr/></span><span class="pun">.</span><span class="pln">forward<wbr/></span><span class="pun">.</span><span class="typ">Forward</span><span class="pun">;</span>
+			<span class="typ">bool</span> <span class="pln">opBinaryRight</span>(<span class="typ">string</span> op, Elm)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">auto scope ref </span><span class="typ">Elm</span> <span class="pln">elm</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">const scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">op </span><span class="pun">== </span><span class="str">"in"</span><span class="pun">);</span>
 					</div>
 				</code>
 			</div>

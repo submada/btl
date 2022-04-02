@@ -1293,6 +1293,56 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 
 
+        /**
+            Operator `in`
+
+
+            Examples:
+                --------------------
+                BasicString!char str = "a123読";
+
+                assert('a' in str);
+                assert('b' !in str);
+                assert('3' in str);
+                assert('読' in str);
+                --------------------
+
+        */
+        public bool opBinaryRight(string op, Elm)(scope auto ref Elm elm)scope const
+        if(op == "in"){
+            static if(isSomeChar!Elm){
+                static if(Elm.sizeof <= CharType.sizeof){
+                    auto chars = this.storage.chars;
+                    foreach(c; chars){
+                        if(elm == c)
+                            return true;
+                    }
+
+                    return false;
+
+                }
+                else{
+                    auto chars = this.storage.chars;
+                    if(chars.length == 0)
+                        return false;
+
+                    do{
+                        if(decode(chars) == elm)
+                            return true;
+                    }while(chars.length);
+
+                    return false;
+                }
+            }
+            else{
+                static assert(0, "TODO");
+            }
+
+
+        }
+
+
+
 		/**
 			Calculates the hash value of string.
 		*/
@@ -3305,20 +3355,30 @@ version(unittest){
 
 	}
 
-	//doc.opBinaryRight(rhs):
-	pure nothrow @safe @nogc unittest{
-		BasicString!char str = null;
-		assert(str.empty);
+    //doc.opBinaryRight(rhs):
+    pure nothrow @safe @nogc unittest{
+        BasicString!char str = null;
+        assert(str.empty);
 
-		str = '1' + str;
-		assert(str == "1");
+        str = '1' + str;
+        assert(str == "1");
 
-		str = "32"d + str;
-		assert(str == "321");
+        str = "32"d + str;
+        assert(str == "321");
 
-		str = BasicString!dchar("654") + str;
-		assert(str == "654321");
-	}
+        str = BasicString!dchar("654") + str;
+        assert(str == "654321");
+    }
+
+    //doc.opBinaryRight!"in":
+    pure nothrow @safe @nogc unittest{
+        BasicString!char str = "a123読";
+
+        assert('a' in str);
+        assert('b' !in str);
+        assert('3' in str);
+        assert('読' in str);
+    }
 
 	//doc.opEquals(rhs):
 	pure nothrow @safe @nogc unittest{

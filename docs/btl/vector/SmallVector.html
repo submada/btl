@@ -75,7 +75,7 @@ $('#symbolSearchPane').show();</script>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="kwd">alias</span> <span class="pln">SmallVector</span>(_Type, <span class="typ">ulong</span> N, _Allocator, <span class="typ">bool</span> _supportGC<span class="pln"> </span><span class="pun">= </span><span class="pln">platformSupportGC</span>)
+			<span class="kwd">alias</span> <span class="pln">SmallVector</span>(_Type, <span class="typ">ulong</span> N, _Allocator, <span class="typ">bool</span> _supportGC<span class="pln"> </span><span class="pun">= </span><span class="pln">shouldAddGCRange</span><span class="pun">!</span><span class="pln">_Type</span>)
 			 <span class="pun">=</span> <a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a>!(_Type,N,_Allocator,_supportGC)<span class="pun">;</span>
 					</div>
 				</code>

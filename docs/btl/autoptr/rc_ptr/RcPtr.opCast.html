@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Function RcPtr.opCastImpl</title>
+		<title>RcPtr.opCast - multiple declarations</title>
 		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
@@ -70,31 +70,54 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Function RcPtr.opCastImpl</h1><p>Cast <code class="lang-d"><span class="kwd">this</span></code> to different type <code class="lang-d"><span class="typ">To</span></code> when <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/isRcPtr.html"><span class="pln">isRcPtr</span></a><span class="pun">!</span><span class="typ">To</span></code>.
+			<h1>RcPtr.opCast - multiple declarations</h1>
+			<nav class="page-nav">
+				<ul>
+					<li>
+						<a href="#0">
+							Function <code>RcPtr.opCast</code>
+						</a>
+					</li>
+					<li>
+						<a href="#1">
+							Function <code>RcPtr.opCast</code>
+						</a>
+					</li>
+				</ul>
+			</nav><h2 id="0">Function RcPtr.opCast</h2><p>Checks if <code class="lang-d"><span class="kwd">this</span></code> stores a non-null pointer, i.e. whether <code class="lang-d"><span class="kwd">this </span><span class="pun">!= </span><span class="kwd">null</span></code>.
 </p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="typ">To</span> <span class="pln">opCastImpl</span>(To, This)<span class="pun">(</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
+			<span class="typ">bool</span> <span class="pln">opCast</span>(To)<span class="pun">(</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">const pure nothrow @nogc scope @safe</span>
 			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isRcPtr</span><span class="pun">!</span><span class="typ">To </span><span class="pun">&amp;&amp; !</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">This </span><span class="pun">== </span><span class="kwd">shared</span><span class="pun">)</span><span class="pun">);</span>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">To </span><span class="pun">: </span><span class="typ">bool</span><span class="pun">)</span><span class="pun">);</span>
 					</div>
 				</code>
 			</div>
 			<section></section>
 
-			<section><h2>BUG</h2>
-<p>qualfied variable of struct with dtor cannot be inside other struct (generated dtor will use opCast to mutable before dtor call ). opCast is renamed to opCastImpl
-</p>
-</section>
-<section><h2>Examples</h2>
+			<section><h3>Examples</h3>
 <pre class="code"><code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.html"><span class="typ">RcPtr</span></a><span class="pun">!</span><span class="typ">long </span><span class="pln">x </span><span class="pun">= <a href="../../../btl/autoptr/rc_ptr/RcPtr.html"></span><span class="typ">RcPtr</span></a><span class="pun">!</span><span class="typ">long<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">123</span><span class="pun">);
-</span><span class="kwd">auto </span><span class="pln">y </span><span class="pun">= </span><span class="kwd">cast</span><span class="pun">(<a href="../../../btl/autoptr/rc_ptr/RcPtr.html"></span><span class="typ">RcPtr</span></a><span class="pun">!(</span><span class="kwd">const </span><span class="typ">long</span><span class="pun">))</span><span class="pln">x</span><span class="pun">;
-</span><span class="kwd">auto </span><span class="pln">z </span><span class="pun">= </span><span class="kwd">cast</span><span class="pun">(</span><span class="kwd">const <a href="../../../btl/autoptr/rc_ptr/RcPtr.html"></span><span class="typ">RcPtr</span></a><span class="pun">!</span><span class="typ">long</span><span class="pun">)</span><span class="pln">x</span><span class="pun">;
-</span><span class="kwd">auto </span><span class="pln">u </span><span class="pun">= </span><span class="kwd">cast</span><span class="pun">(</span><span class="kwd">const <a href="../../../btl/autoptr/rc_ptr/RcPtr.html"></span><span class="typ">RcPtr</span></a><span class="pun">!(</span><span class="kwd">const </span><span class="typ">long</span><span class="pun">))</span><span class="pln">x</span><span class="pun">;
-</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">4</span><span class="pun">);</span></code></pre>
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="kwd">cast</span><span class="pun">(</span><span class="typ">bool</span><span class="pun">)</span><span class="pln">x</span><span class="pun">);    </span><span class="com">//explicit cast
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x</span><span class="pun">);              </span><span class="com">//implicit cast
+</span><span class="pln">x </span><span class="pun">= </span><span class="kwd">null</span><span class="pun">;
+</span><span class="kwd">assert</span><span class="pun">(!</span><span class="kwd">cast</span><span class="pun">(</span><span class="typ">bool</span><span class="pun">)</span><span class="pln">x</span><span class="pun">);   </span><span class="com">//explicit cast
+</span><span class="kwd">assert</span><span class="pun">(!</span><span class="pln">x</span><span class="pun">);             </span><span class="com">//implicit cast</span></code></pre>
 </section>
-
+<h2 id="1">Function RcPtr.opCast</h2><p>Support for quelifier cast.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">ref </span><span class="typ">To</span> <span class="pln">opCast</span>(To, This)<span class="pun">(</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">pure nothrow @nogc scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">To</span><span class="pun">) : </span><span class="kwd">immutable</span><span class="pun">(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)))</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			
+			
 			<footer>
 				<table class="license-info">
 					<tr>

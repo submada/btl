@@ -88,13 +88,23 @@ $('#symbolSearchPane').show();</script>
 			<span class="pln">size_t</span> <span class="pln">append</span>(Val)
 			<span class="pun">(</span>
 			<br/>
-			&nbsp;&nbsp;<span class="kwd">auto scope const ref </span><span class="typ">Val</span> <span class="pln">val</span><span class="pun">,</span>
+			&nbsp;&nbsp;<span class="kwd">auto scope ref </span><span class="typ">Val</span> <span class="pln">val</span><span class="pun">,</span>
 			<br/>
 			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">size_t</span> <span class="pln">count</span> <span class="pun">=</span> <span class="lit">1</span>
 			<br/>
 			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
 			<br/>
 			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isBasicString</span><span class="pun">!</span><span class="typ">Val </span><span class="pun">|| </span><span class="pln">isSomeChar</span><span class="pun">!</span><span class="typ">Val </span><span class="pun">|| </span><span class="pln">isSomeString</span><span class="pun">!</span><span class="typ">Val </span><span class="pun">|| </span><span class="pln">isCharArray</span><span class="pun">!</span><span class="typ">Val </span><span class="pun">|| </span><span class="pln">isIntegral</span><span class="pun">!</span><span class="typ">Val</span><span class="pun">);</span>
+			<br/>
+			<br/>
+			<span class="pln">size_t</span> <span class="pln">append</span>(Val)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">scope </span><span class="typ">Val</span> <span class="pln">val</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pun">!</span><span class="pln">isArray</span><span class="pun">!</span><span class="typ">Val </span><span class="pun">&amp;&amp; </span><span class="pln">isInputCharRange</span><span class="pun">!</span><span class="typ">Val</span><span class="pun">);</span>
 					</div>
 				</code>
 			</div>

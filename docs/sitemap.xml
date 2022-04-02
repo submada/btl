@@ -49,7 +49,8 @@
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.make.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.opAssign.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.opAssign.html</loc></url>
-<url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.opCastImpl.html</loc></url>
+<url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.opCast.html</loc></url>
+<url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.opCast.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.opCastImpl.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.opCmp.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.opCmp.html</loc></url>
@@ -106,7 +107,8 @@
 <url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/RcPtr.make.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/RcPtr.opAssign.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/RcPtr.opAssign.html</loc></url>
-<url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/RcPtr.opCastImpl.html</loc></url>
+<url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/RcPtr.opCast.html</loc></url>
+<url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/RcPtr.opCast.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/RcPtr.opCastImpl.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/RcPtr.opCmp.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/RcPtr.opCmp.html</loc></url>
@@ -161,7 +163,8 @@
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opAssign.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opAssign.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opAssign.html</loc></url>
-<url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opCastImpl.html</loc></url>
+<url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opCast.html</loc></url>
+<url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opCast.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opCastImpl.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opCmp.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opCmp.html</loc></url>
@@ -200,6 +203,7 @@
 <url><loc>http://127.0.0.1/btl/string/BasicString.allowHeap.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.append.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.append.html</loc></url>
+<url><loc>http://127.0.0.1/btl/string/BasicString.append.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.back.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.backCodePoint.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.backCodePoint.html</loc></url>
@@ -236,6 +240,7 @@
 <url><loc>http://127.0.0.1/btl/string/BasicString.opAssign.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.opBinary.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.opBinary.html</loc></url>
+<url><loc>http://127.0.0.1/btl/string/BasicString.opBinaryRight.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.opBinaryRight.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.opBinaryRight.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.opCmp.html</loc></url>
@@ -335,6 +340,7 @@
 <url><loc>http://127.0.0.1/btl/vector/Vector.opAssign.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.opAssign.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.opAssign.html</loc></url>
+<url><loc>http://127.0.0.1/btl/vector/Vector.opBinaryRight.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.opCmp.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.opCmp.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.opDollar.html</loc></url>

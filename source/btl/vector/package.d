@@ -1140,6 +1140,21 @@ template Vector(
 
 
         /**
+            Operator `in`
+        */
+        public bool opBinaryRight(string op, Elm)(scope auto ref Elm elm)scope const
+        if(op == "in"){
+            foreach(ref e; this.storage.elements){
+                if(e == elm)
+                    return true;
+            }
+
+            return false;
+        }
+
+
+
+        /**
             Compares the contents of a vector with another vector, range or null.
 
             Returns `true` if they are equal, `false` otherwise
@@ -3173,6 +3188,14 @@ version(unittest){
 
             vec = Vector!(int, 2).build(4, 2);
             assert(vec == [4, 2]);
+        }
+
+        //Vector.opBinaryRight!"in"
+        pure nothrow @nogc @safe unittest{
+            Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3);
+
+            assert(1 in vec);
+            assert(42L !in vec);
         }
 
         //Vector.opEquals
