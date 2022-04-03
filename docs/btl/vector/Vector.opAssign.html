@@ -90,7 +90,7 @@ $('#symbolSearchPane').show();</script>
 			<br/>
 			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
 			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">hasLength</span><span class="pun">!</span><span class="pln">R </span><span class="pun">&amp;&amp; </span><span class="pln">isInputRange</span><span class="pun">!</span><span class="pln">R </span><span class="pun">&amp;&amp; </span><span class="kwd">is</span><span class="pun">(</span><span class="typ">ElementEncodingType</span><span class="pun">!</span><span class="pln">R </span><span class="pun">: </span><span class="typ">ElementType</span><span class="pun">)</span><span class="pun">);</span>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isInputRange</span><span class="pun">!</span><span class="pln">R </span><span class="pun">&amp;&amp; </span><span class="kwd">is</span><span class="pun">(</span><span class="typ">ElementEncodingType</span><span class="pun">!</span><span class="pln">R </span><span class="pun">: </span><span class="typ">ElementType</span><span class="pun">)</span><span class="pun">);</span>
 			<br/>
 			<br/>
 			<span class="typ">void</span> <span class="pln">opAssign</span>(Rhs)
@@ -109,17 +109,39 @@ $('#symbolSearchPane').show();</script>
 </section>
 
 			<section><h2>Examples</h2>
-<pre class="code"><code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">6</span><span class="pun">) </span><span class="pln">vec </span><span class="pun">= <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">6</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">);
-</span><span class="kwd">assert</span><span class="pun">(!</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">empty</span><span class="pun">);
+<pre class="code"><code class="lang-d"><span class="pun">{
+    <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">6</span><span class="pun">) </span><span class="pln">vec </span><span class="pun">= <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">6</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(!</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">empty</span><span class="pun">);
 
-</span><span class="pln">vec </span><span class="pun">= </span><span class="kwd">null</span><span class="pun">;
-</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">empty</span><span class="pun">);
+    </span><span class="pln">vec </span><span class="pun">= </span><span class="kwd">null</span><span class="pun">;
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">empty</span><span class="pun">);
 
-</span><span class="pln">vec </span><span class="pun">= <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">42</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="lit">3</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">1</span><span class="pun">);
-</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec </span><span class="pun">== [</span><span class="lit">3</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">1</span><span class="pun">]);
+    </span><span class="pln">vec </span><span class="pun">= <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">42</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="lit">3</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">1</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec </span><span class="pun">== [</span><span class="lit">3</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">1</span><span class="pun">]);
 
-</span><span class="pln">vec </span><span class="pun">= <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">2</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="lit">4</span><span class="pun">, </span><span class="lit">2</span><span class="pun">);
-</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec </span><span class="pun">== [</span><span class="lit">4</span><span class="pun">, </span><span class="lit">2</span><span class="pun">]);</span></code></pre>
+    </span><span class="pln">vec </span><span class="pun">= <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">2</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="lit">4</span><span class="pun">, </span><span class="lit">2</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec </span><span class="pun">== [</span><span class="lit">4</span><span class="pun">, </span><span class="lit">2</span><span class="pun">]);
+}
+
+{
+    </span><span class="typ">int</span><span class="pun">[</span><span class="lit">3</span><span class="pun">] </span><span class="pln">tmp </span><span class="pun">= [</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">];
+    <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">6</span><span class="pun">) </span><span class="pln">vec </span><span class="pun">= </span><span class="pln">tmp</span><span class="pun">[];
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec </span><span class="pun">== [</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">]);
+}
+
+{
+    </span><span class="kwd">struct </span><span class="typ">Range</span><span class="pun">{
+        </span><span class="typ">int </span><span class="pln">i</span><span class="pun">;
+
+        </span><span class="typ">bool <a href="../../btl/vector/Vector.empty.html"></span><span class="pln">empty</span></a><span class="pun">()(){</span><span class="kwd">return </span><span class="pln">i </span><span class="pun">== </span><span class="lit">0</span><span class="pun">;}
+        </span><span class="typ">int <a href="../../btl/vector/Vector.front.html"></span><span class="pln">front</span></a><span class="pun">()(){</span><span class="kwd">return </span><span class="pln">i</span><span class="pun">;}
+        </span><span class="typ">void </span><span class="pln">popFront</span><span class="pun">()(){</span><span class="pln">i </span><span class="pun">-= </span><span class="lit">1</span><span class="pun">;}
+        </span><span class="com">//size_t length(); //no length
+    </span><span class="pun">}
+
+    <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">6</span><span class="pun">) </span><span class="pln">vec </span><span class="pun">= </span><span class="typ">Range</span><span class="pun">(</span><span class="lit">3</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec </span><span class="pun">== [</span><span class="lit">3</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">1</span><span class="pun">]);
+}</span></code></pre>
 </section>
 
 			<footer>

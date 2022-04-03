@@ -724,7 +724,7 @@ public{
 //copyEmplaceImpl
 public{
     // https://github.com/dlang/druntime/blob/master/src/core/lifetime.d : copyEmplace
-    void copyEmplaceImpl(S, T)(ref T target, return ref S source)
+    void copyEmplaceImpl(S, T)(ref T target, return auto ref S source)
     if (is(immutable S == immutable T)){
         emplaceImpl(target, source);
         /+import core.internal.traits : BaseElemOf, hasElaborateCopyConstructor, Unconst, Unqual;

@@ -312,6 +312,7 @@
 <url><loc>http://127.0.0.1/btl/vector/Vector.build.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.capacity.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.clear.html</loc></url>
+<url><loc>http://127.0.0.1/btl/vector/Vector.contains.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.downsize.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.ElementReferenceType.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.elements.html</loc></url>

@@ -221,6 +221,7 @@ var symbols = [
 {name: 'btl.vector.Vector.build', kind: "functiondeclaration", path: './btl/vector/Vector.build.html', attributes: []},
 {name: 'btl.vector.Vector.capacity', kind: "functiondeclaration", path: './btl/vector/Vector.capacity.html', attributes: ["const", "pure", "nothrow", "nogc", "property", "scope", "trusted"]},
 {name: 'btl.vector.Vector.clear', kind: "functiondeclaration", path: './btl/vector/Vector.clear.html', attributes: ["nothrow", "scope"]},
+{name: 'btl.vector.Vector.contains', kind: "functiondeclaration", path: './btl/vector/Vector.contains.html', attributes: ["const", "scope"]},
 {name: 'btl.vector.Vector.downsize', kind: "functiondeclaration", path: './btl/vector/Vector.downsize.html', attributes: ["nothrow", "scope"]},
 {name: 'btl.vector.Vector.ElementReferenceType', kind: "aliasdeclaration", path: './btl/vector/Vector.ElementReferenceType.html', attributes: []},
 {name: 'btl.vector.Vector.elements', kind: "functiondeclaration", path: './btl/vector/Vector.elements.html', attributes: ["inout", "pure", "nothrow", "nogc", "property", "system"]},

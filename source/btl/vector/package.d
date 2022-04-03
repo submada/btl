@@ -347,9 +347,15 @@ template Vector(
             Examples:
                 --------------------
                 {
+                    Vector!(int, 6) vec = null;
+                    assert(vec.empty);
+                }
+
+                {
                     Vector!(int, 6) vec = Vector!(int, 6).build(1, 2);
                     assert(vec == [1, 2]);
                 }
+
                 {
                     auto tmp = Vector!(int, 6).build(1, 2);
                     Vector!(int, 6) vec = tmp;
@@ -361,10 +367,31 @@ template Vector(
                     Vector!(int, 6) vec = Vector!(int, 4).build(1, 2);
                     assert(vec == [1, 2]);
                 }
+
                 {
                     auto tmp = Vector!(int, 4).build(1, 2);
                     Vector!(int, 6) vec = tmp;
                     assert(vec == [1, 2]);
+                }
+
+                {
+                    int[3] tmp = [1, 2, 3];
+                    Vector!(int, 6) vec = tmp[];
+                    assert(vec == [1, 2, 3]);
+                }
+
+                {
+                    struct Range{
+                        int i;
+
+                        bool empty()(){return i == 0;}
+                        int front()(){return i;}
+                        void popFront()(){i -= 1;}
+                        //size_t length(); //no length
+                    }
+
+                    Vector!(int, 6) vec = Range(3);
+                    assert(vec == [3, 2, 1]);
                 }
                 --------------------
         */
@@ -377,7 +404,7 @@ template Vector(
         }
 
         //forward ctor impl:
-        private this(Rhs, this This)(scope auto ref Rhs rhs, Forward)scope
+        public this(Rhs, this This)(scope auto ref Rhs rhs, Forward)scope
         if(isVector!Rhs && isConstructable!(Rhs, This)){
 
             //move:
@@ -457,7 +484,7 @@ template Vector(
                 static if(!hasStatelessAllocator)
                     this._allocator = rhs._allocator;
 
-                auto range = rhs._trusted_elements;
+                auto range = rhs.storage.elements;
                 const size_t new_length = range.length;
 
                 this.downsize(new_length);
@@ -466,12 +493,12 @@ template Vector(
                 const size_t old_length = this.length;
 
                 //move asign elements from range
-                moveAssignRange(this._trusted_elements, range);
+                moveAssignRange(this.storage.elements[0 .. min(old_range, new_range)], range);
 
                 //move elements from range
                 if(old_length < new_length){
                     moveEmplaceRangeImpl!false(
-                        (()@trusted => this.ptr + old_length)(),
+                        (()@trusted => this.storage.ptr + old_length)(),
                         (()@trusted => range.ptr )(),
                         (new_length - old_length)
                     );
@@ -510,20 +537,14 @@ template Vector(
                 --------------------
         */
         public this(R, this This)(R range)scope
-        if(    hasLength!R
-            && isInputRange!R
-            && is(ElementEncodingType!R : GetElementType!This)
-        ){
+        if(isInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
             this._init_from_range(forward!range);
         }
 
         /// ditto
         static if(allowHeap)
         public this(R, this This)(R range, AllocatorType allcoator)return
-        if(    hasLength!R
-            && isInputRange!R
-            && is(ElementEncodingType!R : GetElementType!This)
-        ){
+        if(isInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
             static if(!hasStatelessAllocator)
                 this._allocator = forward!allcoator;
 
@@ -531,30 +552,36 @@ template Vector(
         }
 
         private void _init_from_range(R, this This)(R range)scope
-        if(    hasLength!R
-            && isInputRange!R
-            && is(ElementEncodingType!R : GetElementType!This)
-        ){
+        if(isInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
             auto self = (()@trusted => (cast(Unqual!This*)&this) )();
 
-            const size_t length = range.length;
+            static if(hasLength!R){
+                const size_t length = range.length;
 
-            self.reserve(length);
+                self.reserve(length);
 
-            {
-                auto elms = ()@trusted{
-                    return cast(GetElementType!This[])self.ptr[0 .. length];
-                }();
+                {
+                    auto elms = ()@trusted{
+                        return cast(GetElementType!This[])self.ptr[0 .. length];
+                    }();
 
-                size_t emplaced = 0;
-                scope(failure){
-                    self.storage.length = emplaced;
+                    size_t emplaced = 0;
+                    scope(failure){
+                        self.storage.length = emplaced;
+                    }
+
+                    emplaceElements(emplaced, elms, forward!range);
                 }
 
-                emplaceElements(emplaced, elms, forward!range);
+                self.storage.length = length;
             }
-
-            self.storage.length = length;
+            else{
+                this.append(forward!range);
+                /+while(!range.empty){
+                    this.append(range.front);
+                    range.popFront;
+                }+/
+            }
         }
 
 
@@ -603,17 +630,39 @@ template Vector(
 
             Examples:
                 --------------------
-                Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3);
-                assert(!vec.empty);
+                {
+                    Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3);
+                    assert(!vec.empty);
 
-                vec = null;
-                assert(vec.empty);
+                    vec = null;
+                    assert(vec.empty);
 
-                vec = Vector!(int, 42).build(3, 2, 1);
-                assert(vec == [3, 2, 1]);
+                    vec = Vector!(int, 42).build(3, 2, 1);
+                    assert(vec == [3, 2, 1]);
 
-                vec = Vector!(int, 2).build(4, 2);
-                assert(vec == [4, 2]);
+                    vec = Vector!(int, 2).build(4, 2);
+                    assert(vec == [4, 2]);
+                }
+
+                {
+                    int[3] tmp = [1, 2, 3];
+                    Vector!(int, 6) vec = tmp[];
+                    assert(vec == [1, 2, 3]);
+                }
+
+                {
+                    struct Range{
+                        int i;
+
+                        bool empty()(){return i == 0;}
+                        int front()(){return i;}
+                        void popFront()(){i -= 1;}
+                        //size_t length(); //no length
+                    }
+
+                    Vector!(int, 6) vec = Range(3);
+                    assert(vec == [3, 2, 1]);
+                }
                 --------------------
         */
         public void opAssign()(typeof(null) rhs)scope{
@@ -622,39 +671,50 @@ template Vector(
 
         /// ditto
         public void opAssign(R)(R range)scope
-        if(hasLength!R
-            && isInputRange!R
-            && is(ElementEncodingType!R : ElementType)
-        ){
-            const size_t new_length = range.length;
+        if(isInputRange!R && is(ElementEncodingType!R : ElementType)){
+            static if(hasLength!R){
+                const size_t new_length = range.length;
 
-            this.downsize(new_length);
-            this.reserve(new_length);
+                this.downsize(new_length);
+                this.reserve(new_length);
 
-            const size_t old_length = this.length;
+                const size_t old_length = this.length;
 
-            //asign elements from range
-            copyAssignRange(this._trusted_elements, range);
+                //asign elements from range
+                copyAssignRange(this.storage.elements[0 .. min(old_length, range.length)], range);
 
-            //emplace elements from range
-            if(old_length < new_length){
-                ElementType[] elms = (()@trusted => this.ptr[old_length .. new_length] )();
-                size_t emplaced = 0;
+                //emplace elements from range
+                if(old_length < new_length){
+                    auto elms = this.storage.allocatedElements[old_length .. new_length];
+                    //ElementType[] elms = (()@trusted => this.ptr[old_length .. new_length] )();
+                    size_t emplaced = 0;
 
-                scope(failure)
-                    this.length = (old_length + emplaced);
+                    scope(failure)
+                        this.storage.length = (old_length + emplaced);
 
-                emplaceElements(emplaced, elms, forward!range);
+                    emplaceElements(emplaced, elms, forward!range);
+                }
+
+                this.storage.length = new_length;
             }
+            else{
+                const size_t old_length = this.length;
 
-            this.length = new_length;
+                for(size_t i; i < this.length && !range.empty; ++i, range.popFront){
+                    copyEmplaceImpl(this.storage.elements[i], range.front);
+                }
+
+                while(!range.empty){
+                    this.append(range.front);
+                    range.popFront;
+                }
+
+            }
         }
 
         /// ditto
         public void opAssign(Rhs)(scope auto ref Rhs rhs)scope
-        if(    isVector!Rhs
-            && isAssignable!(Rhs, typeof(this))
-        ){
+        if(isVector!Rhs && isAssignable!(Rhs, typeof(this)) ){
             ///move:
             static if(isMoveAssignable!(rhs, typeof(this))){
 
@@ -819,7 +879,7 @@ template Vector(
                 --------------------
         */
         public void clear()()scope nothrow{
-            destructRangeImpl!false(this.storage.elements);    //destroyElements(this._trusted_elements);
+            destructRangeImpl!false(this.storage.elements);
             this.storage.length = 0;
         }
 
@@ -1140,16 +1200,42 @@ template Vector(
 
 
         /**
-            Operator `in`
+            Same as operator `in`
+
+            Examples:
+                --------------------
+                Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3);
+
+                assert(vec.contains(1));
+                assert(!vec.contains(42L));
+                --------------------
         */
-        public bool opBinaryRight(string op, Elm)(scope auto ref Elm elm)scope const
-        if(op == "in"){
+        public bool contains(Elm)(scope auto ref Elm elm)scope const{
             foreach(ref e; this.storage.elements){
                 if(e == elm)
                     return true;
             }
 
             return false;
+        }
+
+
+
+        /**
+            Operator `in`
+
+
+            Examples:
+                --------------------
+                Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3);
+
+                assert(1 in vec);
+                assert(42L !in vec);
+                --------------------
+        */
+        public bool opBinaryRight(string op, Elm)(scope auto ref Elm elm)scope const
+        if(op == "in"){
+            return this.contains(forward!elm);
         }
 
 
@@ -1662,7 +1748,7 @@ template Vector(
                 {
                     auto vec = Vector!(int, 6).build(1, 2, 3);
 
-                    vec.append([4, 5, 6]);
+                    vec.append(only(4, 5, 6));
                     assert(vec == [1, 2, 3, 4, 5, 6]);
                 }
 
@@ -1673,14 +1759,44 @@ template Vector(
                     a.append(b);
                     assert(a == [1, 2, 3, 4, 5, 6]);
                 }
+
+                {
+                    Vector!(int, 3) vec = Vector!(int, 3).build(1, 2, 3);
+                    int[3] tmp = [4, 5, 6];
+                    vec.append(tmp[]);
+                    assert(vec == [1, 2, 3, 4, 5, 6]);
+                }
+
+                {
+                    struct Range{
+                        int i;
+
+                        bool empty()(){return i == 0;}
+                        int front()(){return i;}
+                        void popFront()(){i -= 1;}
+                        //size_t length(); //no length
+                    }
+
+                    Vector!(int, 3) vec = Vector!(int, 3).build(6, 5, 4);
+                    vec.append(Range(3));
+                    assert(vec == [6, 5, 4, 3, 2, 1]);
+                }
                 --------------------
         */
         public size_t append(R)(R range)scope
-        if(hasLength!R
-            && isInputRange!R
-            && is(ElementEncodingType!R : ElementType)
-        ){
-            return this._append_impl(forward!range);
+        if(isInputRange!R && is(ElementEncodingType!R : ElementType)){
+            static if(hasLength!R){
+                return this._append_impl(forward!range);
+            }
+            else{
+                const len = this.length;
+                while(!range.empty){
+                    this._append_impl(range.front);
+                    range.popFront;
+                }
+
+                return len;
+            }
         }
 
         /// ditto
@@ -1840,10 +1956,9 @@ template Vector(
 
         /// ditto
         public size_t insert(R)(scope const ElementType* ptr, R range)scope
-        if(    hasLength!R
-            && isInputRange!R
-            && is(ElementEncodingType!R : ElementType)
-        ){
+        if(isInputRange!R && is(ElementEncodingType!R : ElementType)){
+            static assert(hasLength!R, "range need length property");
+
             return this._insert_impl(ptr, forward!range);
         }
 
@@ -3151,11 +3266,11 @@ version(unittest){
                 assert(vec.empty);
             }
 
-
             {
                 Vector!(int, 6) vec = Vector!(int, 6).build(1, 2);
                 assert(vec == [1, 2]);
             }
+
             {
                 auto tmp = Vector!(int, 6).build(1, 2);
                 Vector!(int, 6) vec = tmp;
@@ -3167,27 +3282,79 @@ version(unittest){
                 Vector!(int, 6) vec = Vector!(int, 4).build(1, 2);
                 assert(vec == [1, 2]);
             }
+
             {
                 auto tmp = Vector!(int, 4).build(1, 2);
                 Vector!(int, 6) vec = tmp;
                 assert(vec == [1, 2]);
             }
+
+            {
+                int[3] tmp = [1, 2, 3];
+                Vector!(int, 6) vec = tmp[];
+                assert(vec == [1, 2, 3]);
+            }
+
+            {
+                struct Range{
+                    int i;
+
+                    bool empty()(){return i == 0;}
+                    int front()(){return i;}
+                    void popFront()(){i -= 1;}
+                    //size_t length(); //no length
+                }
+
+                Vector!(int, 6) vec = Range(3);
+                assert(vec == [3, 2, 1]);
+            }
         }
 
         //Vector.opAssign
         pure nothrow @nogc @safe unittest{
+            {
+                Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3);
+                assert(!vec.empty);
+
+                vec = null;
+                assert(vec.empty);
+
+                vec = Vector!(int, 42).build(3, 2, 1);
+                assert(vec == [3, 2, 1]);
+
+                vec = Vector!(int, 2).build(4, 2);
+                assert(vec == [4, 2]);
+            }
+
+            {
+                Vector!(int, 6) vec = null;
+                int[3] tmp = [1, 2, 3];
+                vec = tmp[];
+                assert(vec == [1, 2, 3]);
+            }
+
+            {
+                struct Range{
+                    int i;
+
+                    bool empty()(){return i == 0;}
+                    int front()(){return i;}
+                    void popFront()(){i -= 1;}
+                    //size_t length(); //no length
+                }
+
+                Vector!(int, 6) vec = null;
+                vec = Range(3);
+                assert(vec == [3, 2, 1]);
+            }
+        }
+
+        //Vector.contains
+        pure nothrow @nogc @safe unittest{
             Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3);
-            assert(!vec.empty);
 
-            vec = null;
-            assert(vec.empty);
-
-            vec = Vector!(int, 42).build(3, 2, 1);
-            //debug writeln(vec[]);
-            assert(vec == [3, 2, 1]);
-
-            vec = Vector!(int, 2).build(4, 2);
-            assert(vec == [4, 2]);
+            assert(vec.contains(1));
+            assert(!vec.contains(42L));
         }
 
         //Vector.opBinaryRight!"in"
@@ -3408,6 +3575,29 @@ version(unittest){
                 a.append(b);
                 assert(a == [1, 2, 3, 4, 5, 6]);
             }
+
+            {
+                Vector!(int, 3) vec = Vector!(int, 3).build(1, 2, 3);
+                int[3] tmp = [4, 5, 6];
+                vec.append(tmp[]);
+                assert(vec == [1, 2, 3, 4, 5, 6]);
+            }
+
+            {
+                struct Range{
+                    int i;
+
+                    bool empty()(){return i == 0;}
+                    int front()(){return i;}
+                    void popFront()(){i -= 1;}
+                    //size_t length(); //no length
+                }
+
+                Vector!(int, 3) vec = Vector!(int, 3).build(6, 5, 4);
+                vec.append(Range(3));
+                assert(vec == [6, 5, 4, 3, 2, 1]);
+            }
+
         }
 
         //Vector.insert
@@ -4121,8 +4311,6 @@ pure nothrow @nogc unittest{
 
     vec[1 .. $] *= -1;
     assert(vec == [1, 2, 2]);
-
-
-
-
 }
+
+
