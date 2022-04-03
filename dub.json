@@ -28,6 +28,9 @@
 			],
 			"configurations" : [
 				{
+					"name": "default"
+				},
+				{
 					"name": "unittest",
 					"versions": [
 						"BTL_GC_RANGE_COUNT", 
@@ -51,6 +54,9 @@
 			],
 			"configurations" : [
 				{
+					"name": "default"
+				},
+				{
 					"name": "unittest",
 					"versions": [
 						"__BTL_BASIC_STRING_TESTS",
@@ -62,7 +68,7 @@
 		{
 			"name" : "vector",
 			"description" : "Dynamic array supporting custom allcoators.",
-			"targetType" : "library",
+			"targetType" : "sourceLibrary",
 			"importPaths" : [
 				"source/"
 			],
@@ -72,6 +78,9 @@
 			],
 			"configurations" : [
 				{
+					"name": "default"
+				},
+				{
 					"name": "unittest",
 					"versions": [
 						"BTL_GC_RANGE_COUNT", 
@@ -79,6 +88,45 @@
 						"BTL_VECTOR_BOUNDS_CHECK",
 					]
 				}
+			]
+		},
+		{
+			"name" : "list",
+			"description" : "List supporting custom allcoators.",
+			"targetType" : "library",
+			"importPaths" : [
+				"source/"
+			],
+			"sourcePaths" : [
+				"source/btl/list",
+				"source/btl/internal"
+			],
+			"configurations" : [
+				{
+					"name": "default"
+				},
+				{
+					"name": "unittest",
+					"versions": [
+						"BTL_GC_RANGE_COUNT", 
+						"BTL_GC_RANGE_TRACK",
+					]
+				}
+			]
+		}
+	],
+	"configurations" : [
+		{
+			"name": "default"
+		},
+		{
+			"name": "unittest",
+			"versions": [
+				"BTL_GC_RANGE_COUNT", 
+				"BTL_GC_RANGE_TRACK",
+				"BTL_VECTOR_BOUNDS_CHECK",
+				"BTL_AUTOPTR_COUNT_CONSTRUCTIONS",
+				"BTL_AUTOPTR_COUNT_ALLOCATIONS",
 			]
 		}
 	],
