@@ -923,7 +923,7 @@ public template IntrusivePtr(
                 }
                 --------------------
         */
-        alias store = opAssign;
+        public alias store = opAssign;
 
 
 

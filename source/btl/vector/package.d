@@ -886,7 +886,7 @@ template Vector(
 
 
         /**
-            Erases and deallocate the contents of the `Vector`, which becomes an empty vector (with a length of 0 characters).
+            Erases and deallocate the contents of the `Vector`, which becomes an empty vector (with a length of 0 elements).
 
             Examples:
                 --------------------

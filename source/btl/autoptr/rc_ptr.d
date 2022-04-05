@@ -1034,7 +1034,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
                 }
                 --------------------
         */
-        alias store = opAssign;
+        public alias store = opAssign;
 
 
 

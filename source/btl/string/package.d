@@ -1294,22 +1294,20 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 
         /**
-            Operator `in`
+            Same as operator `in`
 
 
             Examples:
                 --------------------
                 BasicString!char str = "a123読";
 
-                assert('a' in str);
-                assert('b' !in str);
-                assert('3' in str);
-                assert('読' in str);
+                assert(str.contains('a'));
+                assert(!str.contains('b'));
+                assert(str.contains('3'));
+                assert(str.contains('読'));
                 --------------------
-
         */
-        public bool opBinaryRight(string op, Elm)(scope auto ref Elm elm)scope const
-        if(op == "in"){
+        public bool contains(Elm)(scope auto ref Elm elm)scope const{
             static if(isSomeChar!Elm){
                 static if(Elm.sizeof <= CharType.sizeof){
                     auto chars = this.storage.chars;
@@ -1337,8 +1335,27 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
             else{
                 static assert(0, "TODO");
             }
+        }
 
 
+
+        /**
+            Operator `in`
+
+
+            Examples:
+                --------------------
+                BasicString!char str = "a123読";
+
+                assert('a' in str);
+                assert('b' !in str);
+                assert('3' in str);
+                assert('読' in str);
+                --------------------
+        */
+        public bool opBinaryRight(string op, Elm)(scope auto ref Elm elm)scope const
+        if(op == "in"){
+            return this.contains(forward!elm);
         }
 
 

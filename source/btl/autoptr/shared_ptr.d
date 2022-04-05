@@ -82,7 +82,6 @@ public template SharedPtr(
 )
 if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 
-
     static assert(_ControlType.hasSharedCounter || is(_ControlType == immutable),
 		"_ControlType must be `ControlBlock` with shared counter or `ControlBlock` must be immutable."
 	);
@@ -1139,7 +1138,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 				}
 				--------------------
 		*/
-		alias store = opAssign;
+		public alias store = opAssign;
 
 
 
@@ -1236,7 +1235,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 
 			More info in c++ `std::atomic<std::shared_ptr>`.
 		*/
-		alias compareExchangeStrong = compareExchange;
+		public alias compareExchangeStrong = compareExchange;
 
 
 
@@ -1245,7 +1244,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 
 			More info in c++ `std::atomic<std::shared_ptr>`.
 		*/
-		alias compareExchangeWeak = compareExchange;
+		public alias compareExchangeWeak = compareExchange;
 
 
 
@@ -1634,8 +1633,8 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
         /**
             Support for quelifier cast.
         */
-        public ref To opCast(To, this This)()return scope pure nothrow @nogc
-        if(is(immutable To : immutable typeof(this))){
+    	public ref To opCast(To, this This)()return scope pure nothrow @nogc
+    	if(is(immutable To : immutable typeof(this))){
             static if(is(This : To)){
                 return *(()@trusted => cast(To*)&this )();
             }
