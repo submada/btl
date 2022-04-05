@@ -57,6 +57,11 @@ $('#symbolSearchPane').show();</script>
 				</li>
 				<li>
 					<div class="module ">
+						<a href="../../btl/list.html">list</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
 						<a href="../../btl/string.html">string</a>
 					</div>
 				</li>
@@ -285,10 +290,20 @@ $('#symbolSearchPane').show();</script>
 					</tr>
 					<tr>
 						<td>
+							<a href="../../btl/vector/Vector.backCopy.html" class="public">
+								<code>backCopy</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Returns a copy of the first element in the vector.
+</td>
+					</tr>
+					<tr>
+						<td>
 							<a href="../../btl/vector/Vector.build.html" class="public">
 								<code>build</code>
 							</a>
-							<span class="tableEntryAnnotation">(allocator, args)</span>
+							<span class="tableEntryAnnotation">(args)</span>
 						</td>
 						<td>Static function which return <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> construct from arguments <code class="lang-d"><a href="../../btl/vector/Vector.build.html#args"><span class="pln">args</span></a></code>.
 </td>
@@ -355,22 +370,22 @@ $('#symbolSearchPane').show();</script>
 					</tr>
 					<tr>
 						<td>
-							<a href="../../btl/vector/Vector.first.html" class="public">
-								<code>first</code>
-							</a>
-							<span class="tableEntryAnnotation">()</span>
-						</td>
-						<td>Returns a copy of the first element in the vector.
-</td>
-					</tr>
-					<tr>
-						<td>
 							<a href="../../btl/vector/Vector.front.html" class="public">
 								<code>front</code>
 							</a>
 							<span class="tableEntryAnnotation">()</span>
 						</td>
 						<td>Returns a reference to the first element in the vector.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.frontCopy.html" class="public">
+								<code>frontCopy</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Returns a copy of the first element in the vector.
 </td>
 					</tr>
 					<tr>
@@ -385,12 +400,22 @@ $('#symbolSearchPane').show();</script>
 					</tr>
 					<tr>
 						<td>
-							<a href="../../btl/vector/Vector.last.html" class="public">
-								<code>last</code>
+							<a href="../../btl/vector/Vector.moveBack.html" class="public">
+								<code>moveBack</code>
 							</a>
 							<span class="tableEntryAnnotation">()</span>
 						</td>
-						<td>Returns a copy to the last element in the vector.
+						<td>Move of the first element in the vector and return it.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.moveFront.html" class="public">
+								<code>moveFront</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Move of the first element in the vector and return it.
 </td>
 					</tr>
 					<tr>
@@ -508,7 +533,7 @@ $('#symbolSearchPane').show();</script>
 							<a href="../../btl/vector/Vector.popBack.html" class="public">
 								<code>popBack</code>
 							</a>
-							<span class="tableEntryAnnotation">(def)</span>
+							<span class="tableEntryAnnotation">()</span>
 						</td>
 						<td>Move the last element of the vector, effectively reducing its length by 1.
 </td>
@@ -530,7 +555,7 @@ $('#symbolSearchPane').show();</script>
 							</a>
 							<span class="tableEntryAnnotation">()</span>
 						</td>
-						<td>Erases and deallocate the contents of the <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code>, which becomes an empty vector (with a length of 0 characters).
+						<td>Erases and deallocate the contents of the <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code>, which becomes an empty vector (with a length of 0 elements).
 </td>
 					</tr>
 					<tr>

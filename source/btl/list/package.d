@@ -1,3 +1,9 @@
+/**
+    Implementation of linked list `List` (similar to c++ `std::list` and `std::forward_list`).
+
+    License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
+    Authors:   $(HTTP github.com/submada/basic_string, Adam Búš)
+*/
 module btl.list;
 
 import std.traits : Unqual, Unconst, isSomeChar, isSomeString, CopyTypeQualifiers;
@@ -18,20 +24,23 @@ alias Forward = btl.internal.forward.Forward;
 
 
 /**
-    Default allcoator for `Vector`.
+    Default allcoator for `List`.
 */
 public alias DefaultAllocator = Mallocator;
 
 
 /**
-    True if `T` is a `Vector` or implicitly converts to one, otherwise false.
+    True if `T` is a `List` or implicitly converts to one, otherwise false.
 */
 template isList(T...)
 if(T.length == 1){
     enum bool isList = is(Unqual!(T[0]) == List!Args, Args...);
 }
 
-private struct ListNode(Type, bool bidirectional){
+private struct ListNode(Type, bool _bidirectional){
+    public alias ElementType = Type;
+    public enum bool bidirectional = _bidirectional;
+    
     private Type element;
     private ListNode* next;
     static if(bidirectional)
@@ -39,15 +48,40 @@ private struct ListNode(Type, bool bidirectional){
 
 }
 
-private template ListRange(Type, bool bidirectional){
-    alias Node = ListNode!(Type, bidirectional);
+public template ListRange(Type, bool _bidirectional, bool _reverse = false){
+    alias Node = ListNode!(Type, _bidirectional);
 
     struct ListRange{
 
         private Node* node;
 
-        public this(Node* node)pure nothrow @nogc @safe{
-            this.node = node;
+        public alias Reverse = ListRange!(Type, _bidirectional, !_reverse);
+
+        package this(N)(N* node)pure nothrow @nogc @trusted
+        if(is(immutable N : immutable ListNode!(T, bd), T : const Type, bool bd)){
+            static assert(is(CopyTypeQualifiers!(N, N.ElementType) : Type));
+            static assert(N.bidirectional >= _bidirectional);
+            this.node = cast(Node*)node;
+        }
+
+        static if(_bidirectional)
+        public Reverse reverse()scope pure nothrow @safe @nogc{
+            return typeof(return)(node);
+
+        }
+
+        public bool opEquals(const typeof(null))scope const pure nothrow @safe @nogc{
+            return (this.node is null);
+        }
+
+        public bool opEquals(N)(scope const N* node)scope const pure nothrow @safe @nogc
+        if(is(immutable N : immutable ListNode!(T, bd), T, bool bd)){
+            return (this.node is node);
+        }
+
+        public bool opEquals(R)(scope auto ref R rhs)scope const pure nothrow @safe @nogc
+        if(is(immutable R : immutable ListRange!(T, bd, r), T, bool bd, bool r)){
+            return (this.node is rhs.node);
         }
 
         public bool empty()scope const pure nothrow @nogc @safe{
@@ -59,36 +93,89 @@ private template ListRange(Type, bool bidirectional){
             return node.element;
         }
 
-        public void popFront()scope pure nothrow @nogc @safe{
+        public Type moveFront()(){
             assert(node !is null);
-            node = node.next;
+            return move(node.element);
         }
 
-        static if(bidirectional)
-        public void popBack()scope pure nothrow @nogc @safe{
+        public template opUnary(string op : "*")
+        if(op == "*"){  //doc
+            alias opUnary = front;
+        }
+
+
+        public void popFront()scope pure nothrow @nogc @safe{
             assert(node !is null);
-            node = node.prev;
+            static if(_reverse){
+                static assert(_bidirectional);
+                node = node.prev;
+            }
+            else
+                node = node.next;
+        }
+
+        public template opBinary(string op : "++")
+        if(op == "++"){  //doc
+            alias opBinary = popFront;
+        }
+
+        static if(_bidirectional){
+            public void popBack()scope pure nothrow @nogc @safe{
+                assert(node !is null);
+                static if(_reverse)
+                    node = node.next;
+                else
+                    node = node.prev;
+            }
+
+
+            public template opBinary(string op : "--")
+            if(op == "--"){  //doc
+                alias opBinary = popBack;
+            }
         }
 
     }
 }
 
 
-template List(
+
+/**
+    `List` is a container that supports constant time insertion and removal of elements from anywhere in the container.
+
+    Fast random access is not supported. It is usually implemented as a linked list
+
+    Template parameters:
+
+        `_Type` = element type.
+
+        `_Allocator` = Type of the allocator object used to define the storage allocation model. By default `DefaultAllocator` is used.
+
+        `_supportGC`
+
+        `_bidirectional`
+*/
+public template List(
     _Type,
     _Allocator = DefaultAllocator,
     bool _supportGC = shouldAddGCRange!_Type,
     bool _bidirectional = true,
 ){
+
     import core.lifetime : emplace, forward, move;
+    import std.range : empty, front, popFront, isInputRange, ElementEncodingType, hasLength;
+    import std.traits : Unqual, hasElaborateDestructor, hasIndirections, isDynamicArray, isSafe;
 
     alias ListNode = .ListNode!(_Type, _bidirectional);
     alias ListRange = .ListRange!(_Type, _bidirectional);
 
     enum bool _hasStatelessAllocator = isStatelessAllocator!_Allocator;
-    enum bool _allowHeap = !is(immutable _Allocator == immutable void);
 
     struct List{
+
+        private alias Node = ListNode;
+
+
 
         /**
             True if allocator doesn't have state.
@@ -131,9 +218,16 @@ template List(
 
 
         /**
-            Allow heap (`false` only if `Allcoator` is void)
+            Iterator for list.
         */
-        public alias allowHeap = _allowHeap;
+        public alias Iterator = .ListRange!(ElementType, bidirectional);
+
+
+
+        /**
+            Const iterator for list.
+        */
+        public alias ConstIterator = .ListRange!(const(ElementType), bidirectional);
 
 
 
@@ -141,10 +235,7 @@ template List(
             Returns copy of allocator.
         */
         public @property CopyTypeQualifiers!(This, AllocatorType) allocator(this This)()scope{
-            static if(allowHeap)
-                return *(()@trusted => &this._allocator )();
-            else
-                return;
+            return *(()@trusted => &this._allocator )();
         }
 
 
@@ -162,7 +253,8 @@ template List(
                 --------------------
         */
         public @property bool empty()const scope pure nothrow @safe @nogc{
-            return (this._length == 0);
+            assert((this._first is null) == (this._last is null));
+            return (this._first is null);
         }
 
 
@@ -192,12 +284,40 @@ template List(
 
 
         /**
+        */
+        public @property auto begin(this This)()scope pure nothrow @system @nogc{
+            alias Range = .ListRange!(GetElementType!This, bidirectional);
+            return Range(this._first);
+        }
+
+
+
+        /**
+        */
+        public @property ConstIterator cbegin()const scope pure nothrow @system @nogc{
+            return ConstIterator(this._first);
+        }
+
+
+
+        /**
+        */
+        public enum typeof(null) end = null;
+
+
+
+        /**
             Destroys the `List` object.
 
             This deallocates all the storage capacity allocated by the `List` using its allocator.
         */
         public ~this()scope{
-            this._release_impl();
+            debug{
+                this.release();
+            }
+            else{
+                this._release_impl();
+            }
         }
 
 
@@ -214,7 +334,6 @@ template List(
                 --------------------
 
         */
-        static if(allowHeap)
         public this(AllocatorType a)scope pure nothrow @safe @nogc{
             static if(!hasStatelessAllocator)
                 this._allocator = forward!a;
@@ -306,24 +425,37 @@ template List(
                 static if(!hasStatelessAllocator)
                     this._allocator = rhs._allocator;
 
-                assert(0, "TODO");
+                Node* node = this._first;
+                auto range = rhs._op_slice();
+
+                while(node !is null && !range.empty){
+                    node.element = move(range.front);
+                    node = node.next;
+                    range.popFront;
+                }
+
+                while(!range.empty){
+                    node = this._make_node(move(range.front));
+
+                    this._push_back_node!true(node);
+
+                    this._length += 1;
+                    range.popFront;
+                }
             }
             //copy:
             else{
-                /+static if(hasStatelessAllocator){
-                    this(rhs.storage.elements);
-                }
-                else{
-                    this(rhs.storage.elements, rhs.allocator);
-                }+/
-                assert(0, "TODO");
+                static if(hasStatelessAllocator || Rhs.hasStatelessAllocator)
+                    this(rhs._op_slice);
+                else
+                    this(rhs._op_slice, rhs._allocator);
             }
         }
 
 
 
         /**
-            Constructs a `List` object from range of elements.
+            Constructs a bidirectional `List` object from range of elements.
 
             Parameters:
                 `range` input reange of `ElementType` elements.
@@ -345,7 +477,6 @@ template List(
         }
 
         /// ditto
-        static if(allowHeap)
         public this(R, this This)(R range, AllocatorType allcoator)return
         if(isInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
             static if(!hasStatelessAllocator)
@@ -358,25 +489,7 @@ template List(
         if(isInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
             auto self = (()@trusted => (cast(Unqual!This*)&this) )();
 
-            assert(0, "TODO");
-            /+const size_t length = range.length;
-
-            self.reserve(length);
-
-            {
-                auto elms = ()@trusted{
-                    return cast(GetElementType!This[])self.ptr[0 .. length];
-                }();
-
-                size_t emplaced = 0;
-                scope(failure){
-                    self.storage.length = emplaced;
-                }
-
-                emplaceElements(emplaced, elms, forward!range);
-            }
-
-            self.storage.length = length;+/
+            self.pushBack(forward!range);
         }
 
 
@@ -444,8 +557,15 @@ template List(
 
         /// ditto
         public void opAssign(R)(R range)scope
-        if(isInputRange!R && is(ElementEncodingType!R : ElementType)){
-            assert(0, "TODO");
+        if(!isList!R && isInputRange!R && is(ElementEncodingType!R : ElementType)){
+            Node* node = this._first;
+            while(node !is null && !range.empty){
+                node.element = range.front;
+                node = node.next;
+                range.popFront;
+            }
+
+            this.pushBack(forward!range);
         }
 
         /// ditto
@@ -456,143 +576,40 @@ template List(
                 static if(!hasStatelessAllocator)
                     this._allocator = move(rhs._allocator);
 
-                this._length = rhs.length;
-                rhs.length = 0;
+                this._length = rhs._length;
+                rhs._length = 0;
 
-                static if(backwardList){
-                    this._last = rhs._last;
-                    rhs._last = null;
-                }
-                static if(forwardList){
-                    this._first = rhs._first;
-                    rhs._first = null;
-                }
+                this._last = rhs._last;
+                rhs._last = null;
+
+                this._first = rhs._first;
+                rhs._first = null;
+
             }
             else static if(!isRef!rhs
                 && isMoveAssignableElement!(GetElementType!Rhs, ElementType)
             ){
-                assert(0, "TODO");
+                Node* node = this._first;
+                auto range = rhs._op_slice();
+
+                while(node !is null && !range.empty){
+                    node.element = move(range.front);
+                    node = node.next;
+                    range.popFront;
+                }
+
+                while(!range.empty){
+                    node = this._make_node(move(range.front));
+
+                    this._push_back_node!true(node);
+
+                    this._length += 1;
+                    range.popFront;
+                }
             }
             else{
-                //this.opAssign(rhs.storage.elements);
-                assert(0, "TODO");
+                this.opAssign(rhs._op_slice);
             }
-        }
-
-
-
-        static if(bidirectional){
-            /**
-                Pop the last element of the bidirectional list, effectively reducing its length by 1.
-
-                Return erased element.
-
-                Examples:
-                    --------------------
-                    List!(int) list = List!(int).build(10, 20, 30);
-                    assert(list.length == 3);
-
-                    assert(list.popBack == 30);
-                    assert(list.length == 2);
-
-                    assert(list.popBack == 20);
-                    assert(list.length == 1);
-
-                    assert(list.popBack == 10);
-                    assert(list.empty);
-
-                    assert(list.popBack == int.init);
-                    assert(list.empty);
-
-                    assert(list.popBack(42) == 42);
-                    assert(list.empty);
-                    --------------------
-            */
-            public ElementType popBack()()scope nothrow{
-                if(this.empty)
-                    return ElementType.init;
-
-                ListNode* node = this._last;
-                this._last = this._last.prev;
-
-                ElementType result = move(node.element);
-                destructImpl(*node);
-
-                this._length -= 1;
-                return move(result);
-            }
-
-            ///ditto
-            public ElementType popBack()(ElementType def)scope nothrow{
-                if(this.empty)
-                    return move(def);
-
-                ListNode* node = this._last;
-                this._last = this._last.prev;
-
-                ElementType result = move(node.element);
-                destructImpl(*node);
-
-                this._length -= 1;
-                return move(result);
-            }
-        }
-
-
-
-        /**
-            Pop the first element of the list, effectively reducing its length by 1.
-
-            Return erased element.
-
-            Examples:
-                --------------------
-                List!(int) list = List!(int).build(30, 20, 10);
-                assert(list.length == 3);
-
-                assert(list.popFront == 30);
-                assert(list.length == 2);
-
-                assert(list.popFront == 20);
-                assert(list.length == 1);
-
-                assert(list.popFront == 10);
-                assert(list.empty);
-
-                assert(list.popFront == int.init);
-                assert(list.empty);
-
-                assert(list.popFront(42) == 42);
-                assert(list.empty);
-                --------------------
-        */
-        public ElementType popFront()()scope nothrow{
-            if(this.empty)
-                return ElementType.init;
-
-            ListNode* node = this._last;
-            this._last = this._last.prev;
-
-            ElementType result = move(node.element);
-            destructImpl(*node);
-
-            this._length -= 1;
-            return move(result);
-        }
-
-        ///ditto
-        public ElementType popFront()(ElementType def)scope nothrow{
-            if(this.empty)
-                return move(def);
-
-            ListNode* node = this._last;
-            this._last = this._last.prev;
-
-            ElementType result = move(node.element);
-            destructImpl(*node);
-
-            this._length -= 1;
-            return move(result);
         }
 
 
@@ -604,7 +621,7 @@ template List(
 
             Examples:
                 --------------------
-                List!(int) list = Vector!(List).build(1, 2, 3);
+                List!(int) list = List!(int).build(1, 2, 3);
                 assert(list.length == 3);
 
                 list.release();
@@ -612,6 +629,15 @@ template List(
                 --------------------
         */
         public void release()()scope nothrow{
+            this._release_impl();
+
+            this._first = null;
+            this._last = null;
+
+            this._length = 0;
+        }
+
+        private void _release_impl()()scope nothrow{
             ListNode* node = this._first;
 
             while(node !is null){
@@ -619,12 +645,6 @@ template List(
                 node = node.next;
                 this._destroy_node(tmp);
             }
-
-            this._first = null;
-            static if(bidirectional)
-                this._last = null;
-
-            this._length = 0;
         }
 
 
@@ -636,7 +656,7 @@ template List(
 
             Examples:
                 --------------------
-                List!(int) list = Vector!(List).build(1, 2, 3);
+                List!(int) list = List!(int).build(1, 2, 3);
                 assert(list.length == 3);
 
                 list.clear();
@@ -659,7 +679,7 @@ template List(
                 --------------------
         */
         public bool contains(Elm)(scope auto ref Elm elm)scope const{
-            foreach(ref e; this[]){
+            foreach(ref e; this._op_slice ){
                 if(e == elm)
                     return true;
             }
@@ -695,7 +715,7 @@ template List(
 
             Examples:
                 --------------------
-                List!(int, 6) list = List!(int, 6).build(1, 2, 3);
+                List!(int) list = List!(int).build(1, 2, 3);
 
                 assert(list != null);
                 assert(null != list);
@@ -717,10 +737,10 @@ template List(
 
         /// ditto
         public bool opEquals(R)(scope R rhs)const scope nothrow
-        if(isInputRange!R){
+        if(isInputRange!R && !isList!R){
             import std.algorithm.comparison : equal;
 
-            return equal(this[], forward!rhs);
+            return equal(this._op_slice, forward!rhs);
         }
 
         /// ditto
@@ -728,7 +748,7 @@ template List(
         if(isList!L){
             import std.algorithm.comparison : equal;
 
-            return equal(this[], rhs[]);
+            return equal(this._op_slice, rhs._op_slice);
         }
 
 
@@ -750,10 +770,10 @@ template List(
                 --------------------
         */
         public int opCmp(R)(scope R rhs)const scope nothrow
-        if(isInputRange!R){
+        if(isInputRange!R && !isList!R){
             import std.algorithm.comparison : cmp;
 
-            return cmp(this[], forward!rhs);
+            return cmp(this._op_slice, forward!rhs);
         }
 
         /// ditto
@@ -761,7 +781,7 @@ template List(
         if(isList!L){
             import std.algorithm.comparison : cmp;
 
-            return cmp(this[], rhs[]);
+            return cmp(this._op_slice, rhs._op_slice);
         }
 
 
@@ -777,8 +797,11 @@ template List(
                 --------------------
         */
         public auto opIndex(this This)()return pure nothrow @system @nogc{
-            alias Range = .ListRange!(GetElementType!This, bidirectional);
+            return this._op_slice();
+        }
 
+        private @property _op_slice(this This)()return pure nothrow @trusted @nogc{
+            alias Range = .ListRange!(GetElementType!This, bidirectional);
             return Range(this._first);
         }
 
@@ -800,8 +823,8 @@ template List(
 
             Examples:
                 --------------------
-                auto a = Vector!(int, 6).build(1, 2, 3);
-                auto b = Vector!(int, 6).build(4, 5, 6);
+                auto a = List!(int).build(1, 2, 3);
+                auto b = List!(int).build(4, 5, 6);
 
                 a.proxySwap(b);
                 assert(a == [4, 5, 6]);
@@ -822,52 +845,129 @@ template List(
 
             swap(this._length, rhs._length);
             swap(this._first, rhs._first);
-            static if(bidirectional)
-                swap(this._last, rhs._last);
+            swap(this._last, rhs._last);
         }
 
 
 
-        static if(bidirectional){
-            /**
-                Appends a new element to the end of the bidirectional list. The element is constructed through `emplace`.
+        /**
+            Returns a reference to the first element in the list.
 
-                Parameters:
-                    `args`  arguments to forward to the constructor of the element.
+            Calling this function on an empty container causes null dereference.
+        */
+        public ref inout(ElementType) front()inout return pure nothrow @system @nogc{
+            assert(this._first !is null);
+            return this._first.element;
+        }
 
-                Examples:
-                    --------------------
-                    {
-                        auto list = List!(int).build(1, 2, 3);
 
-                        list.emplaceBack(42);
-                        assert(list == [1, 2, 3, 42]);
 
-                        list.emplaceBack();
-                        assert(list == [1, 2, 3, 42, 0]);
-                    }
+        /**
+            Returns a copy of the first element in the list.
 
-                    {
-                        static struct Foo{
-                            int i;
-                            string str;
-                        }
+            Calling this function on an empty container causes null dereference.
 
-                        auto list = List!(Foo).build(Foo(1, "A"));
+            Examples:
+                --------------------
+                auto list = List!(int).build(1, 2, 3);
 
-                        list.emplaceBack(2, "B");
-                        assert(list == only(Foo(1, "A"), Foo(2, "B")));
-                    }
-                    --------------------
-            */
-            public ref ElementType emplaceBack(Args...)(auto ref Args args)scope return{
-                ListNode* node = this._make_node(forward!args);
+                assert(list.frontCopy == 1);
+                assert(list == [1, 2, 3]);
+                --------------------
+        */
+        public auto frontCopy(this This)()scope{
+            assert(this._first !is null);
 
-                node.prev = this._last;
-                this._last = node;
-                this._length += 1;
+            return this._first.element;
+        }
 
-                return node.element;
+
+
+        /**
+            Move of the first element in the list and return it.
+
+            Calling this function on an empty container causes null dereference.
+
+            Examples:
+                --------------------
+                auto list = List!(int).build(1, 2, 3);
+
+                assert(list.moveFront == 1);
+                list.popFront;
+                assert(list == [2, 3]);
+                --------------------
+        */
+        public ElementType moveFront()scope pure nothrow @safe @nogc{
+            assert(this._first !is null);
+
+            return move(this._first.element);
+        }
+
+
+
+        /**
+            Pop the last element of the bidirectional list, effectively reducing its length by 1.
+
+            Return erased element.
+
+            Examples:
+                --------------------
+                List!(int) list = List!(int).build(30, 20, 10);
+                assert(list.length == 3);
+
+                assert(list.popFront == 30);
+                assert(list.length == 2);
+
+                assert(list.popFront == 20);
+                assert(list.length == 1);
+
+                assert(list.popFront == 10);
+                assert(list.empty);
+
+                assert(list.popFront(int.init) == int.init);
+                assert(list.empty);
+
+                assert(list.popFront(42) == 42);
+                assert(list.empty);
+                --------------------
+        */
+        public auto popFront(T = Unqual!ElementType)()scope nothrow
+        if(is(T == Unqual!ElementType) || is(T == void)){
+            assert(!this.empty);
+            return _pop_front_impl!T();
+        }
+
+        ///ditto
+        public ElementType popFront(T : Unqual!ElementType = Unqual!ElementType)(ElementType def)scope nothrow{
+            return (this.empty)
+                ? forward!def
+                : _pop_front_impl!T();
+        }
+        
+        private auto _pop_front_impl(T)()scope nothrow
+        if(is(T == Unqual!ElementType) || is(T == void)){
+            ListNode* node = this._first;
+            this._first = this._first.next;
+
+            if(this._first is null){
+                this._last = null;
+            }
+            else{
+                static if(bidirectional)
+                    this._first.prev = null;
+            }
+
+
+            static if(is(T == void)){
+                destructImpl(*node);
+                this._length -= 1;
+            }
+            else{
+                ElementType result = move(node.element);
+                destructImpl(*node);
+
+                this._length -= 1;
+                return move(result);
             }
         }
 
@@ -904,197 +1004,538 @@ template List(
                 }
                 --------------------
         */
-        public ref ElementType emplaceFront(Args...)(auto ref Args args)scope return{
+        public void emplaceFront(Args...)(auto ref Args args)scope{
             ListNode* node = this._make_node(forward!args);
 
-            node.next = this._first;
-            this._first = node;
+            this._push_front_node(node);
             this._length += 1;
-
-            return node.element;
         }
 
 
 
-        static if(bidirectional){
-            /**
-                Extends the `Vector` by appending additional elements at the end of vector.
+        /**
+            Extends the `List` by appending additional elements at the end of list.
 
-                Return index of first inserted element.
+            Parameters:
+                `val` appended value.
 
-                Parameters:
-                    `val` appended value.
+                `list` appended list.
 
-                    `vec` appended vector.
+                `range` appended input renge.
 
-                    `range` appended input renge.
+                `count` Number of times `val` is appended.
 
-                    `count` Number of times `val` is appended.
+            Examples:
+                --------------------
+                {
+                    auto list = List!(int).build(1, 2, 3);
 
-                Examples:
-                    --------------------
-                    {
-                        auto vec = Vector!(int, 6).build(1, 2, 3);
+                    list.pushFront(42);
+                    assert(list == [42, 1, 2, 3]);
+                }
 
-                        vec.append(42);
-                        assert(vec == [1, 2, 3, 42]);
+                {
+                    auto list = List!(int).build(1, 2, 3);
+
+                    list.pushFront(only(4, 5, 6));
+                    assert(list == [6, 5, 4, 1, 2, 3]);
+                }
+
+                {
+                    auto a = List!(int).build(1, 2, 3);
+                    auto b = List!(int).build(4, 5, 6);
+
+                    a.pushFront(b);
+                    assert(a == [6, 5, 4, 1, 2, 3]);
+                }
+
+                {
+                    List!(int) list = List!(int).build(1, 2, 3);
+                    int[3] tmp = [4, 5, 6];
+                    list.pushFront(tmp[]);
+                    assert(list == [6, 5, 4, 1, 2, 3]);
+                }
+
+                {
+                    struct Range{
+                        int i;
+
+                        bool empty()(){return i == 0;}
+                        int front()(){return i;}
+                        void popFront()(){i -= 1;}
+                        //size_t length(); //no length
                     }
 
-                    {
-                        auto vec = Vector!(int, 6).build(1, 2, 3);
+                    List!(int) list = List!(int).build(6, 5, 4);
+                    list.pushFront(Range(3));
+                    assert(list == [1, 2, 3, 6, 5, 4]);
+                }
+                --------------------
+        */
+        public size_t pushFront(R)(R range)scope
+        if(isInputRange!R && is(ElementEncodingType!R : ElementType)){
+            size_t len = 0;
 
-                        vec.append(only(4, 5, 6));
-                        assert(vec == [1, 2, 3, 4, 5, 6]);
-                    }
-
-                    {
-                        auto a = Vector!(int, 6).build(1, 2, 3);
-                        auto b = Vector!(int, 6).build(4, 5, 6);
-
-                        a.append(b);
-                        assert(a == [1, 2, 3, 4, 5, 6]);
-                    }
-
-                    {
-                        Vector!(int, 3) vec = Vector!(int, 3).build(1, 2, 3);
-                        int[3] tmp = [4, 5, 6];
-                        vec.append(tmp[]);
-                        assert(vec == [1, 2, 3, 4, 5, 6]);
-                    }
-
-                    {
-                        struct Range{
-                            int i;
-
-                            bool empty()(){return i == 0;}
-                            int front()(){return i;}
-                            void popFront()(){i -= 1;}
-                            //size_t length(); //no length
-                        }
-
-                        Vector!(int, 3) vec = Vector!(int, 3).build(6, 5, 4);
-                        vec.append(Range(3));
-                        assert(vec == [6, 5, 4, 3, 2, 1]);
-                    }
-                    --------------------
-            */
-            public void append(R)(R range)scope
-            if(isInputRange!R && is(ElementEncodingType!R : ElementType)){
-                size_t len = 0;
-
-                if(!range.empty){
-                    {
-                        auto node = this._make_node(range.front);
-
-                        if(this._last is null){
-                            this._last = node;
-                            this._first = node;
-                        }
-                        else{
-                            node.prev = this._last;
-                            this._last = node;
-                        }
-
-                        len += 1;
-                        range.popFront;
-                    }
-
-
-                    while(!range.empty){
-                        auto node = this._make_node(range.front);
-
-                        node.prev = this._last;
-                        this._last = node;
-
-                        len += 1;
-                        range.popFront;
-                    }
-
+            if(!range.empty){
+                scope(exit){
                     this._length += len;
                 }
 
-                return len;
-            }
+                {
+                    auto node = this._make_node(range.front);
 
-            /// ditto
-            public size_t append(L)(scope auto ref L list)scope
-            if(isList!L && is(GetElementType!L : ElementType)){
-                return this.append( (()@trusted => list[] )() );
-            }
+                    this._push_front_node(node);
 
-            /// ditto
-            public size_t append(Val)(auto ref Val val)scope
-            if(is(Val : ElementType)){
-                auto node = this._make_node(forward!val);
-
-                if(this._last is null){
-                    this._last = node;
-                    this._first = node;
-                }
-                else{
-                    node.prev = this._last;
-                    this._last = node;
+                    len += 1;
+                    range.popFront;
                 }
 
-                this._length += 1;
-                return 1;
 
+                while(!range.empty){
+                    auto node = this._make_node(range.front);
+
+                    this._push_front_node!true(node);
+
+                    len += 1;
+                    range.popFront;
+                }
             }
 
-            /+
-            /// ditto
-            public size_t append(Val)(auto ref Val val, const size_t count)scope
-            if(is(Val : ElementType)){
-                size_t len = 0;
+            return len;
+        }
 
-                if(this.empty)
-                if(!range.empty){
-                    {
-                        auto node = this._make_node(range.front);
+        /// ditto
+        public size_t pushFront(L)(scope auto ref L list)scope
+        if(isList!L && is(GetElementType!L : ElementType)){
+            return this.pushFront(list._op_slice);
+        }
 
-                        if(this._last is null){
-                            this._last = node;
-                            this._first = node;
-                        }
-                        else{
-                            node.prev = this._last;
-                            this._last = node;
-                        }
+        /// ditto
+        public size_t pushFront(Val)(auto ref Val val)scope
+        if(is(Val : ElementType)){
+            auto node = this._make_node(forward!val);
 
-                        len += 1;
-                        range.popFront;
+            this._push_front_node(node);
+
+            this._length += 1;
+            return 1;
+
+        }
+
+        /// ditto
+        public size_t pushFront(Val)(auto ref Val val, const size_t count)scope
+        if(is(Val : ElementType)){
+            size_t len = 0;
+
+            scope(exit){
+                this._length += len;
+            }
+            
+            if(count != 0){
+                auto node = this._make_node(val);
+
+                this._push_front_node(node);
+                len += 1;
+            }
+
+            if(count != len){
+                for(; len < count; ++len){
+                    auto node = this._make_node(val);
+
+                    this._push_front_node!true(node);
+                }
+            }
+
+            return len;
+        }
+
+        
+
+        /**
+            Alias to pushFront
+        */
+        public alias prepend = pushFront;
+
+
+
+
+        /**
+            Returns a reference to the last element in the list.
+
+            Calling this function on an empty container causes null dereference.
+        */
+        public ref inout(ElementType) back()inout return pure nothrow @system @nogc{
+            assert(this._last !is null);
+            return this._last.element;
+        }
+
+
+
+        /**
+            Returns a copy of the first element in the list.
+
+            Calling this function on an empty container causes null dereference.
+
+            Examples:
+                --------------------
+                auto list = List!(int).build(1, 2, 3);
+
+                assert(list.backCopy == 3);
+                assert(list == [1, 2, 3]);
+                --------------------
+        */
+        public auto backCopy(this This)()scope {
+            assert(this._last !is null);
+
+            return this._last.element;
+        }
+
+
+
+        /**
+            Move of the first element in the list and return it.
+
+            Calling this function on an empty container causes null dereference.
+
+            Examples:
+                --------------------
+                auto list = List!(int).build(1, 2, 3);
+
+                assert(list.moveBack == 3);
+                list.popBack;
+                assert(list == [1, 2]);
+                --------------------
+        */
+        public ElementType moveBack()scope pure nothrow @safe @nogc{
+            assert(this._last !is null);
+
+            return move(this._last.element);
+        }
+
+
+
+        /**
+            Pop the last element of the bidirectional list, effectively reducing its length by 1.
+
+            Return erased element.
+
+            Examples:
+                --------------------
+                List!(int) list = List!(int).build(10, 20, 30);
+                assert(list.length == 3);
+
+                assert(list.popBack == 30);
+                assert(list.length == 2);
+
+                assert(list.popBack == 20);
+                assert(list.length == 1);
+
+                assert(list.popBack == 10);
+                assert(list.empty);
+
+                assert(list.popBack(int.init) == int.init);
+                assert(list.empty);
+
+                assert(list.popBack(42) == 42);
+                assert(list.empty);
+                --------------------
+        */
+        public auto popBack(T = Unqual!ElementType)()scope nothrow
+        if(is(T == Unqual!ElementType) || is(T == void)){
+            assert(!this.empty);
+            return _pop_back_impl!T();
+        }
+
+        ///ditto
+        public auto popBack(T : Unqual!ElementType = Unqual!ElementType)(ElementType def)scope nothrow{
+            return this.empty
+                ? move(def)
+                : _pop_back_impl!T();
+        }
+
+        private auto _pop_back_impl(T)()scope nothrow
+        if(is(T == Unqual!ElementType) || is(T == void)){
+            assert(!this.empty);
+
+            ListNode* node = this._last;
+            this._last = this._last.prev;
+
+            if(this._last is null)
+                this._first = null;
+            else
+                this._last.next = null;
+
+            static if(is(T == void)){
+                destructImpl(*node);
+                this._length -= 1;
+            }
+            else{
+                ElementType result = move(node.element);
+                destructImpl(*node);
+
+                this._length -= 1;
+                return move(result);
+            }
+        }
+
+
+
+        /**
+            Appends a new element to the end of the bidirectional list. The element is constructed through `emplace`.
+
+            Parameters:
+                `args`  arguments to forward to the constructor of the element.
+
+            Examples:
+                --------------------
+                {
+                    auto list = List!(int).build(1, 2, 3);
+
+                    list.emplaceBack(42);
+                    assert(list == [1, 2, 3, 42]);
+
+                    list.emplaceBack();
+                    assert(list == [1, 2, 3, 42, 0]);
+                }
+
+                {
+                    static struct Foo{
+                        int i;
+                        string str;
                     }
 
+                    auto list = List!(Foo).build(Foo(1, "A"));
 
-                    while(!range.empty){
-                        auto node = this._make_node(range.front);
+                    list.emplaceBack(2, "B");
+                    assert(list == only(Foo(1, "A"), Foo(2, "B")));
+                }
+                --------------------
+        */
+        public void emplaceBack(Args...)(auto ref Args args)scope return{
+            ListNode* node = this._make_node(forward!args);
 
-                        node.prev = this._last;
-                        this._last = node;
+            this._push_back_node(node);
+            this._length += 1;
+        }
 
-                        len += 1;
-                        range.popFront;
+
+
+        /**
+            Extends the `List` by appending additional elements at the end of list.
+
+            Parameters:
+                `val` appended value.
+
+                `list` appended list.
+
+                `range` appended input renge.
+
+                `count` Number of times `val` is appended.
+
+            Examples:
+                --------------------
+                {
+                    auto list = List!(int).build(1, 2, 3);
+
+                    list.pushBack(42);
+                    assert(list == [1, 2, 3, 42]);
+                }
+
+                {
+                    auto list = List!(int).build(1, 2, 3);
+
+                    list.pushBack(only(4, 5, 6));
+                    assert(list == [1, 2, 3, 4, 5, 6]);
+                }
+
+                {
+                    auto a = List!(int).build(1, 2, 3);
+                    auto b = List!(int).build(4, 5, 6);
+
+                    a.pushBack(b);
+                    assert(a == [1, 2, 3, 4, 5, 6]);
+                }
+
+                {
+                    List!(int) list = List!(int).build(1, 2, 3);
+                    int[3] tmp = [4, 5, 6];
+                    list.pushBack(tmp[]);
+                    assert(list == [1, 2, 3, 4, 5, 6]);
+                }
+
+                {
+                    struct Range{
+                        int i;
+
+                        bool empty()(){return i == 0;}
+                        int front()(){return i;}
+                        void popFront()(){i -= 1;}
+                        //size_t length(); //no length
                     }
 
+                    List!(int) list = List!(int).build(6, 5, 4);
+                    list.pushBack(Range(3));
+                    assert(list == [6, 5, 4, 3, 2, 1]);
+                }
+                --------------------
+        */
+        public size_t pushBack(R)(R range)scope
+        if(!isList!R && isInputRange!R && is(ElementEncodingType!R : ElementType)){
+            size_t len = 0;
+
+            if(!range.empty){
+                scope(exit){
                     this._length += len;
                 }
 
-                return len;
+                {
+                    auto node = this._make_node(range.front);
+
+                    this._push_back_node(node);
+
+                    len += 1;
+                    range.popFront;
+                }
+
+
+                while(!range.empty){
+                    auto node = this._make_node(range.front);
+
+                    this._push_back_node!true(node);
+
+                    len += 1;
+                    range.popFront;
+                }
             }
-            +/
 
+            return len;
+        }
+
+        /// ditto
+        public size_t pushBack(L)(scope auto ref L list)scope
+        if(isList!L && is(GetElementType!L : ElementType)){
+            return this.pushBack(list._op_slice);
+        }
+
+        /// ditto
+        public size_t pushBack(Val)(auto ref Val val)scope
+        if(is(Val : ElementType)){
+            auto node = this._make_node(forward!val);
+
+            this._push_back_node(node);
+
+            this._length += 1;
+            return 1;
+
+        }
+
+        /// ditto
+        public size_t pushBack(Val)(auto ref Val val, const size_t count)scope
+        if(is(Val : ElementType)){
+            size_t len = 0;
+            scope(exit){
+                this._length += len;
+            }
+
+            if(count != 0){
+                auto node = this._make_node(val);
+
+                this._push_back_node(node);
+                len += 1;
+            }
+
+            if(count != len){
+                for(; len < count; ++len){
+                    auto node = this._make_node(val);
+
+                    this._push_back_node!true(node);
+                }
+            }
+
+            return len;
+        }
+
+
+
+        /**
+            Alias to pushBack
+        */
+        public alias append = pushBack;
+
+
+
+        /**
+            Operator `~=` is same as append/pushBack
+        */
+        public template opOpAssign(string op)
+        if(op == "~"){
+            alias opOpAssign = pushBack;
+        }
+
+
+
+        /**
+            put
+        */
+        public alias put = pushBack;
+
+
+
+        /**
+            Static function which return `List` construct from arguments `args`.
+
+            Parameters:
+                `allocator` exists only if template parameter `_Allocator` has state.
+
+                `args` values of type `ElementType`, input range or `List`.
+
+            Examples:
+                --------------------
+                import std.range : only;
+
+                int[2] tmp = [3, 4];
+                auto list = List!(int).build(1, 2, tmp[], only(5, 6), List!(int).build(7, 8));
+                assert(list == [1, 2, 3, 4, 5, 6, 7, 8]);
+                --------------------
+        */
+        public static typeof(this) build(Args...)(auto ref Args args){
+            import core.lifetime : forward;
+
+            auto result = List.init;
+
+            result._build_impl(forward!args);
+
+            return ()@trusted{
+                return *&result;
+            }();
+        }
+
+        /// ditto
+        public static typeof(this) build(Args...)(AllocatorType allocator, auto ref Args args){
+            import core.lifetime : forward;
+
+            auto result = (()@trusted => List(forward!allocator))();
+
+            result._build_impl(forward!args);
+
+            return ()@trusted{
+                return *&result;
+            }();
+        }
+
+        private void _build_impl(Args...)(auto ref Args args)scope{
+            import std.traits : isArray;
+
+            static foreach(alias arg; args)
+                this.pushBack(forward!arg);
         }
 
 
 
 
 
-
-        static if(!allowHeap){
-            private alias _allocator = statelessAllcoator!NullAllocator;
-            private enum safeAllocate = true;
-        }
-        else static if(hasStatelessAllocator){
+        //internals:
+        static if(hasStatelessAllocator){
             public alias _allocator = statelessAllcoator!AllocatorType;
 
             private enum safeAllocate = isSafe!((){
@@ -1115,17 +1556,18 @@ template List(
 
         private size_t _length;
         private ListNode* _first;
-        static if(bidirectional)
-            private ListNode* _last;
+        private ListNode* _last;
 
-        private ListNode* _make_node(Args)(auto ref Args args)scope{
+        private ListNode* _make_node(Args...)(auto ref Args args)scope{
 
-            ListNode* node = cast(ListNode*)_allocator.allocate(ListNode.sizeof).ptr;
+            ListNode* node = ()@trusted{
+                return cast(ListNode*)_allocator.allocate(ListNode.sizeof).ptr;
+            }();
 
             _enforce(node !is null, "allocation fail");
 
             static if(supportGC)
-                gcAddRange(data);
+                gcAddRange(node, ListNode.sizeof);
 
             emplaceImpl(node.element, forward!args);
             node.next = null;
@@ -1135,7 +1577,7 @@ template List(
             return node;
         }
 
-        private void _destroy_node()(ListNode* node)scope @trusted{
+        private void _destroy_node()(ListNode* node)scope nothrow{
             assert(node !is null);
 
             destructImpl(node.element);
@@ -1158,9 +1600,100 @@ template List(
             _enforce(d, "deallocation fail");
         }
 
+
+        //enforce:
+        private void _enforce(bool con, string msg)const pure nothrow @safe @nogc{
+            if(!con)assert(0, msg);
+        }
+
+        private void _push_front_node(bool not_empty = false)(scope ListNode* node)scope pure nothrow @trusted @nogc{
+            assert(node !is null);
+            static if(not_empty)
+                assert(!this.empty);
+
+            const bool is_empty = not_empty
+                ? false
+                : (this._first is null);
+
+            if(is_empty){
+                this._last = node;
+            }
+            else{
+                node.next = this._first;
+                static if(bidirectional)
+                    this._first.prev = node;
+            }
+
+            this._first = node;
+        }
+
+        private void _push_back_node(bool not_empty = false)(scope ListNode* node)scope pure nothrow @trusted @nogc{
+            assert(node !is null);
+            static if(not_empty)
+                assert(!this.empty);
+
+            const bool is_empty = not_empty
+                ? false
+                : (this._first is null);
+            
+            if(is_empty){
+                this._first = node;
+            }
+            else{
+                static if(bidirectional)
+                    node.prev = this._last;
+
+                this._last.next = node;
+            }
+
+            this._last = node;
+        }
+
     }
 }
 
+
+///
+unittest{
+    import std.range : only;
+    import std.algorithm : map, equal;
+
+    static struct Foo{
+        int i;
+        string str;
+    }
+
+    List!(Foo) list;
+
+    assert(list.empty);
+
+    list.append(Foo(1, "A"));
+    assert(list.length == 1);
+
+    list.append(only(Foo(2, "B"), Foo(3, "C")));
+    assert(list.length == 3);
+
+    list.emplaceBack(4, "D");
+    assert(list.length == 4);
+
+
+    list = List!(Foo).build(Foo(-1, "X"), Foo(-2, "Y"));
+    assert(equal(list[].map!(e => e.str), only("X", "Y")));
+
+    list.release();
+    assert(list.length == 0);
+
+}
+
+
+/// Alias to `List` with parameter `_bidirectional = true` (single linked list)
+public template ForwardList(
+    _Type,
+    _Allocator = DefaultAllocator,
+    bool _supportGC = shouldAddGCRange!_Type
+){
+    alias ForwardList = .List!(_Type, _Allocator, _supportGC, false);
+}
 
 //local traits:
 private{
@@ -1203,7 +1736,7 @@ private{
         enum isMoveConstructable = true
             && !isRef!from
             && isConstructable!(From, To)
-            && (From.kind == To.kind)
+            && (From.bidirectional == To.bidirectional)
             && is(GetElementReferenceType!From : GetElementReferenceType!To)
             && is(immutable From.AllocatorType == immutable To.AllocatorType)
             && (From.hasStatelessAllocator
@@ -1221,7 +1754,7 @@ private{
         enum isMoveAssignable = true
             && !isRef!from
             && isAssignable!(From, To)
-            && (From.kind == To.kind)
+            && (From.bidirectional == To.bidirectional)
             && is(GetElementReferenceType!From : GetElementReferenceType!To)
             && is(immutable From.AllocatorType == immutable To.AllocatorType)
             && (From.hasStatelessAllocator
@@ -1292,3 +1825,414 @@ private{
 
 }
 
+//List examples:
+version(unittest){
+
+    import std.range : only;
+    static foreach(alias List; AliasSeq!(.List)){
+
+        //List.empty
+        pure nothrow @safe @nogc unittest{
+            List!(int) list;
+            assert(list.empty);
+
+            list.append(42);
+            assert(!list.empty);
+        }
+
+        //List.length
+        pure nothrow @safe @nogc unittest{
+            List!(int) list = null;
+            assert(list.length == 0);
+
+            list.append(42);
+            assert(list.length == 1);
+
+            list.append(123);
+            assert(list.length == 2);
+
+            list.clear();
+            assert(list.length == 0);
+        }
+
+        //List.ctor(allocator)
+        pure nothrow @safe @nogc unittest{
+            {
+                List!(int) list = DefaultAllocator.init;
+                assert(list.empty);
+            }
+        }
+
+        //List.ctor(null)
+        pure nothrow @safe @nogc unittest{
+            {
+                List!(int) list = null;
+                assert(list.empty);
+            }
+        }
+
+        //List.ctor(list)
+        pure nothrow @safe @nogc unittest{
+            {
+                List!(int) list = List!(int).build(1, 2);
+                assert(list == [1, 2]);
+            }
+            {
+                auto tmp = List!(int).build(1, 2);
+                List!(int) list = tmp;
+                assert(list == [1, 2]);
+            }
+
+
+            {
+                List!(int) list = List!(int).build(1, 2);
+                assert(list == [1, 2]);
+            }
+            {
+                auto tmp = List!(int).build(1, 2);
+                List!(int) list = tmp;
+                assert(list == [1, 2]);
+            }
+        }
+
+        //List.ctor(range)
+        pure nothrow @safe @nogc unittest{
+            import std.range : iota;
+            {
+                List!(int) list = iota(0, 5);
+                assert(list == [0, 1, 2, 3, 4]);
+            }
+        }
+
+        //List.opAssign
+        pure nothrow @safe @nogc unittest{
+            List!(int) list = List!(int).build(1, 2, 3);
+            assert(!list.empty);
+
+            list = null;
+            assert(list.empty);
+
+            list = List!(int).build(3, 2, 1);
+            assert(list == [3, 2, 1]);
+
+            list = List!(int).build(4, 2);
+            assert(list == [4, 2]);
+        }
+
+        //List.release
+        pure nothrow @safe @nogc unittest{
+            List!(int) list = List!(int).build(1, 2, 3);
+            assert(list.length == 3);
+
+            list.release();
+            assert(list.length == 0);
+        }
+
+        //List.clear
+        pure nothrow @safe @nogc unittest{
+            List!(int) list = List!(int).build(1, 2, 3);
+            assert(list.length == 3);
+
+            list.clear();
+            assert(list.length == 0);
+        }
+
+        //List.contains
+        pure nothrow @safe @nogc unittest{
+            List!(int) list = List!(int).build(1, 2, 3);
+
+            assert(list.contains(1));
+            assert(!list.contains(42L));
+        }
+
+        //List.opBinaryRight!"in"
+        pure nothrow @safe @nogc unittest{
+            List!(int) list = List!(int).build(1, 2, 3);
+
+            assert(1 in list);
+            assert(42L !in list);
+        }
+
+        //List.opEquals
+        pure nothrow @safe @nogc unittest{
+            List!(int) list = List!(int).build(1, 2, 3);
+
+            assert(list != null);
+            assert(null != list);
+
+            assert(list == [1, 2, 3]);
+            assert([1, 2, 3] == list);
+
+            assert(list == typeof(list).build(1, 2, 3));
+            assert(typeof(list).build(1, 2, 3) == list);
+
+            import std.range : only;
+            assert(list == only(1, 2, 3));
+            assert(only(1, 2, 3) == list);
+        }
+
+        //List.opCmp
+        pure nothrow @safe @nogc unittest{
+            auto a1 = List!(int).build(1, 2, 3);
+            auto a2 = List!(int).build(1, 2, 3, 4);
+            auto b = List!(int).build(3, 2, 1);
+
+            assert(a1 < b);
+            assert(a1 < a2);
+            assert(a2 < b);
+            assert(a1 <= a1);
+        }
+
+        //List.opIndex
+        pure nothrow @safe @nogc unittest{
+            List!(int) list = List!(int).build(1, 2, 3);
+        }
+
+        //List.proxySwap
+        pure nothrow @safe @nogc unittest{
+            auto a = List!(int).build(1, 2, 3);
+            auto b = List!(int).build(4, 5, 6);
+
+            a.proxySwap(b);
+            assert(a == [4, 5, 6]);
+            assert(b == [1, 2, 3]);
+
+            import std.algorithm.mutation : swap;
+
+            swap(a, b);
+            assert(a == [1, 2, 3]);
+            assert(b == [4, 5, 6]);
+        }
+
+        //List.frontCopy
+        pure nothrow @safe @nogc unittest{
+            auto list = List!(int).build(1, 2, 3);
+
+            assert(list.frontCopy == 1);
+            assert(list == [1, 2, 3]);
+        }
+
+        //List.moveFront
+        pure nothrow @safe @nogc unittest{
+            auto list = List!(int).build(1, 2, 3);
+
+            assert(list.moveFront == 1);
+            list.popFront;
+            assert(list == [2, 3]);
+        }
+
+        //List.popFront
+        pure nothrow @safe @nogc unittest{
+            List!(int) list = List!(int).build(30, 20, 10);
+            assert(list.length == 3);
+
+            assert(list.popFront == 30);
+            assert(list.length == 2);
+
+            assert(list.popFront == 20);
+            assert(list.length == 1);
+
+            assert(list.popFront == 10);
+            assert(list.empty);
+
+            assert(list.popFront(int.init) == int.init);
+            assert(list.empty);
+
+            assert(list.popFront(42) == 42);
+            assert(list.empty);
+        }
+
+        //List.emplaceFront
+        pure nothrow @safe @nogc unittest{
+            {
+                auto list = List!(int).build(1, 2, 3);
+
+                list.emplaceFront(42);
+                assert(list == [42, 1, 2, 3]);
+
+                list.emplaceFront();
+                assert(list == [0, 42, 1, 2, 3]);
+            }
+
+            {
+                static struct Foo{
+                    int i;
+                    string str;
+                }
+
+                auto list = List!(Foo).build(Foo(1, "A"));
+
+                list.emplaceFront(2, "B");
+                assert(list == only(Foo(2, "B"), Foo(1, "A")));
+            }
+        }
+
+        //List.pushFront
+        pure nothrow @safe @nogc unittest{
+            {
+                auto list = List!(int).build(1, 2, 3);
+
+                list.pushFront(42);
+                assert(list == [42, 1, 2, 3]);
+            }
+
+            {
+                auto list = List!(int).build(1, 2, 3);
+
+                list.pushFront(only(4, 5, 6));
+                assert(list == [6, 5, 4, 1, 2, 3]);
+            }
+
+            {
+                auto a = List!(int).build(1, 2, 3);
+                auto b = List!(int).build(4, 5, 6);
+
+                a.pushFront(b);
+                assert(a == [6, 5, 4, 1, 2, 3]);
+            }
+
+            {
+                List!(int) list = List!(int).build(1, 2, 3);
+                int[3] tmp = [4, 5, 6];
+                list.pushFront(tmp[]);
+                assert(list == [6, 5, 4, 1, 2, 3]);
+            }
+
+            {
+                struct Range{
+                    int i;
+
+                    bool empty()(){return i == 0;}
+                    int front()(){return i;}
+                    void popFront()(){i -= 1;}
+                    //size_t length(); //no length
+                }
+
+                List!(int) list = List!(int).build(6, 5, 4);
+                list.pushFront(Range(3));
+                assert(list == [1, 2, 3, 6, 5, 4]);
+            }
+        }
+
+        //List.backCopy
+        pure nothrow @safe @nogc unittest{
+            auto list = List!(int).build(1, 2, 3);
+
+            assert(list.backCopy == 3);
+            assert(list == [1, 2, 3]);
+        }
+
+        //List.moveBack
+        pure nothrow @safe @nogc unittest{
+            auto list = List!(int).build(1, 2, 3);
+
+            assert(list.moveBack == 3);
+            list.popBack;
+            assert(list == [1, 2]);
+        }
+
+        //List.popBack
+        pure nothrow @safe @nogc unittest{
+            List!(int) list = List!(int).build(10, 20, 30);
+            assert(list.length == 3);
+
+            assert(list.popBack == 30);
+            assert(list.length == 2);
+
+            assert(list.popBack == 20);
+            assert(list.length == 1);
+
+            assert(list.popBack == 10);
+            assert(list.empty);
+
+            assert(list.popBack(int.init) == int.init);
+            assert(list.empty);
+
+            assert(list.popBack(42) == 42);
+            assert(list.empty);
+        }
+
+        //List.emplaceBack
+        pure nothrow @safe @nogc unittest{
+            {
+                auto list = List!(int).build(1, 2, 3);
+
+                list.emplaceBack(42);
+                assert(list == [1, 2, 3, 42]);
+
+                list.emplaceBack();
+                assert(list == [1, 2, 3, 42, 0]);
+            }
+
+            {
+                static struct Foo{
+                    int i;
+                    string str;
+                }
+
+                auto list = List!(Foo).build(Foo(1, "A"));
+
+                list.emplaceBack(2, "B");
+                assert(list == only(Foo(1, "A"), Foo(2, "B")));
+            }
+        }
+
+        //List.pushBack
+        pure nothrow @safe @nogc unittest{
+            {
+                auto list = List!(int).build(1, 2, 3);
+
+                list.pushBack(42);
+                assert(list == [1, 2, 3, 42]);
+            }
+
+            {
+                auto list = List!(int).build(1, 2, 3);
+
+                list.pushBack(only(4, 5, 6));
+                assert(list == [1, 2, 3, 4, 5, 6]);
+            }
+
+            {
+                auto a = List!(int).build(1, 2, 3);
+                auto b = List!(int).build(4, 5, 6);
+
+                a.pushBack(b);
+                assert(a == [1, 2, 3, 4, 5, 6]);
+            }
+
+            {
+                List!(int) list = List!(int).build(1, 2, 3);
+                int[3] tmp = [4, 5, 6];
+                list.pushBack(tmp[]);
+                assert(list == [1, 2, 3, 4, 5, 6]);
+            }
+
+            {
+                struct Range{
+                    int i;
+
+                    bool empty()(){return i == 0;}
+                    int front()(){return i;}
+                    void popFront()(){i -= 1;}
+                    //size_t length(); //no length
+                }
+
+                List!(int) list = List!(int).build(6, 5, 4);
+                list.pushBack(Range(3));
+                assert(list == [6, 5, 4, 3, 2, 1]);
+            }
+        }
+
+        //List.build
+        pure nothrow @safe @nogc unittest{
+            import std.range : only;
+
+            int[2] tmp = [3, 4];
+            auto list = List!(int).build(1, 2, tmp[], only(5, 6), List!(int).build(7, 8));
+            assert(list == [1, 2, 3, 4, 5, 6, 7, 8]);
+        }
+    }
+
+
+}

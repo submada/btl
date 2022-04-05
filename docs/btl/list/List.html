@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Struct List</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">btl
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">autoptr
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../btl/list.html">list</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/string.html">string</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/vector.html">vector</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Struct List</h1><p><code class="lang-d"><span class="typ">List</span></code> is a container that supports constant time insertion and removal of elements from anywhere in the container.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">struct</span> <span class="typ">List</span>(_Type, _Allocator, <span class="typ">bool</span> _supportGC<span class="pln"> </span><span class="pun">= </span><span class="pln">shouldAddGCRange</span><span class="pun">!</span><span class="pln">_Type</span>, <span class="typ">bool</span> _bidirectional<span class="pln"> </span><span class="pun">= </span><span class="kwd">true</span>)
+			<span class="pun">;</span>
+					</div>
+				</code>
+			</div>
+			<section><p>Fast random access is not supported. It is usually implemented as a linked list
+</p>
+
+<p>    Template parameters:
+</p>
+
+<p>        <code class="lang-d"><span class="pln">_Type</span></code> = element type.
+</p>
+
+<p>        <code class="lang-d"><span class="pln">_Allocator</span></code> = Type of the allocator object used to define the storage allocation model. By default <code class="lang-d"><a href="../../btl/list/DefaultAllocator.html"><span class="typ">DefaultAllocator</span></a></code> is used.
+</p>
+
+<p>        <code class="lang-d"><span class="pln">_supportGC</span></code>
+</p>
+
+<p>        <code class="lang-d"><span class="pln">_bidirectional</span></code>
+</p>
+</section>
+
+			<section><h2>Constructors</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(a)</span>
+						</td>
+						<td>Constructs a empty <code class="lang-d"><a href="../../btl/list/List.html"><span class="typ">List</span></a></code> with allocator <code class="lang-d"><a href="../../btl/list/List.this.html#a"><span class="pln">a</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(nil)</span>
+						</td>
+						<td>Constructs a empty <code class="lang-d"><a href="../../btl/list/List.html"><span class="typ">List</span></a></code>
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(rhs)</span>
+						</td>
+						<td>Constructs a <code class="lang-d"><a href="../../btl/list/List.html"><span class="typ">List</span></a></code> object from other list.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(range)</span>
+						</td>
+						<td>Constructs a bidirectional <code class="lang-d"><a href="../../btl/list/List.html"><span class="typ">List</span></a></code> object from range of elements.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section><h2>Properties</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.allocator.html" class="public property"><code>allocator</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="typ">CopyTypeQualifiers</span>!(This,AllocatorType)</code></td><td>Returns copy of allocator.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.begin.html" class="public property"><code>begin</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">auto</span></code></td><td></td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.cbegin.html" class="public property"><code>cbegin</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><a href="../../btl/list/List.ConstIterator.html"><span class="typ">List<wbr/></span><span class="pun">.<wbr/></span><span class="typ">ConstIterator</span></a></code></td><td></td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.empty.html" class="public property"><code>empty</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="typ">bool</span></code></td><td>Returns whether the list is empty (i.e. whether its length is 0).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.length.html" class="public property"><code>length</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="pln">size_t</span></code></td><td>Returns the length of the list, in terms of number of elements.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section><h2>Methods</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.back.html" class="public">
+								<code>back</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Returns a reference to the last element in the list.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.backCopy.html" class="public">
+								<code>backCopy</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Returns a copy of the first element in the list.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.build.html" class="public">
+								<code>build</code>
+							</a>
+							<span class="tableEntryAnnotation">(allocator, args)</span>
+						</td>
+						<td>Static function which return <code class="lang-d"><a href="../../btl/list/List.html"><span class="typ">List</span></a></code> construct from arguments <code class="lang-d"><a href="../../btl/list/List.build.html#args"><span class="pln">args</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.contains.html" class="public">
+								<code>contains</code>
+							</a>
+							<span class="tableEntryAnnotation">(elm)</span>
+						</td>
+						<td>Same as operator <code class="lang-d"><span class="kwd">in</span></code>
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.emplaceBack.html" class="public">
+								<code>emplaceBack</code>
+							</a>
+							<span class="tableEntryAnnotation">(args)</span>
+						</td>
+						<td>Appends a new element to the end of the bidirectional list. The element is constructed through <code class="lang-d"><span class="pln">emplace</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.emplaceFront.html" class="public">
+								<code>emplaceFront</code>
+							</a>
+							<span class="tableEntryAnnotation">(args)</span>
+						</td>
+						<td>Appends a new element to the begin of the list. The element is constructed through <code class="lang-d"><span class="pln">emplace</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.front.html" class="public">
+								<code>front</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Returns a reference to the first element in the list.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.frontCopy.html" class="public">
+								<code>frontCopy</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Returns a copy of the first element in the list.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.moveBack.html" class="public">
+								<code>moveBack</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Move of the first element in the list and return it.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.moveFront.html" class="public">
+								<code>moveFront</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Move of the first element in the list and return it.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.opAssign.html" class="public">
+								<code>opAssign</code>
+							</a>
+							<span class="tableEntryAnnotation">(rhs)</span>
+						</td>
+						<td>Assigns a new value <code class="lang-d"><a href="../../btl/list/List.opAssign.html#rhs"><span class="pln">rhs</span></a></code> to the list, replacing its current contents.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.opBinaryRight.html" class="public">
+								<code>opBinaryRight</code>
+							</a>
+							<span class="tableEntryAnnotation">(elm)</span>
+						</td>
+						<td>Operator <code class="lang-d"><span class="kwd">in</span></code>
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.opCmp.html" class="public">
+								<code>opCmp</code>
+							</a>
+							<span class="tableEntryAnnotation">(rhs)</span>
+						</td>
+						<td>Compares the contents of a list with another list or range.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.opDollar.html" class="public">
+								<code>opDollar</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Returns the length of the list, in terms of number of elements.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.opEquals.html" class="public">
+								<code>opEquals</code>
+							</a>
+							<span class="tableEntryAnnotation">(nil)</span>
+						</td>
+						<td>Compares the contents of a list with another list, range or null.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.opIndex.html" class="public">
+								<code>opIndex</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Return slice of all elements.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.popBack.html" class="public">
+								<code>popBack</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Pop the last element of the bidirectional list, effectively reducing its length by 1.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.popFront.html" class="public">
+								<code>popFront</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Pop the last element of the bidirectional list, effectively reducing its length by 1.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.proxySwap.html" class="public">
+								<code>proxySwap</code>
+							</a>
+							<span class="tableEntryAnnotation">(rhs)</span>
+						</td>
+						<td>Swaps the contents of <code class="lang-d"><span class="kwd">this</span></code> and <code class="lang-d"><a href="../../btl/list/List.proxySwap.html#rhs"><span class="pln">rhs</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.pushBack.html" class="public">
+								<code>pushBack</code>
+							</a>
+							<span class="tableEntryAnnotation">(range)</span>
+						</td>
+						<td>Extends the <code class="lang-d"><a href="../../btl/list/List.html"><span class="typ">List</span></a></code> by appending additional elements at the end of list.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.pushFront.html" class="public">
+								<code>pushFront</code>
+							</a>
+							<span class="tableEntryAnnotation">(range)</span>
+						</td>
+						<td>Extends the <code class="lang-d"><a href="../../btl/list/List.html"><span class="typ">List</span></a></code> by appending additional elements at the end of list.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.release.html" class="public">
+								<code>release</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Erases and deallocate the contents of the <code class="lang-d"><a href="../../btl/list/List.html"><span class="typ">List</span></a></code>, which becomes an empty list (with a length of 0 elements).
+</td>
+					</tr>
+				</table>
+			</section>
+			<section><h2>Aliases</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.AllocatorType.html" class="public">
+								<code>AllocatorType</code>
+							</a>
+						</td>
+						<td>Type of the allocator object used to define the storage allocation model. By default <code class="lang-d"><a href="../../btl/list/DefaultAllocator.html"><span class="typ">DefaultAllocator</span></a></code> is used.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.append.html" class="public">
+								<code>append</code>
+							</a>
+						</td>
+						<td>Alias to pushBack
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.bidirectional.html" class="public">
+								<code>bidirectional</code>
+							</a>
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.clear.html" class="public">
+								<code>clear</code>
+							</a>
+						</td>
+						<td>Erases and deallocate the contents of the <code class="lang-d"><a href="../../btl/list/List.html"><span class="typ">List</span></a></code>, which becomes an empty list (with a length of 0 elements).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.ConstIterator.html" class="public">
+								<code>ConstIterator</code>
+							</a>
+						</td>
+						<td>Const iterator for list.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.ElementReferenceType.html" class="public">
+								<code>ElementReferenceType</code>
+							</a>
+						</td>
+						<td>Type of reference to elements.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.ElementType.html" class="public">
+								<code>ElementType</code>
+							</a>
+						</td>
+						<td>Type of elements.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.hasStatelessAllocator.html" class="public">
+								<code>hasStatelessAllocator</code>
+							</a>
+						</td>
+						<td>True if allocator doesn't have state.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.Iterator.html" class="public">
+								<code>Iterator</code>
+							</a>
+						</td>
+						<td>Iterator for list.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.opOpAssign.html" class="public">
+								<code>opOpAssign</code>
+							</a>
+						</td>
+						<td>Operator <code class="lang-d"><span class="pun">~=</span></code> is same as append/pushBack
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.prepend.html" class="public">
+								<code>prepend</code>
+							</a>
+						</td>
+						<td>Alias to pushFront
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.put.html" class="public">
+								<code>put</code>
+							</a>
+						</td>
+						<td>put
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/list/List.supportGC.html" class="public">
+								<code>supportGC</code>
+							</a>
+						</td>
+						<td></td>
+					</tr>
+				</table>
+			</section>
+			<section><h2>Example</h2>
+
+<pre class="code"><code class="lang-d"><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">range </span><span class="pun">: </span><span class="pln">only</span><span class="pun">;
+</span><span class="kwd">import </span><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">algorithm </span><span class="pun">: </span><span class="pln">map</span><span class="pun">, </span><span class="pln">equal</span><span class="pun">;
+
+</span><span class="kwd">static struct </span><span class="typ">Foo</span><span class="pun">{
+    </span><span class="typ">int </span><span class="pln">i</span><span class="pun">;
+    </span><span class="typ">string </span><span class="pln">str</span><span class="pun">;
+}
+
+</span><span class="typ">List</span><span class="pun">!(</span><span class="typ">Foo</span><span class="pun">) </span><span class="pln">list</span><span class="pun">;
+
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">list<wbr/></span><span class="pun">.</span><span class="pln">empty</span><span class="pun">);
+
+</span><span class="pln">list<wbr/></span><span class="pun">.</span><span class="pln">append</span><span class="pun">(</span><span class="typ">Foo</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="str">"A"</span><span class="pun">));
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">list<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+
+</span><span class="pln">list<wbr/></span><span class="pun">.</span><span class="pln">append</span><span class="pun">(</span><span class="pln">only</span><span class="pun">(</span><span class="typ">Foo</span><span class="pun">(</span><span class="lit">2</span><span class="pun">, </span><span class="str">"B"</span><span class="pun">), </span><span class="typ">Foo</span><span class="pun">(</span><span class="lit">3</span><span class="pun">, </span><span class="str">"C"</span><span class="pun">)));
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">list<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">3</span><span class="pun">);
+
+</span><span class="pln">list<wbr/></span><span class="pun">.</span><span class="pln">emplaceBack</span><span class="pun">(</span><span class="lit">4</span><span class="pun">, </span><span class="str">"D"</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">list<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">4</span><span class="pun">);
+
+
+</span><span class="pln">list </span><span class="pun">= </span><span class="typ">List</span><span class="pun">!(</span><span class="typ">Foo</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="typ">Foo</span><span class="pun">(-</span><span class="lit">1</span><span class="pun">, </span><span class="str">"X"</span><span class="pun">), </span><span class="typ">Foo</span><span class="pun">(-</span><span class="lit">2</span><span class="pun">, </span><span class="str">"Y"</span><span class="pun">));
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">equal</span><span class="pun">(</span><span class="pln">list</span><span class="pun">[]<wbr/>.</span><span class="pln">map</span><span class="pun">!(</span><span class="pln">e </span><span class="pun">=&gt; </span><span class="pln">e<wbr/></span><span class="pun">.</span><span class="pln">str</span><span class="pun">), </span><span class="pln">only</span><span class="pun">(</span><span class="str">"X"</span><span class="pun">, </span><span class="str">"Y"</span><span class="pun">)));
+
+</span><span class="pln">list<wbr/></span><span class="pun">.</span><span class="pln">release</span><span class="pun">();
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">list<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">0</span><span class="pun">);
+
+</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>github.com/submada/basic_string, Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

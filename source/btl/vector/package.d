@@ -577,10 +577,6 @@ template Vector(
             }
             else{
                 this.append(forward!range);
-                /+while(!range.empty){
-                    this.append(range.front);
-                    range.popFront;
-                }+/
             }
         }
 
@@ -793,20 +789,43 @@ template Vector(
                 assert(vec.empty);
                 --------------------
         */
-        public ElementType popBack()(ElementType def = ElementType.init)scope nothrow{
-            if(this.empty)
-                return move(def);
+        public auto popBack(T = Unqual!ElementType)()scope nothrow
+        if(is(T == Unqual!ElementType) || is(T == void)){
+            
+            if(this.length == 0){
+                static if(is(T == void))
+                    return;
+                else
+                    return ElementType.init;
+            }
+
+            return _pop_back_impl!T();
+        }
+
+        /// ditto
+        public auto popBack(T : Unqual!ElementType = Unqual!ElementType)(ElementType def = ElementType.init)scope nothrow{
+            return (this.length == 0)
+                ? move(def)
+                : _pop_back_impl!T();
+        }
+
+        private auto _pop_back_impl(T)()scope nothrow
+        if(is(T == Unqual!ElementType) || is(T == void)){
+            assert(this.length != 0);
 
             const size_t new_length = (this.length - 1);
             this.storage.length = new_length;
 
-            ElementType* ptr = (()@trusted => this.ptr + new_length )();
-            ElementType result = move(*ptr);
+            static if(!is(T == void)){
+                ElementType* ptr = (()@trusted => this.ptr + new_length )();
+                ElementType result = move(*ptr);
 
-            ///TODO can be destruct ignored for moved element?
-            ///destructImpl!false(*ptr);   //destroyElement(*ptr);
+                ///TODO can be destruct ignored for moved element?
+                ///destructImpl!false(*ptr);   //destroyElement(*ptr);
 
-            return move(result);
+                return move(result);
+            }
+
         }
 
 
@@ -2444,12 +2463,48 @@ template Vector(
             Returns a reference to the first element in the vector.
 
             Calling this function on an empty container causes undefined behavior.
-
-
         */
         public ref inout(ElementType) front()inout return pure nothrow @system @nogc{
             this._bounds_check(0);
             return *this.ptr;
+        }
+
+
+
+        /**
+            Returns a copy of the first element in the vector.
+
+            Examples:
+                --------------------
+                auto vec = Vector!(int, 10).build(1, 2, 3);
+
+                assert(vec.frontCopy == 1);
+                assert(vec == [1, 2, 3]);
+                --------------------
+        */
+        public auto frontCopy(this This)()scope{
+            this._bounds_check(0);
+
+            return *(()@trusted => this.ptr )();
+        }
+
+
+
+        /**
+            Move of the first element in the vector and return it.
+
+            Examples:
+                --------------------
+                auto vec = Vector!(int, 10).build(1, 2, 3);
+
+                assert(vec.moveFront == 1);
+                assert(vec == [0, 2, 3]);
+                --------------------
+        */
+        public ElementType moveFront()()scope{
+            this._bounds_check(0);
+
+            return move(*(()@trusted => this.ptr )());
         }
 
 
@@ -2460,7 +2515,8 @@ template Vector(
             Calling this function on an empty container causes undefined behavior.
         */
         public ref inout(ElementType) back()inout return pure nothrow @system @nogc{
-            this._bounds_check(0);
+            this._bounds_check(0);            
+
             return *((this.ptr - 1) + this.length) ;
         }
 
@@ -2473,34 +2529,31 @@ template Vector(
                 --------------------
                 auto vec = Vector!(int, 10).build(1, 2, 3);
 
-                assert(vec.first == 1);
+                assert(vec.backCopy == 3);
+                assert(vec == [1, 2, 3]);
                 --------------------
         */
-        public auto first(this This)()scope{
+        public auto backCopy(this This)()scope{
             this._bounds_check(0);
 
-            return *(()@trusted => this.ptr )();
+            return *(()@trusted => (this.ptr + (length - 1)) )();
         }
 
 
 
         /**
-            Returns a copy to the last element in the vector.
-
-            Calling this function on an empty container causes undefined behavior.
+            Move of the first element in the vector and return it.
 
             Examples:
                 --------------------
                 auto vec = Vector!(int, 10).build(1, 2, 3);
 
-                assert(vec.last == 3);
+                assert(vec.moveBack == 3);
+                assert(vec == [1, 2, 0]);
                 --------------------
         */
-        public auto last(this This)()scope{
+        public ElementType moveBack()()scope{
             this._bounds_check(0);
-            //const size_t length = this.length;
-            //if(length == 0)assert(0, "empty vector");
-
             return *(()@trusted => (this.ptr + (length - 1)) )();
         }
 
@@ -3136,6 +3189,53 @@ version(unittest){
             assert(slice.length == vec.length);
             // slice contains dangling pointer!
         }
+
+        //Vector.front
+        pure nothrow @nogc @system unittest{
+            auto vec = Vector!(int, 10).build(1, 2, 3);
+
+            assert(vec.front == 1);
+        }
+
+        //Vector.frontCopy
+        pure nothrow @nogc @safe unittest{
+            auto vec = Vector!(int, 10).build(1, 2, 3);
+
+            assert(vec.frontCopy == 1);
+            assert(vec == [1, 2, 3]);
+        }
+
+        //Vector.moveFront
+        pure nothrow @nogc @safe unittest{
+            auto vec = Vector!(int, 10).build(1, 2, 3);
+
+            assert(vec.moveFront == 1);
+            assert(vec == [1, 2, 3]);
+        }
+
+        //Vector.back
+        pure nothrow @nogc @system unittest{
+            auto vec = Vector!(int, 10).build(1, 2, 3);
+
+            assert(vec.back == 3);
+        }
+
+        //Vector.backCopy
+        pure nothrow @nogc @safe unittest{
+            auto vec = Vector!(int, 10).build(1, 2, 3);
+
+            assert(vec.backCopy == 3);
+            assert(vec == [1, 2, 3]);
+        }
+
+        //Vector.moveBack
+        pure nothrow @nogc @safe unittest{
+            auto vec = Vector!(int, 10).build(1, 2, 3);
+
+            assert(vec.moveBack == 3);
+            assert(vec == [1, 2, 3]);
+        }
+
 
         //Vector.popBack
         pure nothrow @nogc @safe unittest{
@@ -3831,20 +3931,6 @@ version(unittest){
                 assert(pos == 2);
                 assert(vec == [1, 2,  -1]);
             }
-        }
-
-        //Vector.first
-        pure nothrow @nogc @safe unittest{
-            auto vec = Vector!(int, 10).build(1, 2, 3);
-
-            assert(vec.first == 1);
-        }
-
-        //Vector.last
-        pure nothrow @nogc @safe unittest{
-            auto vec = Vector!(int, 10).build(1, 2, 3);
-
-            assert(vec.last == 3);
         }
 
         //Vector.at

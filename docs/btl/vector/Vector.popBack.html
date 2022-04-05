@@ -57,6 +57,11 @@ $('#symbolSearchPane').show();</script>
 				</li>
 				<li>
 					<div class="module ">
+						<a href="../../btl/list.html">list</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
 						<a href="../../btl/string.html">string</a>
 					</div>
 				</li>
@@ -75,7 +80,12 @@ $('#symbolSearchPane').show();</script>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<a href="../../btl/vector/Vector.ElementType.html"><span class="typ">Vector<wbr/></span><span class="pun">.<wbr/></span><span class="typ">ElementType</span></a> <span class="pln">popBack</span>
+			<span class="kwd">auto</span> <span class="pln">popBack</span>(T)<span class="pun">(</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">nothrow scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="pln">T </span><span class="pun">== </span><span class="typ">Unqual</span><span class="pun">!</span><span class="typ">ElementType</span><span class="pun">) || </span><span class="kwd">is</span><span class="pun">(</span><span class="pln">T </span><span class="pun">== </span><span class="typ">void</span><span class="pun">)</span><span class="pun">);</span>
+			<br/>
+			<br/>
+			<span class="kwd">auto</span> <span class="pln">popBack</span>(T)
 			<span class="pun">(</span>
 			<br/>
 			&nbsp;&nbsp;<a href="../../btl/vector/Vector.ElementType.html"><span class="typ">Vector<wbr/></span><span class="pun">.<wbr/></span><span class="typ">ElementType</span></a> <span class="pln">def</span> <span class="pun">=</span> <span class="typ">ElementType<wbr/></span><span class="pun">.</span><span class="pln">init</span>
