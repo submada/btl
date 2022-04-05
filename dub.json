@@ -9,7 +9,8 @@
 	"dependencies" : {
 		"btl:autoptr" : "*",
 		"btl:string" : "*",
-		"btl:vector" : "*"
+		"btl:vector" : "*",
+		"btl:list" : "*"
 	},
 	"sourceFiles" : [
 		"source/btl/package.d"
@@ -92,7 +93,7 @@
 		},
 		{
 			"name" : "list",
-			"description" : "List supporting custom allcoators.",
+			"description" : "Linked-list supporting custom allcoators.",
 			"targetType" : "library",
 			"importPaths" : [
 				"source/"
@@ -112,21 +113,6 @@
 						"BTL_GC_RANGE_TRACK",
 					]
 				}
-			]
-		}
-	],
-	"configurations" : [
-		{
-			"name": "default"
-		},
-		{
-			"name": "unittest",
-			"versions": [
-				"BTL_GC_RANGE_COUNT", 
-				"BTL_GC_RANGE_TRACK",
-				"BTL_VECTOR_BOUNDS_CHECK",
-				"BTL_AUTOPTR_COUNT_CONSTRUCTIONS",
-				"BTL_AUTOPTR_COUNT_ALLOCATIONS",
 			]
 		}
 	],
