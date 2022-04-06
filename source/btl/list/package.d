@@ -398,8 +398,12 @@ public template List(
             this(forward!rhs, Forward.init);
         }
 
-        //forward ctor impl:
-        private this(Rhs, this This)(scope auto ref Rhs rhs, Forward)scope
+
+
+        /**
+            Forward constructor.
+        */
+        public this(Rhs, this This)(scope auto ref Rhs rhs, Forward)scope
         if(isList!Rhs && isConstructable!(Rhs, This)){
 
             //move:
@@ -1475,7 +1479,7 @@ public template List(
 
 
         /**
-            put
+            Alias to pushBack
         */
         public alias put = pushBack;
 

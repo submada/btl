@@ -999,7 +999,11 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			this._ctor(rhs.storage.chars);
 		}
 
-		/// ditto
+
+
+        /**
+            Forward constructor.
+        */
 		public this(this This, Rhs)(scope auto ref Rhs rhs, Forward)scope
 		if(isBasicString!Rhs && isConstructable!(Rhs, This)){
 

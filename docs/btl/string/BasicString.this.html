@@ -133,6 +133,11 @@ $('#symbolSearchPane').show();</script>
 							Function <code>BasicString.this</code>
 						</a>
 					</li>
+					<li>
+						<a href="#11">
+							Function <code>BasicString.this</code>
+						</a>
+					</li>
 				</ul>
 			</nav><h2 id="0">Function BasicString.this</h2><p>Constructs a empty <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object.
 </p>
@@ -446,18 +451,6 @@ $('#symbolSearchPane').show();</script>
 			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope scope</span>
 			<br/>
 			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isBasicString</span><span class="pun">!</span><span class="typ">Rhs</span><span class="pun">);</span>
-			<br/>
-			<br/>
-			<span class="pln">this</span>(This, Rhs)
-			<span class="pun">(</span>
-			<br/>
-			&nbsp;&nbsp;<span class="kwd">auto scope ref </span><span class="typ">Rhs</span> <span class="pln">rhs</span><span class="pun">,</span>
-			<br/>
-			&nbsp;&nbsp;<a href="../../btl/string/Forward.html"><span class="typ">Forward</span></a> <span class="pln"></span>
-			<br/>
-			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope scope</span>
-			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isBasicString</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; </span><span class="pln">isConstructable</span><span class="pun">!(</span><span class="typ">Rhs</span><span class="pun">, </span><span class="typ">This</span><span class="pun">)</span><span class="pun">);</span>
 					</div>
 				</code>
 			</div>
@@ -496,7 +489,26 @@ $('#symbolSearchPane').show();</script>
 	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">b </span><span class="pun">== </span><span class="str">"123"</span><span class="pun">);
 }</span></code></pre>
 </section>
-<h2 id="9">Function BasicString.this</h2><p>Copy constructor if <code class="lang-d"><a href="../../btl/string/BasicString.AllocatorType.html"><span class="typ">AllocatorType</span></a></code> is statless.
+<h2 id="9">Function BasicString.this</h2><p>Forward constructor.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="pln">this</span>(This, Rhs)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">auto scope ref </span><span class="typ">Rhs</span> <span class="pln">rhs</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<a href="../../btl/string/Forward.html"><span class="typ">Forward</span></a> <span class="pln"></span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isBasicString</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; </span><span class="pln">isConstructable</span><span class="pun">!(</span><span class="typ">Rhs</span><span class="pun">, </span><span class="typ">This</span><span class="pun">)</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			
+			<h2 id="10">Function BasicString.this</h2><p>Copy constructor if <code class="lang-d"><a href="../../btl/string/BasicString.AllocatorType.html"><span class="typ">AllocatorType</span></a></code> is statless.
 </p>
 			<div class="prototype">
 				<code class="lang-d">
@@ -514,7 +526,7 @@ $('#symbolSearchPane').show();</script>
 </p>
 </section>
 
-			<h2 id="10">Function BasicString.this</h2><p>Copy constructor if <code class="lang-d"><a href="../../btl/string/BasicString.AllocatorType.html"><span class="typ">AllocatorType</span></a></code> has state.
+			<h2 id="11">Function BasicString.this</h2><p>Copy constructor if <code class="lang-d"><a href="../../btl/string/BasicString.AllocatorType.html"><span class="typ">AllocatorType</span></a></code> has state.
 </p>
 			<div class="prototype">
 				<code class="lang-d">

@@ -403,7 +403,11 @@ template Vector(
             this(forward!rhs, Forward.init);
         }
 
-        //forward ctor impl:
+
+
+        /**
+            Forward constructor.
+        */
         public this(Rhs, this This)(scope auto ref Rhs rhs, Forward)scope
         if(isVector!Rhs && isConstructable!(Rhs, This)){
 

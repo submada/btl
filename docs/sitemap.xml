@@ -262,6 +262,7 @@
 <url><loc>http://127.0.0.1/btl/list/List.this.html</loc></url>
 <url><loc>http://127.0.0.1/btl/list/List.this.html</loc></url>
 <url><loc>http://127.0.0.1/btl/list/List.this.html</loc></url>
+<url><loc>http://127.0.0.1/btl/list/List.this.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.allocator.html</loc></url>
@@ -443,6 +444,7 @@
 <url><loc>http://127.0.0.1/btl/vector/Vector.shrinkToFit.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.small.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.supportGC.html</loc></url>
+<url><loc>http://127.0.0.1/btl/vector/Vector.this.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.this.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.this.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.this.html</loc></url>

@@ -69,7 +69,7 @@
 		{
 			"name" : "vector",
 			"description" : "Dynamic array supporting custom allcoators.",
-			"targetType" : "sourceLibrary",
+			"targetType" : "library",
 			"importPaths" : [
 				"source/"
 			],

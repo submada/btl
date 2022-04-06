@@ -98,6 +98,11 @@ $('#symbolSearchPane').show();</script>
 							Function <code>Vector.this</code>
 						</a>
 					</li>
+					<li>
+						<a href="#4">
+							Function <code>Vector.this</code>
+						</a>
+					</li>
 				</ul>
 			</nav><h2 id="0">Function Vector.this</h2><p>Constructs a empty <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> with allocator <code class="lang-d"><a href="../../btl/vector/Vector.this.html#a"><span class="pln">a</span></a></code>.
 </p>
@@ -217,7 +222,26 @@ $('#symbolSearchPane').show();</script>
     </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec </span><span class="pun">== [</span><span class="lit">3</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">1</span><span class="pun">]);
 }</span></code></pre>
 </section>
-<h2 id="3">Function Vector.this</h2><p>Constructs a <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> object from range of elements.
+<h2 id="3">Function Vector.this</h2><p>Forward constructor.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="pln">this</span>(Rhs, This)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">auto scope ref </span><span class="typ">Rhs</span> <span class="pln">rhs</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<a href="../../btl/vector/Forward.html"><span class="typ">Forward</span></a> <span class="pln"></span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isVector</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; </span><span class="pln">isConstructable</span><span class="pun">!(</span><span class="typ">Rhs</span><span class="pun">, </span><span class="typ">This</span><span class="pun">)</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			
+			<h2 id="4">Function Vector.this</h2><p>Constructs a <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> object from range of elements.
 </p>
 			<div class="prototype">
 				<code class="lang-d">
