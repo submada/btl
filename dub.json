@@ -19,7 +19,7 @@
 		{
 			"name" : "autoptr",
 			"description" : "Smart pointers.",
-			"targetType" : "library",
+			"targetType" : "sourceLibrary",
 			"importPaths" : [
 				"source/"
 			],
@@ -45,7 +45,7 @@
 		{
 			"name" : "string",
 			"description" : "Mutable @nogc string struct using `std.experimental.allocator` for allocations.",
-			"targetType" : "library",
+			"targetType" : "sourceLibrary",
 			"importPaths" : [
 				"source/"
 			],
@@ -69,7 +69,7 @@
 		{
 			"name" : "vector",
 			"description" : "Dynamic array supporting custom allcoators.",
-			"targetType" : "library",
+			"targetType" : "sourceLibrary",
 			"importPaths" : [
 				"source/"
 			],
@@ -94,7 +94,7 @@
 		{
 			"name" : "list",
 			"description" : "Linked-list supporting custom allcoators.",
-			"targetType" : "library",
+			"targetType" : "sourceLibrary",
 			"importPaths" : [
 				"source/"
 			],
