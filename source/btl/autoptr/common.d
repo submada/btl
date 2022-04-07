@@ -476,7 +476,7 @@ public template ControlBlock(_Shared, _Weak = void){
 			}
 		}
 
-		package final void release(bool weak, this This)()@trusted pure nothrow @nogc{
+		public final void release(bool weak, this This)()@trusted pure nothrow @nogc{
 			enum bool atomic = is(This == shared);
 			auto self = cast(Unconst!This*)&this;
 

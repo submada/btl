@@ -40,7 +40,7 @@ if(T.length == 1){
 private struct ListNode(Type, bool _bidirectional){
     public alias ElementType = Type;
     public enum bool bidirectional = _bidirectional;
-    
+
     private Type element;
     private ListNode* next;
     static if(bidirectional)
@@ -103,8 +103,7 @@ public template ListRange(Type, bool _bidirectional, bool _reverse = false){
             alias opUnary = front;
         }
 
-
-        public void popFront()scope pure nothrow @nogc @safe{
+        public void popFront()()scope pure nothrow @nogc @safe{
             assert(node !is null);
             static if(_reverse){
                 static assert(_bidirectional);
@@ -947,7 +946,7 @@ public template List(
                 ? forward!def
                 : _pop_front_impl!T();
         }
-        
+
         private auto _pop_front_impl(T)()scope nothrow
         if(is(T == Unqual!ElementType) || is(T == void)){
             ListNode* node = this._first;
@@ -1134,7 +1133,7 @@ public template List(
             scope(exit){
                 this._length += len;
             }
-            
+
             if(count != 0){
                 auto node = this._make_node(val);
 
@@ -1153,7 +1152,7 @@ public template List(
             return len;
         }
 
-        
+
 
         /**
             Alias to pushFront
@@ -1639,7 +1638,7 @@ public template List(
             const bool is_empty = not_empty
                 ? false
                 : (this._first is null);
-            
+
             if(is_empty){
                 this._first = node;
             }
