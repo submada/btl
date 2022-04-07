@@ -186,6 +186,27 @@ template Vector(
 
 
         /**
+            Returns whether the vector is full (i.e. whether its length is equal to maximalCapacity).
+
+            Examples:
+                --------------------
+                Vector!(int, 4, void) vec;
+                assert(vec.empty);
+                assert(vec.maximalCapacity == vec.minimalCapacity);
+
+                for(int i = 0; i < vec.maximalCapacity; ++i)
+                    vec.append(i);
+
+                assert(vec.full);
+                --------------------
+        */
+        public @property bool full()const scope pure nothrow @safe @nogc{
+            return (this.length == maximalCapacity);
+        }
+
+
+
+        /**
             Returns the length of the vector, in terms of number of elements.
 
             This is the number of actual elements that conform the contents of the `Vector`, which is not necessarily equal to its storage capacity.
@@ -3128,7 +3149,7 @@ private{
 //Vector examples:
 version(unittest){
 
-    private alias ZeroVector(T, size_t N) = .Vector!(T, 0);
+    private alias ZeroVector(T, size_t N, A = Mallocator) = .Vector!(T, 0, A);
 
     import std.range : only;
     static foreach(alias Vector; AliasSeq!(.Vector, ZeroVector)){
@@ -3146,6 +3167,18 @@ version(unittest){
 
             vec.append(42);
             assert(!vec.empty);
+        }
+
+        //Vector.full
+        pure nothrow @safe @nogc unittest{
+            Vector!(int, 4, void) vec;
+            assert(vec.empty);
+            assert(vec.maximalCapacity == vec.minimalCapacity);
+
+            for(int i = 0; i < vec.maximalCapacity; ++i)
+                vec.append(i);
+
+            assert(vec.full);
         }
 
         //Vector.length
