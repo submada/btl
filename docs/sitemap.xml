@@ -396,6 +396,7 @@
 <url><loc>http://127.0.0.1/btl/vector/Vector.erase.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.front.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.frontCopy.html</loc></url>
+<url><loc>http://127.0.0.1/btl/vector/Vector.full.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.hasStatelessAllocator.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.insert.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.insert.html</loc></url>

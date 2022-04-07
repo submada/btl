@@ -282,6 +282,7 @@ var symbols = [
 {name: 'btl.vector.Vector.erase', kind: "functiondeclaration", path: './btl/vector/Vector.erase.html', attributes: ["nothrow", "scope"]},
 {name: 'btl.vector.Vector.front', kind: "functiondeclaration", path: './btl/vector/Vector.front.html', attributes: ["inout", "pure", "nothrow", "nogc", "ref", "system"]},
 {name: 'btl.vector.Vector.frontCopy', kind: "functiondeclaration", path: './btl/vector/Vector.frontCopy.html', attributes: ["auto", "scope"]},
+{name: 'btl.vector.Vector.full', kind: "functiondeclaration", path: './btl/vector/Vector.full.html', attributes: ["const", "pure", "nothrow", "nogc", "property", "scope", "safe"]},
 {name: 'btl.vector.Vector.hasStatelessAllocator', kind: "aliasdeclaration", path: './btl/vector/Vector.hasStatelessAllocator.html', attributes: []},
 {name: 'btl.vector.Vector.insert', kind: "functiondeclaration", path: './btl/vector/Vector.insert.html', attributes: ["scope"]},
 {name: 'btl.vector.Vector.length', kind: "functiondeclaration", path: './btl/vector/Vector.length.html', attributes: ["const", "pure", "nothrow", "nogc", "property", "scope", "safe"]},
