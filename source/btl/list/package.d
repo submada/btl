@@ -843,12 +843,24 @@ public template List(
         public void proxySwap()(ref scope typeof(this) rhs)scope{
             import std.algorithm.mutation : swap;
 
-            static if(!hasStatelessAllocator)
+            (ref typeof(this) a, ref typeof(this) b){
+                static if(!hasStatelessAllocator)
+                    swap(a._allocator, b._allocator);
+
+                swap(a._length, b._length);
+                swap(a._first, b._first);
+                swap(a._last, b._last);
+            }(
+                *(()@trusted => &this )(),
+                *(()@trusted => &rhs )()
+            );
+
+            /*static if(!hasStatelessAllocator)
                 swap(this._allocator, rhs._allocator);
 
             swap(this._length, rhs._length);
             swap(this._first, rhs._first);
-            swap(this._last, rhs._last);
+            swap(this._last, rhs._last);*/
         }
 
 

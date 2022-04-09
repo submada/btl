@@ -103,7 +103,6 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
     */
 
     void check_dtor()(){
-
         static assert(!isIntrusive!_Type);
 
         static assert(is(DestructorType!_Type : _DestructorType),

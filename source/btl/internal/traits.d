@@ -161,7 +161,8 @@ else{
 
 
 import std.traits : ReturnType;
-import std.range : empty, popFront, front;
+import std.range : empty, popFront, front, popBack, back, save, ElementType;
+
 template isBtlInputRange(R){
 
     static if(isInputRange!R)
@@ -179,4 +180,9 @@ template isBtlInputRange(R){
     }
 };
 
+enum bool isBtlForwardRange(R) = isBtlInputRange!R
+    && is(ReturnType!((R r) => r.save) == R);
 
+enum bool isBtlBidirectionalRange(R) = isBtlForwardRange!R
+    && is(typeof((R r) => r.popBack))
+    && is(ReturnType!((R r) => r.back) == ElementType!R);

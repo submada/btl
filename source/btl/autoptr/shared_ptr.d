@@ -11,8 +11,6 @@ import btl.internal.traits;
 import btl.internal.gc;
 
 import btl.autoptr.common;
-//import btl.autoptr.rc_ptr : RcPtr, isRcPtr;
-//import btl.autoptr.intrusive_ptr : IntrusivePtr, isIntrusivePtr;
 
 
 
@@ -226,16 +224,20 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 
 
 
-		// necessary for btl.autoptr.unique_ptr.sharedPtr
-		package this(C, Elm, this This)(C* control, Elm element)@safe pure nothrow @nogc
-		if(true
-			&& is(C* : GetControlType!This*)
-			&& is(Elm : GetElementReferenceType!This)
-			&& !is(This == shared)
-		){
-			this._control = control;
-			this._element = element;
+		/**
+			Constructs a `SharedPtr` without managed object. Same as `SharedPtr.init`
+
+			Examples:
+				--------------------
+				SharedPtr!long x = null;
+
+				assert(x == null);
+				assert(x == SharedPtr!long.init);
+				--------------------
+		*/
+		public this(this This)(typeof(null) nil)pure nothrow @safe @nogc{
 		}
+
 
 
 		/**
@@ -272,21 +274,6 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 				}
 
 			}
-		}
-
-
-		/**
-			Constructs a `SharedPtr` without managed object. Same as `SharedPtr.init`
-
-			Examples:
-				--------------------
-				SharedPtr!long x = null;
-
-				assert(x == null);
-				assert(x == SharedPtr!long.init);
-				--------------------
-		*/
-		public this(this This)(typeof(null) nil)pure nothrow @safe @nogc{
 		}
 
 
@@ -415,6 +402,19 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 			&& !isMoveCtor!(This, rhs)
 		){
 			this(forward!rhs, Forward.init);
+		}
+
+
+
+		//
+		private this(C, Elm, this This)(C* control, Elm element)@safe pure nothrow @nogc
+		if(true
+			&& is(C* : GetControlType!This*)
+			&& is(Elm : GetElementReferenceType!This)
+			&& !is(This == shared)
+		){
+			this._control = control;
+			this._element = element;
 		}
 
 
@@ -566,15 +566,54 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 					assert(pcx.useCount == 2);
 
 				}
+
+				import btl.autoptr.rc_ptr;
+				{
+					SharedPtr!long sp = SharedPtr!long.make(10);
+					RcPtr!long rc = RcPtr!long.make(20);
+
+					assert(sp.useCount == 1);
+					assert(rc.useCount == 1);
+					sp = rc;
+
+					assert(sp.get == 20);
+					assert(rc.useCount == 2);
+				}
+
+				import btl.autoptr.intrusive_ptr;
+				{
+					static struct Foo{
+						private SharedControlBlock control;
+						int i;
+
+						this(int i)pure nothrow @safe @nogc{
+							this.i = i;
+						}
+					}
+
+					SharedPtr!Foo sp = SharedPtr!Foo.make(10);
+					IntrusivePtr!Foo ip = IntrusivePtr!Foo.make(20);
+
+					assert(sp.useCount == 1);
+					assert(ip.useCount == 1);
+					sp = ip;
+
+					assert(sp.get.i== 20);
+					assert(ip.useCount == 2);
+				}
 				--------------------
 		*/
 		public void opAssign(MemoryOrder order = MemoryOrder.seq, Rhs, this This)(scope auto ref Rhs desired)scope
-		if(    isSharedPtr!Rhs
+		if(    isSmartPtr!Rhs   //(isSharedPtr!Rhs || isRcPtr!Rhs || isIntrusivePtr!Rhs)
 			&& isAssignable!(desired, This)
 			&& !is(Rhs == shared)
 		){
+			//RcPtr and IntrusivePtr
+			static if(!isSharedPtr!Rhs){
+				this.opAssign!order(UnqualSmartPtr!This(forward!desired));
+			}
 			// shared assign:
-			static if(is(This == shared)){
+			else static if(is(This == shared)){
 				this.lockSmartPtr!(
 					(ref scope self, scope auto ref Rhs x) => self.opAssign!order(forward!x)
 				)(forward!desired);
@@ -610,17 +649,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 
 					desired._const_set_counter(null);
 				}();
-
 			}
-		}
-
-		///ditto
-		public void opAssign(MemoryOrder order = MemoryOrder.seq, Rhs, this This)(scope auto ref Rhs desired)scope
-		if(    (isSmartPtr!Rhs && !isSharedPtr!Rhs) //(isRcPtr!Rhs || isIntrusivePtr!Rhs)
-			&& isAssignable!(desired, This)
-			&& !is(Rhs == shared)
-		){
-			this.opAssign!order(UnqualSmartPtr!This(forward!desired));
 		}
 
 
@@ -2953,7 +2982,7 @@ version(unittest){
 	}
 
 
-	//opAssign(SharedPtr)
+	//opAssign(SmartPtr)
 	pure nothrow @nogc unittest{
 
 		{
@@ -2998,7 +3027,44 @@ version(unittest){
 			assert(pcx.useCount == 2);
 
 		}
+
+		import btl.autoptr.rc_ptr;
+		{
+			SharedPtr!long sp = SharedPtr!long.make(10);
+			RcPtr!long rc = RcPtr!long.make(20);
+
+			assert(sp.useCount == 1);
+			assert(rc.useCount == 1);
+			sp = rc;
+
+			assert(sp.get == 20);
+			assert(rc.useCount == 2);
+		}
+
+		import btl.autoptr.intrusive_ptr;
+		{
+			static struct Foo{
+				private SharedControlBlock control;
+				int i;
+
+				this(int i)pure nothrow @safe @nogc{
+					this.i = i;
+				}
+			}
+
+			SharedPtr!Foo sp = SharedPtr!Foo.make(10);
+			IntrusivePtr!Foo ip = IntrusivePtr!Foo.make(20);
+
+			assert(sp.useCount == 1);
+			assert(ip.useCount == 1);
+			sp = ip;
+
+			assert(sp.get.i== 20);
+			assert(ip.useCount == 2);
+		}
 	}
+
+
 
 	//opAssign(null)
 	nothrow @safe @nogc unittest{

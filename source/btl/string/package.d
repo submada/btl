@@ -1682,12 +1682,18 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				assert(b == "2");
 				--------------------
 		*/
-		public void proxySwap(ref scope typeof(this) rhs)scope pure nothrow @trusted @nogc{
+		public void proxySwap(scope ref typeof(this) rhs)scope pure nothrow @trusted @nogc{
 			import std.algorithm.mutation : swap;
-			swap(this.storage, rhs.storage);
+			swap(
+                *(()@trusted => &this.storage )(),
+                *(()@trusted => &rhs.storage )()
+            );
 
 			static if(!hasStatelessAllocator)
-				swap(this._allocator, rhs._allocator);
+                swap(
+                    *(()@trusted => &this._allocator )(),
+                    *(()@trusted => &rhs._allocator )()
+                );
 
 		}
 

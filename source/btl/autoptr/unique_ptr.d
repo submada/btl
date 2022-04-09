@@ -12,25 +12,48 @@ import btl.internal.traits;
 static import btl.autoptr.rc_ptr;
 import btl.autoptr.common;
 
+
+
 /**
     Alias to `btl.autoptr.rc_ptr.dynCast`.
 */
 public alias dynCast = btl.autoptr.rc_ptr.dynCast;
+
+
 
 /**
     Alias to `btl.autoptr.rc_ptr.dynCastMove`.
 */
 public alias dynCastMove = btl.autoptr.rc_ptr.dynCastMove;
 
+
+
 /**
     Alias to `btl.autoptr.rc_ptr.first`.
 */
 public alias first = btl.autoptr.rc_ptr.first;
 
+
+
 /**
     Alias to `btl.autoptr.rc_ptr.share`.
 */
 public alias share = btl.autoptr.rc_ptr.share;
+
+
+
+/**
+    Check if type `T` is `UniquePtr`.
+*/
+public template isUniquePtr(T){
+    import std.traits : isInstanceOf;
+
+    static if(isRcPtr!T)
+        enum bool isUniquePtr = is(T.ControlType == immutable); //is(GetControlType!T == immutable);
+    else
+        enum bool isUniquePtr = false;
+}
+
 
 
 /**

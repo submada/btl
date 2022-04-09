@@ -1212,7 +1212,7 @@ package template MakeEmplace(_Type, _DestructorType, _ControlType, _AllocatorTyp
 		Select, CopyTypeQualifiers,
 		Unqual, Unconst, PointerTarget;
 
-	static assert(isIntrusive!_Type == 0);
+	///static assert(isIntrusive!_Type == 0);
 
 	static assert(!isAbstractClass!_Type,
 		"cannot create object of abstract class" ~ Unqual!_Type.stringof
