@@ -149,17 +149,7 @@ $('#symbolSearchPane').show();</script>
 			<br/>
 			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
 			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isSharedPtr</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; </span><span class="pln">isAssignable</span><span class="pun">!(</span><span class="pln">desired</span><span class="pun">, </span><span class="typ">This</span><span class="pun">) &amp;&amp; !</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Rhs </span><span class="pun">== </span><span class="kwd">shared</span><span class="pun">)</span><span class="pun">);</span>
-			<br/>
-			<br/>
-			<span class="typ">void</span> <span class="pln">opAssign</span>(<span class="typ">MemoryOrder</span> order<span class="pln"> </span><span class="pun">= </span><span class="typ">MemoryOrder<wbr/></span><span class="pun">.</span><span class="pln">seq</span>, Rhs, This)
-			<span class="pun">(</span>
-			<br/>
-			&nbsp;&nbsp;<span class="kwd">auto scope ref </span><span class="typ">Rhs</span> <span class="pln">desired</span>
-			<br/>
-			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
-			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isSmartPtr</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; !</span><span class="pln">isSharedPtr</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; </span><span class="pln">isAssignable</span><span class="pun">!(</span><span class="pln">desired</span><span class="pun">, </span><span class="typ">This</span><span class="pun">) &amp;&amp; !</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Rhs </span><span class="pun">== </span><span class="kwd">shared</span><span class="pun">)</span><span class="pun">);</span>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isSmartPtr</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; </span><span class="pln">isAssignable</span><span class="pun">!(</span><span class="pln">desired</span><span class="pun">, </span><span class="typ">This</span><span class="pun">) &amp;&amp; !</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Rhs </span><span class="pun">== </span><span class="kwd">shared</span><span class="pun">)</span><span class="pun">);</span>
 					</div>
 				</code>
 			</div>
@@ -212,6 +202,41 @@ $('#symbolSearchPane').show();</script>
 	</span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">pcx </span><span class="pun">== </span><span class="lit">123</span><span class="pun">);
 	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">pcx<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
 
+}
+
+</span><span class="kwd">import <a href="../../../btl/autoptr/rc_ptr.html"></span><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">autoptr<wbr/></span><span class="pun">.</span><span class="pln">rc_ptr</span></a><span class="pun">;
+{
+	<a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">long </span><span class="pln">sp </span><span class="pun">= <a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">long<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">10</span><span class="pun">);
+	</span><span class="typ">RcPtr</span><span class="pun">!</span><span class="typ">long </span><span class="pln">rc </span><span class="pun">= </span><span class="typ">RcPtr</span><span class="pun">!</span><span class="typ">long<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">20</span><span class="pun">);
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">sp<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">rc<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+	</span><span class="pln">sp </span><span class="pun">= </span><span class="pln">rc</span><span class="pun">;
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">sp<wbr/></span><span class="pun">.</span><span class="pln">get </span><span class="pun">== </span><span class="lit">20</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">rc<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
+}
+
+</span><span class="kwd">import <a href="../../../btl/autoptr/intrusive_ptr.html"></span><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">autoptr<wbr/></span><span class="pun">.</span><span class="pln">intrusive_ptr</span></a><span class="pun">;
+{
+	</span><span class="kwd">static struct </span><span class="typ">Foo</span><span class="pun">{
+		</span><span class="kwd">private </span><span class="typ">SharedControlBlock </span><span class="pln">control</span><span class="pun">;
+		</span><span class="typ">int </span><span class="pln">i</span><span class="pun">;
+
+		</span><span class="kwd">this</span><span class="pun">(</span><span class="typ">int </span><span class="pln">i</span><span class="pun">)</span><span class="kwd">pure nothrow @safe @nogc</span><span class="pun">{
+			</span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">= </span><span class="pln">i</span><span class="pun">;
+		}
+	}
+
+	<a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">Foo </span><span class="pln">sp </span><span class="pun">= <a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">Foo<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">10</span><span class="pun">);
+	</span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Foo </span><span class="pln">ip </span><span class="pun">= </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Foo<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">20</span><span class="pun">);
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">sp<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">ip<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+	</span><span class="pln">sp </span><span class="pun">= </span><span class="pln">ip</span><span class="pun">;
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">sp<wbr/></span><span class="pun">.</span><span class="pln">get<wbr/></span><span class="pun">.</span><span class="pln">i</span><span class="pun">== </span><span class="lit">20</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">ip<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
 }</span></code></pre>
 </section>
 

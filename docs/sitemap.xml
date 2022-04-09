@@ -162,7 +162,6 @@
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.make.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opAssign.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opAssign.html</loc></url>
-<url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opAssign.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opCast.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opCast.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opCastImpl.html</loc></url>
@@ -193,6 +192,7 @@
 <url><loc>http://127.0.0.1/btl/autoptr/unique_ptr/dynCast.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/unique_ptr/dynCastMove.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/unique_ptr/first.html</loc></url>
+<url><loc>http://127.0.0.1/btl/autoptr/unique_ptr/isUniquePtr.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/unique_ptr/share.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/unique_ptr/UniquePtr.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/unique_ptr/UniquePtr.html</loc></url>
