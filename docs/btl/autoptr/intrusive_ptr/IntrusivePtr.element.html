@@ -80,7 +80,9 @@ $('#symbolSearchPane').show();</script>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="kwd">inout </span><span class="typ">ElementReferenceTypeImpl</span>!(inout(ElementType)) <span class="pln">element</span><span class="pun">(</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">pure nothrow @nogc @property @system</span><span class="pun">;</span>
+			<span class="typ">ElementReferenceTypeImpl</span>!(GetElementType!This) <span class="pln">element</span>(This)<span class="pun">(</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">pure nothrow @nogc @property @system</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pun">!</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">This </span><span class="pun">== </span><span class="kwd">shared</span><span class="pun">)</span><span class="pun">);</span>
 					</div>
 				</code>
 			</div>

@@ -198,7 +198,7 @@ $('#symbolSearchPane').show();</script>
 						<td>
 							<a href="../../../btl/autoptr/rc_ptr/RcPtr.element.html" class="public property"><code>element</code></a><span class="tableEntryAnnotation">[get]</span>
 						</td>
-						<td class="typecol"><code class="prettyprint lang-d"><span class="typ">ElementReferenceTypeImpl</span>!(inout(ElementType))</code></td><td>Get pointer to managed object of <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.ElementType.html"><span class="typ">ElementType</span></a></code> or reference if <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.ElementType.html"><span class="typ">ElementType</span></a></code> is reference type (class or interface) or dynamic array.
+						<td class="typecol"><code class="prettyprint lang-d"><span class="typ">ElementReferenceTypeImpl</span>!(GetElementType!This)</code></td><td>Get pointer to managed object of <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.ElementType.html"><span class="typ">ElementType</span></a></code> or reference if <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.ElementType.html"><span class="typ">ElementType</span></a></code> is reference type (class or interface) or dynamic array.
 </td>
 					</tr>
 					<tr>
@@ -220,6 +220,13 @@ $('#symbolSearchPane').show();</script>
 							<a href="../../../btl/autoptr/rc_ptr/RcPtr.length.html" class="public property"><code>length</code></a><span class="tableEntryAnnotation">[get]</span>
 						</td>
 						<td class="typecol"><code class="prettyprint lang-d"><span class="pln">size_t</span></code></td><td>Returns length of dynamic array (isDynamicArray!ElementType == true).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../btl/autoptr/rc_ptr/RcPtr.ptr.html" class="public property"><code>ptr</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="typ">ElementPointerTypeImpl</span>!(GetElementType!This)</code></td><td>Get pointer to managed object of <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.ElementType.html"><span class="typ">ElementType</span></a></code> or reference if <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.ElementType.html"><span class="typ">ElementType</span></a></code> is reference type (class or interface) or pointer to first dynamic array element.
 </td>
 					</tr>
 					<tr>
@@ -518,7 +525,7 @@ $('#symbolSearchPane').show();</script>
 								<code>store</code>
 							</a>
 						</td>
-						<td>Stores the non <code class="lang-d"><span class="kwd">shared</span></code> <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.html"><span class="typ">RcPtr</span></a></code> parameter <code class="lang-d"><span class="pln">ptr</span></code> to <code class="lang-d"><span class="kwd">this</span></code>.
+						<td>Stores the non <code class="lang-d"><span class="kwd">shared</span></code> <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.html"><span class="typ">RcPtr</span></a></code> parameter <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.ptr.html"><span class="pln">ptr</span></a></code> to <code class="lang-d"><span class="kwd">this</span></code>.
 </td>
 					</tr>
 					<tr>

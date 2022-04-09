@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Function Vector.full</title>
+		<title>Function BasicString.full</title>
 		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
@@ -61,12 +61,12 @@ $('#symbolSearchPane').show();</script>
 					</div>
 				</li>
 				<li>
-					<div class="module ">
+					<div class="module selected">
 						<a href="../../btl/string.html">string</a>
 					</div>
 				</li>
 				<li>
-					<div class="module selected">
+					<div class="module ">
 						<a href="../../btl/vector.html">vector</a>
 					</div>
 				</li>
@@ -75,7 +75,7 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Function Vector.full</h1><p>Returns whether the vector is full (i.e. whether its length is equal to maximalCapacity).
+			<h1>Function BasicString.full</h1><p>Returns whether the string is full (i.e. whether its length is equal to maximalCapacity).
 </p>
 			<div class="prototype">
 				<code class="lang-d">
@@ -87,12 +87,13 @@ $('#symbolSearchPane').show();</script>
 			<section></section>
 
 			<section><h2>Examples</h2>
-<pre class="code"><code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">4</span><span class="pun">, </span><span class="typ">void</span><span class="pun">) </span><span class="pln">vec</span><span class="pun">;  </span><span class="com">//FixedVector
-</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">empty</span><span class="pun">);
-</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">maximalCapacity </span><span class="pun">== </span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">minimalCapacity</span><span class="pun">);
+<pre class="code"><code class="lang-d"><span class="pln">            <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!(</span><span class="typ">char</span><span class="pun">, </span><span class="lit">1</span><span class="pun">, </span><span class="typ">void</span><span class="pun">) </span><span class="pln">str</span><span class="pun">;	</span><span class="com">//FixedString
+            </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">empty</span><span class="pun">);
+            </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">minimalCapacity </span><span class="pun">&gt; </span><span class="lit">0</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(!</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">full</span><span class="pun">);
 
-</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">resize</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">maximalCapacity</span><span class="pun">);
-</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">full</span><span class="pun">);</span></code></pre>
+</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">resize</span><span class="pun">(</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">maximalCapacity</span><span class="pun">);
+            </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">full</span><span class="pun">);</span></code></pre>
 </section>
 
 			<footer>
@@ -100,7 +101,7 @@ $('#symbolSearchPane').show();</script>
 					<tr>
 						<th>Authors</th>
 						<td>
-							<p>github.com/submada/basic_string, Adam Búš
+							<p>github.com/submada/btl.string, Adam Búš
 </p>
 
 						</td>

@@ -60,6 +60,7 @@
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.opEquals.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.opUnary.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.proxySwap.html</loc></url>
+<url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.ptr.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.sharedControl.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.SharedType.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.store.html</loc></url>
@@ -118,6 +119,7 @@
 <url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/RcPtr.opEquals.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/RcPtr.opUnary.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/RcPtr.proxySwap.html</loc></url>
+<url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/RcPtr.ptr.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/RcPtr.SharedType.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/RcPtr.store.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/RcPtr.this.html</loc></url>
@@ -173,6 +175,7 @@
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opEquals.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.opUnary.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.proxySwap.html</loc></url>
+<url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.ptr.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.SharedType.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.store.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/shared_ptr/SharedPtr.this.html</loc></url>
@@ -291,6 +294,7 @@
 <url><loc>http://127.0.0.1/btl/string/BasicString.frontCodePoint.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.frontCodeUnit.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.frontCodeUnit.html</loc></url>
+<url><loc>http://127.0.0.1/btl/string/BasicString.full.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.hasStatelessAllocator.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.insert.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.insert.html</loc></url>

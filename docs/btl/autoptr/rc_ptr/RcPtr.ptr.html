@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Function RcPtr.element</title>
+		<title>Function RcPtr.ptr</title>
 		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
@@ -75,12 +75,12 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Function RcPtr.element</h1><p>Get pointer to managed object of <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.ElementType.html"><span class="typ">ElementType</span></a></code> or reference if <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.ElementType.html"><span class="typ">ElementType</span></a></code> is reference type (class or interface) or dynamic array.
+			<h1>Function RcPtr.ptr</h1><p>Get pointer to managed object of <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.ElementType.html"><span class="typ">ElementType</span></a></code> or reference if <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.ElementType.html"><span class="typ">ElementType</span></a></code> is reference type (class or interface) or pointer to first dynamic array element.
 </p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="typ">ElementReferenceTypeImpl</span>!(GetElementType!This) <span class="pln">element</span>(This)<span class="pun">(</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">pure nothrow @nogc @property @system</span>
+			<span class="typ">ElementPointerTypeImpl</span>!(GetElementType!This) <span class="pln">ptr</span>(This)<span class="pun">(</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">pure nothrow @nogc @property @system</span>
 			<br/>
 			<span class="kwd">if</span> <span class="pun">(</span><span class="pun">!</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">This </span><span class="pun">== </span><span class="kwd">shared</span><span class="pun">)</span><span class="pun">);</span>
 					</div>
@@ -96,42 +96,42 @@ $('#symbolSearchPane').show();</script>
 			<section><h2>Examples</h2>
 <pre class="code"><code class="lang-d"><span class="pun">{
     <a href="../../../btl/autoptr/rc_ptr/RcPtr.html"></span><span class="typ">RcPtr</span></a><span class="pun">!</span><span class="typ">long </span><span class="pln">x </span><span class="pun">= <a href="../../../btl/autoptr/rc_ptr/RcPtr.html"></span><span class="typ">RcPtr</span></a><span class="pun">!</span><span class="typ">long<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">123</span><span class="pun">);
-    </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">element </span><span class="pun">== </span><span class="lit">123</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="pun">== </span><span class="lit">123</span><span class="pun">);
 
     </span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">get </span><span class="pun">= </span><span class="lit">321</span><span class="pun">;
-    </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">element </span><span class="pun">== </span><span class="lit">321</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="pun">== </span><span class="lit">321</span><span class="pun">);
 
     </span><span class="kwd">const </span><span class="pln">y </span><span class="pun">= </span><span class="pln">x</span><span class="pun">;
-    </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">y<wbr/></span><span class="pun">.</span><span class="pln">element </span><span class="pun">== </span><span class="lit">321</span><span class="pun">);
-    </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">element </span><span class="pun">== </span><span class="lit">321</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">y<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="pun">== </span><span class="lit">321</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="pun">== </span><span class="lit">321</span><span class="pun">);
 
-    </span><span class="kwd">static assert</span><span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">y<wbr/></span><span class="pun">.</span><span class="pln">element</span><span class="pun">) == </span><span class="kwd">const</span><span class="pun">(</span><span class="typ">long</span><span class="pun">)*));
+    </span><span class="kwd">static assert</span><span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">y<wbr/></span><span class="pun">.</span><span class="pln">ptr</span><span class="pun">) == </span><span class="kwd">const</span><span class="pun">(</span><span class="typ">long</span><span class="pun">)*));
 }
 
 {
     </span><span class="kwd">auto </span><span class="pln">x </span><span class="pun">= <a href="../../../btl/autoptr/rc_ptr/RcPtr.html"></span><span class="typ">RcPtr</span></a><span class="pun">!(</span><span class="typ">long</span><span class="pun">[])<wbr/>.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">6</span><span class="pun">, </span><span class="lit">42</span><span class="pun">);
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">element</span><span class="pun">[</span><span class="lit">0</span><span class="pun">] == </span><span class="lit">42</span><span class="pun">);
-    </span><span class="kwd">static assert</span><span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">element</span><span class="pun">) == </span><span class="typ">long</span><span class="pun">[]));
+    </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="pun">== </span><span class="lit">42</span><span class="pun">);
+    </span><span class="kwd">static assert</span><span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">x<wbr/></span><span class="pun">.</span><span class="pln">ptr</span><span class="pun">) == </span><span class="typ">long</span><span class="pun">*));
 }
 
 {
     </span><span class="kwd">auto </span><span class="pln">s </span><span class="pun">= <a href="../../../btl/autoptr/rc_ptr/RcPtr.html"></span><span class="typ">RcPtr</span></a><span class="pun">!</span><span class="typ">long<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">42</span><span class="pun">);
     </span><span class="kwd">const </span><span class="pln">w </span><span class="pun">= </span><span class="pln">s<wbr/></span><span class="pun">.</span><span class="pln">weak</span><span class="pun">;
 
-    </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">w<wbr/></span><span class="pun">.</span><span class="pln">element </span><span class="pun">== </span><span class="lit">42</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(*</span><span class="pln">w<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="pun">== </span><span class="lit">42</span><span class="pun">);
 
     </span><span class="pln">s </span><span class="pun">= </span><span class="kwd">null</span><span class="pun">;
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">w<wbr/></span><span class="pun">.</span><span class="pln">element </span><span class="kwd">is null</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">w<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="kwd">is null</span><span class="pun">);
 }
 
 {
     </span><span class="kwd">auto </span><span class="pln">s </span><span class="pun">= <a href="../../../btl/autoptr/rc_ptr/RcPtr.html"></span><span class="typ">RcPtr</span></a><span class="pun">!</span><span class="typ">long<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">42</span><span class="pun">);
     </span><span class="kwd">auto </span><span class="pln">w </span><span class="pun">= </span><span class="pln">s<wbr/></span><span class="pun">.</span><span class="pln">weak</span><span class="pun">;
 
-    </span><span class="kwd">scope const </span><span class="pln">p </span><span class="pun">= </span><span class="pln">w<wbr/></span><span class="pun">.</span><span class="pln">element</span><span class="pun">;
+    </span><span class="kwd">scope const </span><span class="pln">p </span><span class="pun">= </span><span class="pln">w<wbr/></span><span class="pun">.</span><span class="pln">ptr</span><span class="pun">;
 
     </span><span class="pln">s </span><span class="pun">= </span><span class="kwd">null</span><span class="pun">;
-    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">w<wbr/></span><span class="pun">.</span><span class="pln">element </span><span class="kwd">is null</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">w<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="kwd">is null</span><span class="pun">);
 
     </span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">p </span><span class="pun">!</span><span class="kwd">is null</span><span class="pun">); </span><span class="com">//p is dangling pointer!
 </span><span class="pun">}</span></code></pre>
