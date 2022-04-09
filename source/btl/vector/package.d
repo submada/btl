@@ -83,7 +83,7 @@ template Vector(
 ){
 
     import core.lifetime : emplace, forward, move;
-    import std.range : empty, front, popFront, isInputRange, ElementEncodingType, hasLength;
+    import std.range : empty, front, popFront, ElementEncodingType, hasLength;
     import std.traits : Unqual, hasElaborateDestructor, hasIndirections, isDynamicArray;
 
     alias Storage = .Storage!(_Type, N, _allowHeap);
@@ -562,14 +562,14 @@ template Vector(
                 --------------------
         */
         public this(R, this This)(R range)scope
-        if(isInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
+        if(isBtlInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
             this._init_from_range(forward!range);
         }
 
         /// ditto
         static if(allowHeap)
         public this(R, this This)(R range, AllocatorType allcoator)return
-        if(isInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
+        if(isBtlInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
             static if(!hasStatelessAllocator)
                 this._allocator = forward!allcoator;
 
@@ -577,7 +577,7 @@ template Vector(
         }
 
         private void _init_from_range(R, this This)(R range)scope
-        if(isInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
+        if(isBtlInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
             auto self = (()@trusted => (cast(Unqual!This*)&this) )();
 
             static if(hasLength!R){
@@ -692,7 +692,7 @@ template Vector(
 
         /// ditto
         public void opAssign(R)(R range)scope
-        if(isInputRange!R && is(ElementEncodingType!R : ElementType)){
+        if(isBtlInputRange!R && is(ElementEncodingType!R : ElementType)){
             static if(hasLength!R){
                 const size_t new_length = range.length;
 
@@ -1314,7 +1314,7 @@ template Vector(
 
         /// ditto
         public bool opEquals(R)(scope R rhs)const scope nothrow
-        if(isInputRange!R){
+        if(isBtlInputRange!R){
             import std.algorithm.comparison : equal;
 
             return equal(this.storage.elements, forward!rhs);
@@ -1347,7 +1347,7 @@ template Vector(
                 --------------------
         */
         public int opCmp(R)(scope R rhs)const scope nothrow
-        if(isInputRange!R){
+        if(isBtlInputRange!R){
             import std.algorithm.comparison : cmp;
 
             return cmp(this.storage.elements, forward!rhs);
@@ -1882,7 +1882,7 @@ template Vector(
                 --------------------
         */
         public size_t append(R)(R range)scope
-        if(isInputRange!R && is(ElementEncodingType!R : ElementType)){
+        if(isBtlInputRange!R && is(ElementEncodingType!R : ElementType)){
             static if(hasLength!R){
                 return this._append_impl(forward!range);
             }
@@ -2034,7 +2034,7 @@ template Vector(
         */
         public size_t insert(R)(const size_t pos, R range)scope
         if(    hasLength!R
-            && isInputRange!R
+            && isBtlInputRange!R
             && is(ElementEncodingType!R : ElementType)
         ){
             return this._insert_impl(pos, forward!range);
@@ -2054,7 +2054,7 @@ template Vector(
 
         /// ditto
         public size_t insert(R)(scope const ElementType* ptr, R range)scope
-        if(isInputRange!R && is(ElementEncodingType!R : ElementType)){
+        if(isBtlInputRange!R && is(ElementEncodingType!R : ElementType)){
             static assert(hasLength!R, "range need length property");
 
             return this._insert_impl(ptr, forward!range);
@@ -2379,7 +2379,7 @@ template Vector(
         /// ditto
         public size_t replace(R)(const size_t pos, const size_t len, R range)scope
         if(    hasLength!R
-            && isInputRange!R
+            && isBtlInputRange!R
             && is(ElementEncodingType!R : ElementType)
         ){
             return this._replace_impl(pos, len, forward!range);
@@ -2400,7 +2400,7 @@ template Vector(
         /// ditto
         public size_t replace(R)(scope const ElementType[] slice, R range)scope
         if(    hasLength!R
-            && isInputRange!R
+            && isBtlInputRange!R
             && is(ElementEncodingType!R : ElementType)
         ){
             return this._replace_impl(slice, forward!range);
@@ -2897,7 +2897,7 @@ template Vector(
         }
 
         static size_t emplaceLength(R)(ref R range)
-        if(hasLength!R && isInputRange!R && is(immutable ElementEncodingType!R : immutable _Type)){
+        if(hasLength!R && isBtlInputRange!R && is(immutable ElementEncodingType!R : immutable _Type)){
             return range.length;
         }
 
@@ -2924,7 +2924,7 @@ template Vector(
         }
 
         static void emplaceElements(T, R)(ref size_t emplaced, T[] slice, R range)
-        if(hasLength!R && isInputRange!R && is(immutable ElementEncodingType!R : immutable _Type)){
+        if(hasLength!R && isBtlInputRange!R && is(immutable ElementEncodingType!R : immutable _Type)){
             //TODO trivial copy
             auto ptr = (()@trusted => slice.ptr )();
 
@@ -3071,6 +3071,7 @@ if(N > 0){
 
 
 
+public alias hasCopyConstructor_SP = hasCopyConstructor;
 //local traits:
 private{
 

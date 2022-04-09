@@ -5,6 +5,7 @@ import std.meta : AliasSeq;
 import std.range : isInputRange, ElementEncodingType;
 import std.traits : isDynamicArray;
 
+import btl.internal.traits : isBtlInputRange;
 
 /*
     Type used as parameter for function pointer returned from `DestructorType`.
@@ -373,7 +374,7 @@ private{
     }
 
     void transferAssignRange(bool move, T, R)(T[] target, ref R source)
-    if(isInputRange!R && is(immutable ElementEncodingType!R[] : immutable T[]) && !isDynamicArray!R){
+    if(isBtlInputRange!R && is(immutable ElementEncodingType!R[] : immutable T[]) && !isDynamicArray!R){
         import std.range ; popFront;
         import core.lifetime : mv = move;
 
@@ -562,7 +563,7 @@ public{
     }
 
     void moveAssignRange(T, R)(T[] target, ref R source)
-    if(isInputRange!R && is(immutable ElementEncodingType!R[] : immutable T[])){
+    if(isBtlInputRange!R && is(immutable ElementEncodingType!R[] : immutable T[])){
         transferAssignRange!true(target, source);
     }
 
@@ -850,7 +851,7 @@ public{
     }
 
     void copyAssignRange(T, R)(T[] target, ref R source)
-    if(isInputRange!R && is(immutable ElementEncodingType!R[] : immutable T[])){
+    if(isBtlInputRange!R && is(immutable ElementEncodingType!R[] : immutable T[])){
         transferAssignRange!false(target, source);
     }
 

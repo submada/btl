@@ -159,3 +159,24 @@ else{
 }
 
 
+
+import std.traits : ReturnType;
+import std.range : empty, popFront, front;
+template isBtlInputRange(R){
+
+    static if(isInputRange!R)
+        enum bool isBtlInputRange = true;
+    else{
+        static ref front_check(R)(R r){
+            return r.front;
+        }
+        enum bool isBtlInputRange = true
+            && is(typeof(R.init) == R)
+            && is(ReturnType!((R r) => r.empty) == bool)
+            && is(typeof(*(return ref R r)@trusted => &r.front))
+            && !is(ReturnType!(front_check!R) == void)
+            && is(typeof((R r) => r.popFront));
+    }
+};
+
+

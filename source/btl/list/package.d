@@ -162,7 +162,7 @@ public template List(
 ){
 
     import core.lifetime : emplace, forward, move;
-    import std.range : empty, front, popFront, isInputRange, ElementEncodingType, hasLength;
+    import std.range : empty, front, popFront, ElementEncodingType, hasLength;
     import std.traits : Unqual, hasElaborateDestructor, hasIndirections, isDynamicArray, isSafe;
 
     alias ListNode = .ListNode!(_Type, _bidirectional);
@@ -475,13 +475,13 @@ public template List(
                 --------------------
         */
         public this(R, this This)(R range)scope
-        if(isInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
+        if(isBtlInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
             this._init_from_range(forward!range);
         }
 
         /// ditto
         public this(R, this This)(R range, AllocatorType allcoator)return
-        if(isInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
+        if(isBtlInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
             static if(!hasStatelessAllocator)
                 this._allocator = forward!allcoator;
 
@@ -489,7 +489,7 @@ public template List(
         }
 
         private void _init_from_range(R, this This)(R range)scope
-        if(isInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
+        if(isBtlInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
             auto self = (()@trusted => (cast(Unqual!This*)&this) )();
 
             self.pushBack(forward!range);
@@ -560,7 +560,7 @@ public template List(
 
         /// ditto
         public void opAssign(R)(R range)scope
-        if(!isList!R && isInputRange!R && is(ElementEncodingType!R : ElementType)){
+        if(!isList!R && isBtlInputRange!R && is(ElementEncodingType!R : ElementType)){
             Node* node = this._first;
             while(node !is null && !range.empty){
                 node.element = range.front;
@@ -740,7 +740,7 @@ public template List(
 
         /// ditto
         public bool opEquals(R)(scope R rhs)const scope nothrow
-        if(isInputRange!R && !isList!R){
+        if(isBtlInputRange!R && !isList!R){
             import std.algorithm.comparison : equal;
 
             return equal(this._op_slice, forward!rhs);
@@ -773,7 +773,7 @@ public template List(
                 --------------------
         */
         public int opCmp(R)(scope R rhs)const scope nothrow
-        if(isInputRange!R && !isList!R){
+        if(isBtlInputRange!R && !isList!R){
             import std.algorithm.comparison : cmp;
 
             return cmp(this._op_slice, forward!rhs);
@@ -1076,7 +1076,7 @@ public template List(
                 --------------------
         */
         public size_t pushFront(R)(R range)scope
-        if(isInputRange!R && is(ElementEncodingType!R : ElementType)){
+        if(isBtlInputRange!R && is(ElementEncodingType!R : ElementType)){
             size_t len = 0;
 
             if(!range.empty){
@@ -1383,7 +1383,7 @@ public template List(
                 --------------------
         */
         public size_t pushBack(R)(R range)scope
-        if(!isList!R && isInputRange!R && is(ElementEncodingType!R : ElementType)){
+        if(!isList!R && isBtlInputRange!R && is(ElementEncodingType!R : ElementType)){
             size_t len = 0;
 
             if(!range.empty){
