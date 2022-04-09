@@ -905,24 +905,43 @@ package template UnqualSmartPtr(Ptr){
 }
 
 package template ElementReferenceTypeImpl(T){
-	import std.traits : Select, isDynamicArray;
-	import std.range : ElementEncodingType;
+    import std.traits : Select, isDynamicArray;
+    import std.range : ElementEncodingType;
 
 
-	static if(false
-		|| is(T == class) || is(T == interface)
-		|| is(T == function) || is(T == delegate)
-		|| is(T : U*, U)
-	){
-		alias ElementReferenceTypeImpl = T;
-	}
-	else static if(isDynamicArray!T){
-		alias ElementReferenceTypeImpl = ElementEncodingType!T[];
-	}
-	else{
-		alias ElementReferenceTypeImpl = T*;
-	}
+    static if(false
+        || is(T == class) || is(T == interface)
+        || is(T == function) || is(T == delegate)
+        || is(T : U*, U)
+    ){
+        alias ElementReferenceTypeImpl = T;
+    }
+    else static if(isDynamicArray!T){
+        alias ElementReferenceTypeImpl = ElementEncodingType!T[];
+    }
+    else{
+        alias ElementReferenceTypeImpl = T*;
+    }
+}
 
+package template ElementPointerTypeImpl(T){
+    import std.traits : Select, isDynamicArray;
+    import std.range : ElementEncodingType;
+
+
+    static if(false
+        || is(T == class) || is(T == interface)
+        //|| is(T == function) || is(T == delegate)
+        //|| is(T : U*, U)
+    ){
+        alias ElementPointerTypeImpl = T;
+    }
+    else static if(isDynamicArray!T){
+        alias ElementPointerTypeImpl = ElementEncodingType!T*;
+    }
+    else{
+        alias ElementPointerTypeImpl = T*;
+    }
 }
 
 

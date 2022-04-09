@@ -155,6 +155,26 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 
 
+        /**
+            Returns whether the string is full (i.e. whether its length is equal to maximalCapacity).
+
+            Examples:
+                --------------------
+                BasicString!(char, 1, void) str;	//FixedString
+                assert(str.empty);
+                assert(str.minimalCapacity > 0);
+				assert(!str.full);
+
+				str.resize(str.maximalCapacity);
+                assert(str.full);
+                --------------------
+        */
+        public @property bool full()const scope pure nothrow @safe @nogc{
+            return (this.length == maximalCapacity);
+        }
+
+
+
 		/**
 			Returns the length of the string, in terms of number of characters (utf code units).
 
@@ -1001,9 +1021,9 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 
 
-        /**
-            Forward constructor.
-        */
+		/**
+			Forward constructor.
+		*/
 		public this(this This, Rhs)(scope auto ref Rhs rhs, Forward)scope
 		if(isBasicString!Rhs && isConstructable!(Rhs, This)){
 
@@ -1297,70 +1317,70 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 
 
-        /**
-            Same as operator `in`
+		/**
+			Same as operator `in`
 
 
-            Examples:
-                --------------------
-                BasicString!char str = "a123読";
+			Examples:
+				--------------------
+				BasicString!char str = "a123読";
 
-                assert(str.contains('a'));
-                assert(!str.contains('b'));
-                assert(str.contains('3'));
-                assert(str.contains('読'));
-                --------------------
-        */
-        public bool contains(Elm)(scope auto ref Elm elm)scope const{
-            static if(isSomeChar!Elm){
-                static if(Elm.sizeof <= CharType.sizeof){
-                    auto chars = this.storage.chars;
-                    foreach(c; chars){
-                        if(elm == c)
-                            return true;
-                    }
+				assert(str.contains('a'));
+				assert(!str.contains('b'));
+				assert(str.contains('3'));
+				assert(str.contains('読'));
+				--------------------
+		*/
+		public bool contains(Elm)(scope auto ref Elm elm)scope const{
+			static if(isSomeChar!Elm){
+				static if(Elm.sizeof <= CharType.sizeof){
+					auto chars = this.storage.chars;
+					foreach(c; chars){
+						if(elm == c)
+							return true;
+					}
 
-                    return false;
+					return false;
 
-                }
-                else{
-                    auto chars = this.storage.chars;
-                    if(chars.length == 0)
-                        return false;
+				}
+				else{
+					auto chars = this.storage.chars;
+					if(chars.length == 0)
+						return false;
 
-                    do{
-                        if(decode(chars) == elm)
-                            return true;
-                    }while(chars.length);
+					do{
+						if(decode(chars) == elm)
+							return true;
+					}while(chars.length);
 
-                    return false;
-                }
-            }
-            else{
-                static assert(0, "TODO");
-            }
-        }
-
-
-
-        /**
-            Operator `in`
+					return false;
+				}
+			}
+			else{
+				static assert(0, "TODO");
+			}
+		}
 
 
-            Examples:
-                --------------------
-                BasicString!char str = "a123読";
 
-                assert('a' in str);
-                assert('b' !in str);
-                assert('3' in str);
-                assert('読' in str);
-                --------------------
-        */
-        public bool opBinaryRight(string op, Elm)(scope auto ref Elm elm)scope const
-        if(op == "in"){
-            return this.contains(forward!elm);
-        }
+		/**
+			Operator `in`
+
+
+			Examples:
+				--------------------
+				BasicString!char str = "a123読";
+
+				assert('a' in str);
+				assert('b' !in str);
+				assert('3' in str);
+				assert('読' in str);
+				--------------------
+		*/
+		public bool opBinaryRight(string op, Elm)(scope auto ref Elm elm)scope const
+		if(op == "in"){
+			return this.contains(forward!elm);
+		}
 
 
 
@@ -1685,30 +1705,30 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		public void proxySwap(scope ref typeof(this) rhs)scope pure nothrow @trusted @nogc{
 			import std.algorithm.mutation : swap;
 			swap(
-                *(()@trusted => &this.storage )(),
-                *(()@trusted => &rhs.storage )()
-            );
+				*(()@trusted => &this.storage )(),
+				*(()@trusted => &rhs.storage )()
+			);
 
 			static if(!hasStatelessAllocator)
-                swap(
-                    *(()@trusted => &this._allocator )(),
-                    *(()@trusted => &rhs._allocator )()
-                );
+				swap(
+					*(()@trusted => &this._allocator )(),
+					*(()@trusted => &rhs._allocator )()
+				);
 
 		}
 
 
 
 
-        /+public size_t appendMore(Params...)(scope auto ref Params params)scope{
-            size_t result = 0;
+		/+public size_t appendMore(Params...)(scope auto ref Params params)scope{
+			size_t result = 0;
 
-            static foreach(alias param; params){
-                result += this.append(param);
-            }
+			static foreach(alias param; params){
+				result += this.append(param);
+			}
 
-            return result;
-        }+/
+			return result;
+		}+/
 
 
 
@@ -1762,7 +1782,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		public size_t append(Val)(scope auto ref Val val, const size_t count = 1)scope
 		if(isBasicString!Val || isSomeChar!Val || isSomeString!Val || isCharArray!Val || isIntegral!Val){
 			static if(isBasicString!Val){
-                return this._append_impl(val.storage.chars, count);
+				return this._append_impl(val.storage.chars, count);
 			}
 			else static if(isSomeString!Val || isCharArray!Val){
 				return this._append_impl(val[], count);
@@ -1775,22 +1795,22 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			}
 		}
 
-        /// ditto
-        public size_t append(Val)(scope Val val)scope
-        if(!isArray!Val && isInputCharRange!Val){
-            size_t result = 0;
+		/// ditto
+		public size_t append(Val)(scope Val val)scope
+		if(!isArray!Val && isInputCharRange!Val){
+			size_t result = 0;
 
-            static if(hasLength!Val){
-                this.reserve(this.length + val.length);
-            }
+			static if(hasLength!Val){
+				this.reserve(this.length + val.length);
+			}
 
-            while(!val.empty){
-                result += this._append_impl(val.front, 1);
-                val.popFront();
-            }
+			while(!val.empty){
+				result += this._append_impl(val.front, 1);
+				val.popFront();
+			}
 
-            return result;
-        }
+			return result;
+		}
 
 		private size_t _append_impl(Val)(const Val val, const size_t count)scope
 		if(isSomeChar!Val || isSomeString!Val || isIntegral!Val){
@@ -2274,7 +2294,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 			result._build_impl(forward!args);
 
-            //return move(result);
+			//return move(result);
 			return (()@trusted => move(*&result) )();
 		}
 
@@ -2287,7 +2307,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 			result._build_impl(forward!args);
 
 			//return move(result);
-            return (()@trusted => move(*&result) )();
+			return (()@trusted => move(*&result) )();
 		}
 
 		private void _build_impl(Args...)(scope auto ref const Args args)scope{
@@ -2545,81 +2565,81 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 ///
 pure nothrow @safe @nogc unittest {
-    alias String = BasicString!(
-        char,               //character type
-        32,                 //additional padding to increas max size of small string (small string does not allocate memory).
-        DefaultAllocator    //allocator type (can be stateless or with state)
-    );
+	alias String = BasicString!(
+		char,               //character type
+		32,                 //additional padding to increas max size of small string (small string does not allocate memory).
+		DefaultAllocator    //allocator type (can be stateless or with state)
+	);
 
 
-    //copy:
-    {
-        String a = "123";
-        String b = a;
+	//copy:
+	{
+		String a = "123";
+		String b = a;
 
-        a = "456"d;
+		a = "456"d;
 
-        assert(a == "456");
-        assert(b == "123");
-    }
+		assert(a == "456");
+		assert(b == "123");
+	}
 
 
-    //append:
-    {
-        String str = "12";
+	//append:
+	{
+		String str = "12";
 
-        str.append("34");   //same as str += "34"
-        str.append("56"w);  //same as str += "56"w
-        str.append(7);      //same as str += 7;
-        str.append('8');
+		str.append("34");   //same as str += "34"
+		str.append("56"w);  //same as str += "56"w
+		str.append(7);      //same as str += 7;
+		str.append('8');
 
-        assert(str == "12345678");
+		assert(str == "12345678");
 
-        str.clear();
+		str.clear();
 
-        assert(str.empty);
-    }
+		assert(str.empty);
+	}
 
-    //erase:
-    {
-        String str = "123456789";
+	//erase:
+	{
+		String str = "123456789";
 
-        str.erase(2, 2);
+		str.erase(2, 2);
 
-        assert(str == "1256789");
-    }
+		assert(str == "1256789");
+	}
 
-    //insert:
-    {
-        String str = "123456789";
+	//insert:
+	{
+		String str = "123456789";
 
-        str.insert(1, "xyz");
+		str.insert(1, "xyz");
 
-        assert(str == "1xyz23456789");
-    }
+		assert(str == "1xyz23456789");
+	}
 
-    //replace:
-    {
-        String str = "123456789";
+	//replace:
+	{
+		String str = "123456789";
 
-        str.replace(1, 2, "xyz");
+		str.replace(1, 2, "xyz");
 
-        assert(str == "1xyz456789");
-    }
+		assert(str == "1xyz456789");
+	}
 
-    //slice to string:
-    ()@trusted{
-        String str = "123456789";
+	//slice to string:
+	()@trusted{
+		String str = "123456789";
 
-        const(char)[] dstr = str[];
+		const(char)[] dstr = str[];
 
-        assert(str == dstr);
-    }();
+		assert(str == dstr);
+	}();
 }
 
 
 /**
-    Alias to `BasicString` with different order of template parameters
+	Alias to `BasicString` with different order of template parameters
 */
 template BasicString(
 	_Char,
@@ -2635,21 +2655,21 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 
 /**
-    Alias to `BasicString` with `void` allcoator (fixed capacity to `N` characters).
+	Alias to `BasicString` with `void` allcoator (fixed capacity to `N` characters).
 */
 alias FixedString(Char, size_t N) = BasicString!(Char, N, void);
 
 
 
 /**
-    Alias to `BasicString` with forced small string optimization fot min `N` characters.
+	Alias to `BasicString` with forced small string optimization fot min `N` characters.
 */
 alias SmallString(Char, size_t N, _Allocator = DefaultAllocator) = BasicString!(Char, max(N, 1), _Allocator);
 
 
 
 /**
-    Alias to `BasicString` without small string optimization (`N` == 0).
+	Alias to `BasicString` without small string optimization (`N` == 0).
 */
 alias LargeString(Char, _Allocator = DefaultAllocator) = BasicString!(Char, 0, _Allocator);
 
@@ -2984,6 +3004,17 @@ version(unittest){
 
 		str = "123";
 		assert(!str.empty);
+	}
+
+	//doc.full:
+	pure nothrow @safe @nogc unittest{
+        BasicString!(char, 1, void) str;	//FixedString
+        assert(str.empty);
+        assert(str.minimalCapacity > 0);
+		assert(!str.full);
+
+		str.resize(str.maximalCapacity);
+        assert(str.full);
 	}
 
 	//doc.length:
@@ -3382,30 +3413,30 @@ version(unittest){
 
 	}
 
-    //doc.opBinaryRight(rhs):
-    pure nothrow @safe @nogc unittest{
-        BasicString!char str = null;
-        assert(str.empty);
+	//doc.opBinaryRight(rhs):
+	pure nothrow @safe @nogc unittest{
+		BasicString!char str = null;
+		assert(str.empty);
 
-        str = '1' + str;
-        assert(str == "1");
+		str = '1' + str;
+		assert(str == "1");
 
-        str = "32"d + str;
-        assert(str == "321");
+		str = "32"d + str;
+		assert(str == "321");
 
-        str = BasicString!dchar("654") + str;
-        assert(str == "654321");
-    }
+		str = BasicString!dchar("654") + str;
+		assert(str == "654321");
+	}
 
-    //doc.opBinaryRight!"in":
-    pure nothrow @safe @nogc unittest{
-        BasicString!char str = "a123読";
+	//doc.opBinaryRight!"in":
+	pure nothrow @safe @nogc unittest{
+		BasicString!char str = "a123読";
 
-        assert('a' in str);
-        assert('b' !in str);
-        assert('3' in str);
-        assert('読' in str);
-    }
+		assert('a' in str);
+		assert('b' !in str);
+		assert('3' in str);
+		assert('読' in str);
+	}
 
 	//doc.opEquals(rhs):
 	pure nothrow @safe @nogc unittest{
@@ -4804,36 +4835,36 @@ pure nothrow @safe @nogc unittest{
 
 //append range
 unittest{
-    import std.range : ElementEncodingType, isInputRange, isRandomAccessRange;
+	import std.range : ElementEncodingType, isInputRange, isRandomAccessRange;
 
-    String str;
+	String str;
 
-    struct Range{
-        int i;
-        this(int i){this.i = i;}
-        char front(){return 'x';}
-        void popFront(){i -= 1;}
-        bool empty(){return i == 0;}
-        int length(){return i;}
+	struct Range{
+		int i;
+		this(int i){this.i = i;}
+		char front(){return 'x';}
+		void popFront(){i -= 1;}
+		bool empty(){return i == 0;}
+		int length(){return i;}
 
-    }
-    static assert(isInputRange!Range);
-    str.append(Range(4));
+	}
+	static assert(isInputRange!Range);
+	str.append(Range(4));
 
-    assert(str == "xxxx");
+	assert(str == "xxxx");
 
 }
 
 /+
 //appendMore
 unittest{
-    import std.range : ElementEncodingType, isInputRange, isRandomAccessRange;
+	import std.range : ElementEncodingType, isInputRange, isRandomAccessRange;
 
-    String str;
+	String str;
 
-    str.appendMore(1, 2, '-', "lol");
+	str.appendMore(1, 2, '-', "lol");
 
-    assert(str == "12-lol");
+	assert(str == "12-lol");
 
 }
 +/

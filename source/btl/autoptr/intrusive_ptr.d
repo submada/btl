@@ -1439,13 +1439,8 @@ public template IntrusivePtr(
             }
             else static if(is(ElementType == struct)){
                 /// ditto
-                public @property ref ElementType get()return pure nothrow @system @nogc{
-                    return *cast(ElementType*)this._element;
-                }
-
-                /// ditto
-                public @property ref const(inout(ElementType)) get()const inout return pure nothrow @safe @nogc{
-                    return *cast(const inout ElementType*)this._element;
+                public @property ref inout(ElementType) get()inout return pure nothrow @system @nogc{
+                    return *cast(inout(ElementType)*)this._element;
                 }
             }
             else static assert(0, "no impl");
@@ -1509,7 +1504,9 @@ public template IntrusivePtr(
                 }
                 --------------------
         */
-        public @property ElementReferenceTypeImpl!(inout ElementType) element()inout return pure nothrow @system @nogc{
+        public @property ElementReferenceTypeImpl!(GetElementType!This) element(this This)()return pure nothrow @system @nogc
+        if(!is(This == shared)){
+            assert((this._element is null) <= (this._control is null));
             static if(isWeak)
                 return (cast(const)this).expired
                     ? null
@@ -1517,6 +1514,13 @@ public template IntrusivePtr(
             else
                 return this._element;
         }
+
+
+
+        /**
+            `.ptr` is same as `.element`
+        */
+        public alias ptr = element;
 
 
 

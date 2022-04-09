@@ -1516,22 +1516,11 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 			}
 			else{
 				/// ditto
-				public @property ref ElementType get()return pure nothrow @system @nogc{
+				public @property ref inout(ElementType) get()inout return pure nothrow @system @nogc{
 					assert((this._element is null) <= (this._control is null));
-					return *cast(ElementType*)this._element;
-				}
-
-				/// ditto
-				public @property ref const(inout(ElementType)) get()const inout return pure nothrow @safe @nogc{
-					assert((this._element is null) <= (this._control is null));
-					return *cast(const inout ElementType*)this._element;
+					return *cast(inout(ElementType)*)this._element;
 				}
 			}
-
-
-
-
-
 		}
 
 
@@ -1560,6 +1549,12 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 				}
 
 				{
+					auto x = SharedPtr!(long[]).make(6, 42);
+					assert(x.element[0] == 42);
+					static assert(is(typeof(x.element) == long[]));
+				}
+
+				{
 					auto s = SharedPtr!long.make(42);
 					const w = s.weak;
 
@@ -1582,7 +1577,8 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 				}
 				--------------------
 		*/
-		public @property ElementReferenceTypeImpl!(inout ElementType) element()inout return pure nothrow @system @nogc{
+		public @property ElementReferenceTypeImpl!(GetElementType!This) element(this This)()return pure nothrow @system @nogc
+		if(!is(This == shared)){
 			assert((this._element is null) <= (this._control is null));
 			static if(isWeak)
 				return (cast(const)this).expired
@@ -1590,6 +1586,81 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 					: this._element;
 			else
 				return this._element;
+		}
+
+
+
+		/**
+			Get pointer to managed object of `ElementType` or reference if `ElementType` is reference type (class or interface) or pointer to first dynamic array element.
+
+			If `this` is weak expired pointer then return null.
+
+			Doesn't increment useCount, is inherently unsafe.
+
+			Examples:
+				--------------------
+				{
+					SharedPtr!long x = SharedPtr!long.make(123);
+					assert(*x.ptr == 123);
+
+					x.get = 321;
+					assert(*x.ptr == 321);
+
+					const y = x;
+					assert(*y.ptr == 321);
+					assert(*x.ptr == 321);
+
+					static assert(is(typeof(y.ptr) == const(long)*));
+				}
+
+				{
+					auto x = SharedPtr!(long[]).make(6, 42);
+					assert(*x.ptr == 42);
+					static assert(is(typeof(x.ptr) == long*));
+				}
+
+				{
+					auto s = SharedPtr!long.make(42);
+					const w = s.weak;
+
+					assert(*w.ptr == 42);
+
+					s = null;
+					assert(w.ptr is null);
+				}
+
+				{
+					auto s = SharedPtr!long.make(42);
+					auto w = s.weak;
+
+					scope const p = w.ptr;
+
+					s = null;
+					assert(w.ptr is null);
+
+					assert(p !is null); //p is dangling pointer!
+				}
+				--------------------
+		*/
+		public @property ElementPointerTypeImpl!(GetElementType!This) ptr(this This)()return pure nothrow @system @nogc
+		if(!is(This == shared)){
+			assert((this._element is null) <= (this._control is null));
+
+			auto get_ptr(){
+				static if(isDynamicArray!ElementType)
+					return this._element.ptr;
+				else
+					return this._element;
+			}
+
+
+
+			static if(isWeak)
+				return (cast(const)this).expired
+					? null
+					: get_ptr();
+			else
+				return get_ptr();
 		}
 
 
@@ -3804,6 +3875,12 @@ version(unittest){
 		}
 
 		{
+			auto x = SharedPtr!(long[]).make(6, 42);
+			assert(x.element[0] == 42);
+			static assert(is(typeof(x.element) == long[]));
+		}
+
+		{
 			auto s = SharedPtr!long.make(42);
 			const w = s.weak;
 
@@ -3821,6 +3898,51 @@ version(unittest){
 
 			s = null;
 			assert(w.element is null);
+
+			assert(p !is null); //p is dangling pointer!
+		}
+	}
+
+	//ptr
+	pure nothrow @nogc unittest{
+		{
+			SharedPtr!long x = SharedPtr!long.make(123);
+			assert(*x.ptr == 123);
+
+			x.get = 321;
+			assert(*x.ptr == 321);
+
+			const y = x;
+			assert(*y.ptr == 321);
+			assert(*x.ptr == 321);
+
+			static assert(is(typeof(y.ptr) == const(long)*));
+		}
+
+		{
+			auto x = SharedPtr!(long[]).make(6, 42);
+			assert(*x.ptr == 42);
+			static assert(is(typeof(x.ptr) == long*));
+		}
+
+		{
+			auto s = SharedPtr!long.make(42);
+			const w = s.weak;
+
+			assert(*w.ptr == 42);
+
+			s = null;
+			assert(w.ptr is null);
+		}
+
+		{
+			auto s = SharedPtr!long.make(42);
+			auto w = s.weak;
+
+			scope const p = w.ptr;
+
+			s = null;
+			assert(w.ptr is null);
 
 			assert(p !is null); //p is dangling pointer!
 		}
@@ -4048,16 +4170,17 @@ unittest{
 
 //@safe const get:
 @safe pure nothrow @nogc unittest{
-	{
+	/+{
 		const x = SharedPtr!long.make(42);
 		assert(x.get == 42);
-	}
+	}+/
 
 	{
 		const x = SharedPtr!void.make();
 		x.get;
 	}
 }
+
 
 
 

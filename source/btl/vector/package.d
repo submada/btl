@@ -190,13 +190,11 @@ template Vector(
 
             Examples:
                 --------------------
-                Vector!(int, 4, void) vec;
+                Vector!(int, 4, void) vec;  //FixedVector
                 assert(vec.empty);
                 assert(vec.maximalCapacity == vec.minimalCapacity);
 
-                for(int i = 0; i < vec.maximalCapacity; ++i)
-                    vec.append(i);
-
+                vec.resize(vec.maximalCapacity);
                 assert(vec.full);
                 --------------------
         */
@@ -3226,13 +3224,11 @@ version(unittest){
 
         //Vector.full
         pure nothrow @safe @nogc unittest{
-            Vector!(int, 4, void) vec;
+            Vector!(int, 4, void) vec;  //FixedVector
             assert(vec.empty);
             assert(vec.maximalCapacity == vec.minimalCapacity);
 
-            for(int i = 0; i < vec.maximalCapacity; ++i)
-                vec.append(i);
-
+            vec.resize(vec.maximalCapacity);
             assert(vec.full);
         }
 
