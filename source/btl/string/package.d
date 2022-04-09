@@ -1505,25 +1505,25 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		public int opCmp(Rhs)(scope auto ref Rhs rhs)const scope
 		if(isBasicString!Rhs || isSomeChar!Rhs || isSomeString!Rhs || isCharArray!Rhs || isIntegral!Rhs || isInputCharRange!Rhs){
 
-			static if(isBasicString!Val){
-				return this._op_cmp(rhs._chars);
+			static if(isBasicString!Rhs){
+				return this._op_cmp(rhs.storage.chars);
 			}
-			else static if(isSomeString!Val || isCharArray!Val){
+			else static if(isSomeString!Rhs || isCharArray!Rhs){
 				return this._op_cmp(rhs[]);
 			}
-			else static if(isSomeChar!Val){
+			else static if(isSomeChar!Rhs){
 				import std.range : only;
 				return this._op_cmp(only(rhs));
 			}
-			else static if(isIntegral!Val){
+			else static if(isIntegral!Rhs){
 				import std.conv : toChars;
 				return this._op_cmp(toChars(rhs + 0));
 			}
-			else static if(isInputRange!Val){
+			else static if(isInputRange!Rhs){
 				return this._op_cmp(val);
 			}
 			else{
-				static assert(0, "invalid type '" ~ Val.stringof ~ "'");
+				static assert(0, "invalid type '" ~ Rhs.stringof ~ "'");
 			}
 		}
 

@@ -617,29 +617,29 @@ template Vector(
         )){
 
             static if(hasCopyConstructor!(From, typeof(this)))
-                this(scope ref return From rhs)scope{this(rhs, Forward.init);}
+                this(scope ref From rhs)scope{this(rhs, Forward.init);}
             else
-                @disable this(scope ref return From rhs)scope pure nothrow @safe;
+                @disable this(scope ref From rhs)scope pure nothrow @safe;
 
             static if(hasCopyConstructor!(From, const typeof(this)))
-                this(scope ref return From rhs)const scope{this(rhs, Forward.init);}
+                this(scope ref From rhs)const scope{this(rhs, Forward.init);}
             else
-                @disable this(scope ref return From rhs)const scope pure nothrow @safe;
+                @disable this(scope ref From rhs)const scope pure nothrow @safe;
 
             static if(hasCopyConstructor!(From, immutable typeof(this)))
-                this(scope ref return From rhs)immutable scope{this(rhs, Forward.init);}
+                this(scope ref From rhs)immutable scope{this(rhs, Forward.init);}
             else
-                @disable this(scope ref return From rhs)immutable scope pure nothrow @safe;
+                @disable this(scope ref From rhs)immutable scope pure nothrow @safe;
 
             static if(hasCopyConstructor!(From, shared typeof(this)))
-                this(scope ref return From rhs)shared scope{this(rhs, Forward.init);}
+                this(scope ref From rhs)shared scope{this(rhs, Forward.init);}
             else
-                @disable this(scope ref return From rhs)shared scope pure nothrow @safe;
+                @disable this(scope ref From rhs)shared scope pure nothrow @safe;
 
             static if(hasCopyConstructor!(From, const shared typeof(this)))
-                this(scope ref return From rhs)const shared scope{this(rhs, Forward.init);}
+                this(scope ref From rhs)const shared scope{this(rhs, Forward.init);}
             else
-                @disable this(scope ref return From rhs)const shared scope pure nothrow @safe;
+                @disable this(scope ref From rhs)const shared scope pure nothrow @safe;
         }
 
 
@@ -1566,60 +1566,114 @@ template Vector(
         public void proxySwap()(ref scope typeof(this) rhs)scope{
             import std.algorithm.mutation : swap;
 
-            //heap <-> heap
-            if(this.storage.external && rhs.storage.external){
+            static if(minimalCapacity == 0){
                 static if(!hasStatelessAllocator)
                     swap(this._allocator, rhs._allocator);
 
                 swap(this.storage.length, rhs.storage.length);
                 swap(this.storage.heap, rhs.storage.heap);
             }
-            //inline <-> inline
-            else if(!this.storage.external && !rhs.storage.external){
-                auto small = (()@trusted => (this.length < rhs.length) ?  &this : &rhs )();
-                auto large = (()@trusted => (this.length < rhs.length) ?  &rhs : &this )();
+            else{
+                //heap <-> heap
+                if(this.storage.external && rhs.storage.external){
+                    static if(!hasStatelessAllocator)
+                        swap(this._allocator, rhs._allocator);
 
-                //TODO range swap generalization:
-                for(size_t i = 0; i < this.length; ++i)
-                    swap(
-                        *(()@trusted => small.storage.inline.ptr + i )(),
-                        *(()@trusted => large.storage.inline.ptr + i )()
+                    swap(this.storage.length, rhs.storage.length);
+                    swap(this.storage.heap, rhs.storage.heap);
+                }
+                //inline <-> inline
+                else if(!this.storage.external && !rhs.storage.external){
+                    auto small = (()@trusted => (this.length < rhs.length) ?  &this : &rhs )();
+                    auto large = (()@trusted => (this.length < rhs.length) ?  &rhs : &this )();
+
+                    //TODO range swap generalization:
+                    for(size_t i = 0; i < this.length; ++i)
+                        swap(
+                            *(()@trusted => small.storage.inline.ptr + i )(),
+                            *(()@trusted => large.storage.inline.ptr + i )()
+                        );
+
+                    moveEmplaceRangeImpl(
+                        (()@trusted => small.storage.inline.ptr + small.length )(),
+                        (()@trusted => large.storage.inline.ptr + small.length )(),
+                        (large.length - small.length)
                     );
 
-                moveEmplaceRangeImpl(
-                    (()@trusted => small.storage.inline.ptr + small.length )(),
-                    (()@trusted => large.storage.inline.ptr + small.length )(),
-                    (large.length - small.length)
-                );
+                    swap(this.storage.length, rhs.storage.length);
+                }
+                //heap <-> inline || inline <-> heap
+                else{
+                    assert(this.storage.external != rhs.storage.external);
+
+                    auto heap = (()@trusted => this.storage.external ? &this : &rhs )();
+                    auto inline = (()@trusted => this.storage.external ? &rhs : &this )();
+
+                    //copy heap to tmp:
+                    Storage.Heap tmp_heap = heap.storage.heap;
+
+                    //copy inline to old heap:
+                    heap.storage.external = false;
+                    moveEmplaceRangeImpl(
+                        (()@trusted => heap.storage.inline.ptr )(),
+                        (()@trusted => inline.storage.inline.ptr )(),
+                        inline.storage.length
+                    );
+
+                    //swap lengths:
+                    swap(inline.storage.length, heap.storage.length);
+
+                    //copy tmp heap to new heap:
+                    inline.storage.heap = tmp_heap;
+
+                    assert(!heap.storage.external);
+                    assert(inline.storage.external);
+                }
+
+            }
+        }
+
+
+
+        /**
+            Swaps the contents of `this` and `rhs` only if both are heap allocated.
+
+            Return `true` if swap successed or `false` if not (`this` or `rhs` is non heap allocated).
+
+            Examples:
+                --------------------
+                auto a = Vector!(int, 3).build(1, 2, 3);
+                auto b = Vector!(int, 3).build(6, 7, 8);
+
+                assert(a.heapSwap(b) == false);
+                assert(a == [1, 2, 3]);
+                assert(b == [6, 7, 8]);
+
+                a ~= 4;
+                b ~= 9;
+                assert(a == [1, 2, 3, 4]);
+                assert(b == [6, 7, 8, 9]);
+
+                assert(a.heapSwap(b) == true);
+                assert(a == [6, 7, 8, 9]);
+                assert(b == [1, 2, 3, 4]);
+                --------------------
+        */
+        public bool heapSwap()(ref scope typeof(this) rhs)scope{
+            import std.algorithm.mutation : swap;
+
+            //heap <-> heap
+            if((minimalCapacity == 0) || (this.storage.external && rhs.storage.external)){
+                static if(!hasStatelessAllocator)
+                    swap(this._allocator, rhs._allocator);
 
                 swap(this.storage.length, rhs.storage.length);
+                swap(this.storage.heap, rhs.storage.heap);
+
+                return true;
             }
-            //heap <-> inline || inline <-> heap
             else{
-                assert(this.storage.external != rhs.storage.external);
-
-                auto heap = (()@trusted => this.storage.external ? &this : &rhs )();
-                auto inline = (()@trusted => this.storage.external ? &rhs : &this )();
-
-                //copy heap to tmp:
-                Storage.Heap tmp_heap = heap.storage.heap;
-
-                //copy inline to old heap:
-                heap.storage.external = false;
-                moveEmplaceRangeImpl(
-                    (()@trusted => heap.storage.inline.ptr )(),
-                    (()@trusted => inline.storage.inline.ptr )(),
-                    inline.storage.length
-                );
-
-                //swap lengths:
-                swap(inline.storage.length, heap.storage.length);
-
-                //copy tmp heap to new heap:
-                inline.storage.heap = tmp_heap;
-
-                assert(!heap.storage.external);
-                assert(inline.storage.external);
+                return false;
             }
         }
 
