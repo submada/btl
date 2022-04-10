@@ -742,7 +742,7 @@ public template IntrusivePtr(
                 return this.lockSmartPtr!(
                     (ref scope self) => self.useCount()
                 )();
-            
+
             else
                 return (this._element is null)
                     ? 0
@@ -785,7 +785,7 @@ public template IntrusivePtr(
                 return this.lockSharedPtr!(
                     (ref scope self) => self.weakCount()
                 )();
-            
+
             else
                 return (this._element is null)
                     ? 0
@@ -865,7 +865,7 @@ public template IntrusivePtr(
                 return this.lockSmartPtr!(
                     (ref scope self) => self.load!order()
                 )();
-            
+
             else
                 return typeof(return)(this);
         }
@@ -1021,7 +1021,7 @@ public template IntrusivePtr(
         /// ditto
         public IntrusivePtr exchange(MemoryOrder order = MemoryOrder.seq, Rhs, this This)(scope Rhs ptr)scope
         if(    isIntrusivePtr!Rhs
-            && !is(Rhs == shared) 
+            && !is(Rhs == shared)
             && isMoveConstructable!(Rhs, This)
             && isMutable!This
         ){
@@ -1506,7 +1506,6 @@ public template IntrusivePtr(
         */
         public @property ElementReferenceTypeImpl!(GetElementType!This) element(this This)()return pure nothrow @system @nogc
         if(!is(This == shared)){
-            assert((this._element is null) <= (this._control is null));
             static if(isWeak)
                 return (cast(const)this).expired
                     ? null
@@ -2413,7 +2412,7 @@ nothrow @nogc unittest{
 
 /**
     Create `IntrusivePtr` instance from class reference `Elm` or struct pointer element `Elm`.
-    
+
     `Elm` was created by `IntrusivePtr.make` or `IntrusivePtr.alloc`.
 */
 auto intrusivePtr(Elm)(Elm elm)

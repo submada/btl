@@ -1532,7 +1532,6 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
         */
         public @property ElementReferenceTypeImpl!(GetElementType!This) element(this This)()return pure nothrow @system @nogc
         if(!is(This == shared)){
-            assert((this._element is null) <= (this._control is null));
             static if(isWeak)
                 return (cast(const)this).expired
                     ? null
@@ -1597,8 +1596,6 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
         */
         public @property ElementPointerTypeImpl!(GetElementType!This) ptr(this This)()return pure nothrow @system @nogc
         if(!is(This == shared)){
-            assert((this._element is null) <= (this._control is null));
-
             auto get_ptr(){
                 static if(isDynamicArray!ElementType)
                     return this._element.ptr;
