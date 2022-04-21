@@ -816,6 +816,30 @@ public template apply(alias fn){
 
 
 
+public auto mutablePtr(P)(scope auto ref P ptr)@system //@system
+if(true
+    && isSmartPtr!P //(isIntrusivePtr!P || isSharedPtr!P || isRcPtr!P)
+    && !is(P == immutable) && !is(P == inout) && !is(P.ControlType == immutable)
+){
+    import std.traits : CopyTypeQualifiers, Unconst, isMutable, TemplateOf;
+
+    static assert(isMutable!(P.ControlType));
+
+    alias Ptr = TemplateOf!P;
+
+    alias Self = Ptr!(
+        CopyTypeQualifiers!(P, P.ElementType),
+        P.DestructorType,
+        P.ControlType,
+        P.isWeak
+    );
+
+    static if(__traits(isRef, ptr))
+        return *cast(Self*)&ptr;
+    else
+        return move(*cast(Self*)&ptr);
+}
+
 
 ///
 @safe pure nothrow @nogc unittest{

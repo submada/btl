@@ -2341,25 +2341,21 @@ nothrow unittest{
     If `ptr` is null or dynamic cast fail then result `RcPtr` is null.
     Otherwise, the new `RcPtr` will share ownership with the initial value of `ptr`.
 */
-public UnqualSmartPtr!Ptr.ChangeElementType!T dynCast(T, Ptr)(ref scope Ptr ptr)
+public UnqualSmartPtr!Ptr.ChangeElementType!T dynCast(T, Ptr)(scope auto ref Ptr ptr)
 if(    isRcPtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
     && isClassOrInterface!T && __traits(getLinkage, T) == "D"
     && isClassOrInterface!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
 ){
-    if(auto element = dynCastElement!T(ptr._element)){
-        return typeof(return)(ptr._control, element);
+    static if(isRef!ptr){
+        if(auto element = dynCastElement!T(ptr._element)){
+            return typeof(return)(ptr._control, element);
+        }
+
+        return typeof(return).init;
     }
-
-    return typeof(return).init;
-}
-
-/// ditto
-public UnqualSmartPtr!Ptr.ChangeElementType!T dynCast(T, Ptr)(scope Ptr ptr)
-if(    isRcPtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
-    && isClassOrInterface!T && __traits(getLinkage, T) == "D"
-    && isClassOrInterface!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
-){
-    return dynCastMove!T(ptr);
+    else{
+        return dynCastMove!T(ptr);
+    }
 }
 
 /// ditto

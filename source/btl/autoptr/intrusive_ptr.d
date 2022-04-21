@@ -2241,32 +2241,25 @@ nothrow unittest{
     If `ptr` is null or dynamic cast fail then result `IntrusivePtr` is null.
     Otherwise, the new `IntrusivePtr` will share ownership with the initial value of `ptr`.
 */
-public UnqualSmartPtr!Ptr.ChangeElementType!T dynCast(T, Ptr)(ref scope Ptr ptr)
+public UnqualSmartPtr!Ptr.ChangeElementType!T dynCast(T, Ptr)(scope auto ref Ptr ptr)
 if(    isIntrusive!T
     && isIntrusivePtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
     && isClassOrInterface!T && __traits(getLinkage, T) == "D"
     && isClassOrInterface!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
 ){
-    static assert(isCopyConstructable!(Ptr, UnqualSmartPtr!Ptr));
+    static if(isRef!ptr){
+        static assert(isCopyConstructable!(Ptr, UnqualSmartPtr!Ptr));
 
-    if(auto element = dynCastElement!T(ptr._element)){
-        ptr._control.add!false;
-        return typeof(return)(element, Forward.init);
+        if(auto element = dynCastElement!T(ptr._element)){
+            ptr._control.add!false;
+            return typeof(return)(element, Forward.init);
+        }
+
+        return typeof(return).init;
     }
-
-    return typeof(return).init;
-}
-
-/// ditto
-public UnqualSmartPtr!Ptr.ChangeElementType!T dynCast(T, Ptr)(scope Ptr ptr)
-if(    isIntrusive!T
-    && isIntrusivePtr!Ptr && !is(Ptr == shared) && !Ptr.isWeak
-    && isClassOrInterface!T && __traits(getLinkage, T) == "D"
-    && isClassOrInterface!(Ptr.ElementType) && __traits(getLinkage, Ptr.ElementType) == "D"
-){
-    static assert(isMoveConstructable!(Ptr, UnqualSmartPtr!Ptr));
-
-    return dynCastMove(ptr);
+    else{
+        return dynCastMove!T(ptr);
+    }
 }
 
 /// ditto
@@ -2435,6 +2428,39 @@ if(is(Elm == struct) && isIntrusive!Elm){
     result._control.add!false;
     return result;
 }
+
+
+/+
+/**
+    Create mutable `SharedPtr` instance from class reference `Elm` or struct pointer element `Elm`.
+
+    `Elm` was created by `IntrusivePtr.make` or `IntrusivePtr.alloc`.
+*/
+auto intrusiveMutablePtr(Elm)(Elm elm)
+if(is(Elm == class) && isIntrusive!Elm)@system{
+    import std.traits : Unconst;
+    import btl.autoptr.shared_ptr;
+    static assert(!is(IntrusiveControlBlock!Elm == immutable),
+        "control block for intrusive parameter `elm` for function `intrusiveMutablePtr` canno't be immutable"
+    );
+
+    auto result = IntrusivePtr!Elm(cast(Unconst!Elm)elm, Forward.init);
+    result._control.add!false;
+    return result;
+}
+
+/// ditto
+auto intrusiveMutablePtr(Ptr : Elm*, Elm)(Ptr elm)
+if(is(Elm == struct) && isIntrusive!Elm)@system{
+    import btl.autoptr.shared_ptr;
+    static assert(!is(IntrusiveControlBlock!Elm == immutable),
+        "control block for intrusive parameter `elm` for function `intrusiveMutablePtr` canno't be immutable"
+    );
+
+    auto result = IntrusivePtr!Elm(elm, Forward.init);
+    result._control.add!false;
+    return result;
+}+/
 
 ///
 unittest{

@@ -155,23 +155,23 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 
 
-        /**
-            Returns whether the string is full (i.e. whether its length is equal to maximalCapacity).
+		/**
+			Returns whether the string is full (i.e. whether its length is equal to maximalCapacity).
 
-            Examples:
-                --------------------
-                BasicString!(char, 1, void) str;	//FixedString
-                assert(str.empty);
-                assert(str.minimalCapacity > 0);
+			Examples:
+				--------------------
+				BasicString!(char, 1, void) str;	//FixedString
+				assert(str.empty);
+				assert(str.minimalCapacity > 0);
 				assert(!str.full);
 
 				str.resize(str.maximalCapacity);
-                assert(str.full);
-                --------------------
-        */
-        public @property bool full()const scope pure nothrow @safe @nogc{
-            return (this.length == maximalCapacity);
-        }
+				assert(str.full);
+				--------------------
+		*/
+		public @property bool full()const scope pure nothrow @safe @nogc{
+			return (this.length == maximalCapacity);
+		}
 
 
 
@@ -2352,6 +2352,12 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 
 
+		public immutable(CharType)[] toGcString()scope const pure nothrow @trusted{
+			return this[].idup;
+		}
+
+
+
 		static if(!allowHeap){
 			private alias _allocator = statelessAllcoator!NullAllocator;
 			private enum safeAllocate = true;
@@ -3008,13 +3014,13 @@ version(unittest){
 
 	//doc.full:
 	pure nothrow @safe @nogc unittest{
-        BasicString!(char, 1, void) str;	//FixedString
-        assert(str.empty);
-        assert(str.minimalCapacity > 0);
+		BasicString!(char, 1, void) str;	//FixedString
+		assert(str.empty);
+		assert(str.minimalCapacity > 0);
 		assert(!str.full);
 
 		str.resize(str.maximalCapacity);
-        assert(str.full);
+		assert(str.full);
 	}
 
 	//doc.length:
