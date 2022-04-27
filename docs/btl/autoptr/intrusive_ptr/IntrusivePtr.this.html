@@ -108,7 +108,7 @@ $('#symbolSearchPane').show();</script>
 			<br/>
 			<span class="pun">)</span><span class="pln"> </span><span class="kwd">@trusted</span>
 			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isIntrusivePtr</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; </span><span class="pln">isConstructable</span><span class="pun">!(</span><span class="pln">rhs</span><span class="pun">, </span><span class="typ">This</span><span class="pun">) &amp;&amp; !</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Rhs </span><span class="pun">== </span><span class="kwd">shared</span><span class="pun">)</span><span class="pun">);</span>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isIntrusivePtr</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; !</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Rhs </span><span class="pun">== </span><span class="kwd">shared</span><span class="pun">)</span><span class="pun">);</span>
 					</div>
 				</code>
 			</div>
@@ -153,7 +153,7 @@ $('#symbolSearchPane').show();</script>
 			<br/>
 			<span class="pun">)</span><span class="pln"> </span><span class="kwd">@trusted</span>
 			<br/>
-			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isIntrusivePtr</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; </span><span class="pln">isConstructable</span><span class="pun">!(</span><span class="pln">rhs</span><span class="pun">, </span><span class="typ">This</span><span class="pun">) &amp;&amp; !</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Rhs </span><span class="pun">== </span><span class="kwd">shared</span><span class="pun">) &amp;&amp; !</span><span class="pln">isMoveCtor</span><span class="pun">!(</span><span class="typ">This</span><span class="pun">, </span><span class="pln">rhs</span><span class="pun">)</span><span class="pun">);</span>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isIntrusivePtr</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">&amp;&amp; !</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Rhs </span><span class="pun">== </span><span class="kwd">shared</span><span class="pun">) &amp;&amp; !</span><span class="pln">isMoveCtor</span><span class="pun">!(</span><span class="typ">This</span><span class="pun">, </span><span class="pln">rhs</span><span class="pun">)</span><span class="pun">);</span>
 					</div>
 				</code>
 			</div>

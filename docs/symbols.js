@@ -230,6 +230,7 @@ var symbols = [
 {name: 'btl.string.BasicString.opAssign', kind: "functiondeclaration", path: './btl/string/BasicString.opAssign.html', attributes: ["pure", "nothrow", "nogc", "scope", "safe"]},
 {name: 'btl.string.BasicString.opBinary', kind: "functiondeclaration", path: './btl/string/BasicString.opBinary.html', attributes: ["scope"]},
 {name: 'btl.string.BasicString.opBinaryRight', kind: "functiondeclaration", path: './btl/string/BasicString.opBinaryRight.html', attributes: ["scope"]},
+{name: 'btl.string.BasicString.opCast', kind: "functiondeclaration", path: './btl/string/BasicString.opCast.html', attributes: ["pure", "nothrow", "nogc", "ref", "scope"]},
 {name: 'btl.string.BasicString.opCmp', kind: "functiondeclaration", path: './btl/string/BasicString.opCmp.html', attributes: ["const", "pure", "nothrow", "nogc", "scope", "safe"]},
 {name: 'btl.string.BasicString.opDollar', kind: "functiondeclaration", path: './btl/string/BasicString.opDollar.html', attributes: ["const", "pure", "nothrow", "nogc", "scope", "safe"]},
 {name: 'btl.string.BasicString.opEquals', kind: "functiondeclaration", path: './btl/string/BasicString.opEquals.html', attributes: ["const", "pure", "nothrow", "nogc", "scope", "safe"]},

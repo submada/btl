@@ -244,12 +244,13 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 			Forward constructor (merge move and copy constructor).
 		*/
 		public this(Rhs, this This)(scope auto ref Rhs rhs, Forward)@trusted //if rhs is rvalue then dtor is called on empty rhs
-		if(    isSmartPtr!Rhs	//(isSharedPtr!Rhs || isRcPtr!Rhs || isIntrusivePtr!Rhs)
-			&& isConstructable!(rhs, This)
-			&& !is(Rhs == shared)
-		){
+		if(isSmartPtr!Rhs && !is(Rhs == shared)){
+			//error:
+			static if(!isConstructable!(rhs, This)){
+				this.construct_error(forward!rhs);
+			}
 			//lock (copy):
-			static if(weakLock!(Rhs, This)){
+			else static if(weakLock!(Rhs, This)){
 				if(rhs._control !is null && rhs._control.add_shared_if_exists()){
 					this._control = rhs._control;
 					this._element = rhs._element;
@@ -274,6 +275,33 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 				}
 
 			}
+		}
+
+		//
+		private void construct_error(Rhs, this This)(scope auto ref Rhs rhs)
+		if(isSmartPtr!Rhs && !isConstructable!(rhs, This)){
+			static if(isRef!rhs){
+				import std.traits : isMutable;
+
+				static assert(isMutable!Rhs,
+					"rhs must be mutable."
+				);
+				static assert(isMutable!(Rhs.ControlType),
+					"control type of rhs must be mutable."
+				);
+			}
+
+			static assert(is(GetElementReferenceType!Rhs : GetElementReferenceType!This),
+				"element type '" ~ GetElementReferenceType!Rhs.stringof ~ "' is not compatible with '" ~ GetElementReferenceType!This.stringof ~ "'."
+			);
+			static assert(is(Rhs.DestructorType : This.DestructorType),
+				"destructor attributes '" ~ Rhs.DestructorType.stringof ~ "' are not compatible with '" ~ This.DestructorType.stringof ~ "'."
+			);
+			static assert(is(GetControlType!Rhs* : GetControlType!This*),
+				"control type " ~ GetControlType!Rhs.stringof ~ " is not compatible with '" ~ GetControlType!This.stringof ~ "'."
+			);
+
+			static assert(0, "ShardPtr canno't be constructed from rhs of type " ~ Rhs.stringof);
 		}
 
 
@@ -396,11 +424,8 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 				--------------------
 		*/
 		public this(Rhs, this This)(scope auto ref Rhs rhs)@trusted //if rhs is rvalue then dtor is called on empty rhs
-		if(    isSmartPtr!Rhs   //(isSharedPtr!Rhs || isRcPtr!Rhs || isIntrusivePtr!Rhs)
-			&& isConstructable!(rhs, This)
-			&& !is(Rhs == shared)
-			&& !isMoveCtor!(This, rhs)
-		){
+		if(isSmartPtr!Rhs && !is(Rhs == shared) && !isMoveCtor!(This, rhs)){
+			//static assert(isConstructable!(rhs, This));
 			this(forward!rhs, Forward.init);
 		}
 
@@ -604,12 +629,13 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 				--------------------
 		*/
 		public void opAssign(MemoryOrder order = MemoryOrder.seq, Rhs, this This)(scope auto ref Rhs desired)scope
-		if(    isSmartPtr!Rhs   //(isSharedPtr!Rhs || isRcPtr!Rhs || isIntrusivePtr!Rhs)
-			&& isAssignable!(desired, This)
-			&& !is(Rhs == shared)
-		){
+		if(isSmartPtr!Rhs && !is(Rhs == shared)){
+			//error
+			static if(!isAssignable!(desired, This)){
+				this.assign_error(forward!desired);
+			}
 			//RcPtr and IntrusivePtr
-			static if(!isSharedPtr!Rhs){
+			else static if(!isSharedPtr!Rhs){
 				this.opAssign!order(UnqualSmartPtr!This(forward!desired));
 			}
 			// shared assign:
@@ -650,6 +676,20 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 					desired._const_set_counter(null);
 				}();
 			}
+		}
+
+		//
+		private void assign_error(Rhs, this This)(scope auto ref Rhs desired)
+		if(isSmartPtr!Rhs && !isAssignable!(desired, This)){
+			import std.traits : isMutable;
+
+			static assert(!weakLock!(Rhs, This),
+				"weak error"
+			);
+			static assert(isMutable!This, "assign must have mutable this");
+
+
+			this.construct_error(forward!desired);
 		}
 
 
@@ -2853,8 +2893,6 @@ private{
 
 	//Constructable:
 	template isMoveConstructable(From, To){
-		import std.traits : CopyTypeQualifiers;
-
 		enum bool isMoveConstructable = true
 			&& isAliasable!(From, To)
 			&& is(GetElementReferenceType!From : GetElementReferenceType!To);

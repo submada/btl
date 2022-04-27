@@ -4,7 +4,7 @@ import std.traits : Select, isUnsigned;
 
 import btl.internal.traits;
 
-package template Storage(T, size_t N, L, bool allowHeap)
+public template Storage(T, size_t N, L, bool allowHeap)
 if(isUnsigned!L){
 
     struct Storage{

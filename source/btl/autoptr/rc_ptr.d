@@ -247,12 +247,13 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
             Forward constructor (merge move and copy constructor).
         */
         public this(Rhs, this This)(scope auto ref Rhs rhs, Forward)@trusted
-        if(    isRcPtr!Rhs
-            && isConstructable!(rhs, This)
-            && !is(Rhs == shared)
-        ){
+        if(isRcPtr!Rhs && !is(Rhs == shared)){
+            //error:
+            static if(!isConstructable!(rhs, This)){
+                this.construct_error(forward!rhs);
+            }
             //lock (copy):
-            static if(weakLock!(Rhs, This)){
+            else static if(weakLock!(Rhs, This)){
                 if(rhs._element !is null && rhs._control.add_shared_if_exists())
                     this._element = rhs._element;
                 /+else
@@ -281,6 +282,33 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
                     rhs._const_reset();
                 }
             }
+        }
+
+        //
+        private void construct_error(Rhs, this This)(scope auto ref Rhs rhs)
+        if(isRcPtr!Rhs && !isConstructable!(rhs, This)){
+            static if(isRef!rhs){
+                import std.traits : isMutable;
+
+                static assert(isMutable!Rhs,
+                    "rhs must be mutable."
+                );
+                static assert(isMutable!(Rhs.ControlType),
+                    "control type of rhs must be mutable."
+                );
+            }
+
+            static assert(is(GetElementReferenceType!Rhs : GetElementReferenceType!This),
+                "element type '" ~ GetElementReferenceType!Rhs.stringof ~ "' is not compatible with '" ~ GetElementReferenceType!This.stringof ~ "'."
+            );
+            static assert(is(Rhs.DestructorType : This.DestructorType),
+                "destructor attributes '" ~ Rhs.DestructorType.stringof ~ "' are not compatible with '" ~ This.DestructorType.stringof ~ "'."
+            );
+            static assert(is(GetControlType!Rhs* : GetControlType!This*),
+                "control type " ~ GetControlType!Rhs.stringof ~ " is not compatible with '" ~ GetControlType!This.stringof ~ "'."
+            );
+
+            static assert(0, "RcPtr canno't be constructed from rhs of type " ~ Rhs.stringof);
         }
 
 
@@ -361,11 +389,8 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
                 --------------------
         */
         public this(Rhs, this This)(scope auto ref Rhs rhs)@trusted
-        if(    isRcPtr!Rhs
-            && isConstructable!(rhs, This)
-            && !is(Rhs == shared)
-            && !isMoveCtor!(This, rhs)
-        ){
+        if(isRcPtr!Rhs && !is(Rhs == shared) && !isMoveCtor!(This, rhs)){
+            //static assert(isConstructable!(rhs, This));
             this(forward!rhs, Forward.init);
         }
 
@@ -535,12 +560,13 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
                 --------------------
         */
         public void opAssign(MemoryOrder order = MemoryOrder.seq, Rhs, this This)(scope auto ref Rhs desired)scope
-        if(    isRcPtr!Rhs
-            && isAssignable!(desired, This)
-            && !is(Rhs == shared)
-        ){
+        if(isRcPtr!Rhs && !is(Rhs == shared)){
+            //error
+            static if(!isAssignable!(desired, This)){
+                this.assign_error(forward!desired);
+            }
             // shared assign:
-            static if(is(This == shared)){
+            else static if(is(This == shared)){
                 static if(isLockFree){
                     import core.atomic : atomicExchange;
 
@@ -600,6 +626,20 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
                 }();
 
             }
+        }
+
+        //
+        private void assign_error(Rhs, this This)(scope auto ref Rhs desired)
+        if(isRcPtr!Rhs && !isAssignable!(desired, This)){
+            import std.traits : isMutable;
+
+            static assert(!weakLock!(Rhs, This),
+                "weak error"
+            );
+            static assert(isMutable!This, "assign must have mutable this");
+
+
+            this.construct_error(forward!desired);
         }
 
 

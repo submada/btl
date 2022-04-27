@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Function BasicString.full</title>
+		<title>Function BasicString.opCast</title>
 		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
@@ -75,27 +75,19 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Function BasicString.full</h1><p>Returns whether the string is full (i.e. whether its length is equal to maximalCapacity).
+			<h1>Function BasicString.opCast</h1><p>Support for quelifier cast.
 </p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="typ">bool</span> <span class="pln">full</span><span class="pun">(</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">const pure nothrow @nogc @property scope @safe</span><span class="pun">;</span>
+			<span class="kwd">ref </span><span class="typ">To</span> <span class="pln">opCast</span>(To, This)<span class="pun">(</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">pure nothrow @nogc scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="kwd">immutable</span><span class="pun">(</span><span class="typ">To</span><span class="pun">) : </span><span class="kwd">immutable</span><span class="pun">(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)))</span><span class="pun">);</span>
 					</div>
 				</code>
 			</div>
-			<section></section>
-
-			<section><h2>Examples</h2>
-<pre class="code"><code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a><span class="pun">!(</span><span class="typ">char</span><span class="pun">, </span><span class="lit">1</span><span class="pun">, </span><span class="typ">void</span><span class="pun">) </span><span class="pln">str</span><span class="pun">;	</span><span class="com">//FixedString
-</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">empty</span><span class="pun">);
-</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">minimalCapacity </span><span class="pun">&gt; </span><span class="lit">0</span><span class="pun">);
-</span><span class="kwd">assert</span><span class="pun">(!</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">full</span><span class="pun">);
-
-</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">resize</span><span class="pun">(</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">maximalCapacity</span><span class="pun">);
-</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">full</span><span class="pun">);</span></code></pre>
-</section>
-
+			
+			
 			<footer>
 				<table class="license-info">
 					<tr>

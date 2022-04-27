@@ -729,6 +729,41 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 
 
+        /*
+            Checks if `this` is not empty`.
+
+            Examples:
+                --------------------
+                BasicString!char str;
+                assert(false == cast(bool)x);    //explicit cast
+                assert(!x);              //implicit cast
+                x = "\t";
+                assert(cast(bool)x);   //explicit cast
+                assert(x);             //implicit cast
+                --------------------
+        */
+        /+public bool opCast(To : bool)()const scope pure nothrow @safe @nogc
+        if(is(To : bool)){ //docs
+            return !this.empty;
+        }+/
+
+
+
+        /**
+            Support for quelifier cast.
+        */
+        public ref To opCast(To, this This)()return scope pure nothrow @nogc
+        if(is(immutable To : immutable typeof(this))){
+            static if(is(This : To)){
+                return *(()@trusted => cast(To*)&this )();
+            }
+            else{
+                return *(()@system => cast(To*)&this )();
+            }
+        }
+
+
+
 		/**
 			Destroys the `BasicString` object.
 

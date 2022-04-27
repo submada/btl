@@ -219,12 +219,13 @@ public template IntrusivePtr(
             Forward constructor (merge move and copy constructor).
         */
         public this(Rhs, this This)(scope auto ref Rhs rhs, Forward)@trusted
-        if(    isIntrusivePtr!Rhs
-            && isConstructable!(rhs, This)
-            && !is(Rhs == shared)
-        ){
+        if(isIntrusivePtr!Rhs && !is(Rhs == shared)){
+            //error:
+            static if(!isConstructable!(rhs, This)){
+                this.construct_error(forward!rhs);
+            }
             //lock (copy):
-            static if(weakLock!(Rhs, This)){
+            else static if(weakLock!(Rhs, This)){
                 if(rhs._element !is null && rhs._control.add_shared_if_exists())
                     this._element = rhs._element;
                 else
@@ -256,6 +257,27 @@ public template IntrusivePtr(
                     rhs._const_reset();
                 }
             }
+        }
+
+        //
+        private void construct_error(Rhs, this This)(scope auto ref Rhs rhs)
+        if(isIntrusivePtr!Rhs && !isConstructable!(rhs, This)){
+            static if(isRef!rhs){
+                import std.traits : isMutable;
+
+                static assert(isMutable!(IntrusiveControlBlock!(GetElementType!Rhs)),
+                    "control type of rhs must be mutable."
+                );
+            }
+
+            static assert(is(Rhs.DestructorType : This.DestructorType),
+                "destructor attributes '" ~ Rhs.DestructorType.stringof ~ "' are not compatible with '" ~ This.DestructorType.stringof ~ "'."
+            );
+            static assert(is(GetControlType!Rhs* : GetControlType!This*),
+                "control type " ~ GetControlType!Rhs.stringof ~ " is not compatible with '" ~ GetControlType!This.stringof ~ "'."
+            );
+
+            static assert(0, "IntrusivePtr canno't be constructed from rhs of type " ~ Rhs.stringof);
         }
 
 
@@ -339,11 +361,8 @@ public template IntrusivePtr(
                 --------------------
         */
         public this(Rhs, this This)(scope auto ref Rhs rhs)@trusted
-        if(    isIntrusivePtr!Rhs
-            && isConstructable!(rhs, This)
-            && !is(Rhs == shared)
-            && !isMoveCtor!(This, rhs)
-        ){
+        if(isIntrusivePtr!Rhs && !is(Rhs == shared) && !isMoveCtor!(This, rhs)){
+            //static assert(isConstructable!(rhs, This));
             this(forward!rhs, Forward.init);
         }
 
@@ -506,12 +525,13 @@ public template IntrusivePtr(
                 --------------------
         */
         public void opAssign(MemoryOrder order = MemoryOrder.seq, Rhs, this This)(scope auto ref Rhs desired)scope
-        if(    isIntrusivePtr!Rhs
-            && isAssignable!(desired, This)
-            && !is(Rhs == shared)
-        ){
+        if(isIntrusivePtr!Rhs && !is(Rhs == shared)){
+            //error
+            static if(!isAssignable!(desired, This)){
+                this.assign_error(forward!desired);
+            }
             // shared assign:
-            static if(is(This == shared)){
+            else static if(is(This == shared)){
                 static if(isLockFree){
                     import core.atomic : atomicExchange;
 
@@ -571,6 +591,20 @@ public template IntrusivePtr(
                 }();
 
             }
+        }
+
+        //
+        private void assign_error(Rhs, this This)(scope auto ref Rhs desired)
+        if(isIntrusivePtr!Rhs && !isAssignable!(desired, This)){
+            import std.traits : isMutable;
+
+            static assert(!weakLock!(Rhs, This),
+                "weak error"
+            );
+            static assert(isMutable!This, "assign must have mutable this");
+
+
+            this.construct_error(forward!desired);
         }
 
 

@@ -27,7 +27,6 @@
 <url><loc>http://127.0.0.1/btl/autoptr/common/UniqueControlBlock.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/dynCast.html</loc></url>
-<url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/dynCast.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/dynCastMove.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/IntrusivePtr.alloc.html</loc></url>
@@ -79,7 +78,6 @@
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/isIntrusivePtr.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/intrusive_ptr/share.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/rc_ptr.html</loc></url>
-<url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/dynCast.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/dynCast.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/dynCastMove.html</loc></url>
 <url><loc>http://127.0.0.1/btl/autoptr/rc_ptr/first.html</loc></url>
@@ -315,6 +313,7 @@
 <url><loc>http://127.0.0.1/btl/string/BasicString.opBinaryRight.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.opBinaryRight.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.opBinaryRight.html</loc></url>
+<url><loc>http://127.0.0.1/btl/string/BasicString.opCast.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.opCmp.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.opCmp.html</loc></url>
 <url><loc>http://127.0.0.1/btl/string/BasicString.opDollar.html</loc></url>
