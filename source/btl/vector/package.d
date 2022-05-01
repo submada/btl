@@ -1005,13 +1005,51 @@ template Vector(
 
 
         /**
+            Returns true if memory referenced by `p` is owned by vector.
+
+            Examples:
+                --------------------
+                Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3, 4, 5, 6);
+
+                {
+                    assert(vec.owns(vec.ptr + 3));
+                    assert(!vec.owns(cast(int*)null));
+                    assert(!vec.owns(vec.ptr + 100));
+                }
+
+                {
+                    assert(vec.owns(&vec[$-1]));
+                    assert(!vec.owns(cast(long*)&vec[$-1]));
+                }
+                --------------------
         */
         public bool owns(T)(scope const T* p)scope const pure nothrow @trusted @nogc{
-            return this.ptr <= p && (p + 1) <= (this.ptr + length);
+            return (cast(const void*)this.ptr <= cast(const void*)p)
+                && (cast(const void*)(p + 1) <= cast(const void*)(this.ptr + length));
         }
 
 
+
         /**
+            Returns true if element referenced by `p` is owned by vector.
+            Similar to owns but check if p has right alignment.
+
+            Examples:
+                --------------------
+                Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3, 4, 5, 6);
+
+                {
+                    assert(vec.ownsElement(vec.ptr + 3));
+                    assert(!vec.ownsElement(cast(int*)null));
+                    assert(!vec.ownsElement(vec.ptr + 100));
+                }
+
+                {
+                    const int* p = cast(int*)((cast(byte*)vec.ptr) + 1);
+                    assert(vec.owns(p));
+                    assert(!vec.ownsElement(p));
+                }
+                --------------------
         */
         public bool ownsElement(scope const ElementType* p)scope const pure nothrow @trusted @nogc{
             return this.owns(p)
@@ -1087,8 +1125,6 @@ template Vector(
                 else{
                     this._allocate_heap(this.storage.heap, new_capacity);
                 }
-
-
             }
 
             return this.storage.external
@@ -1463,20 +1499,19 @@ template Vector(
 
 
         /**
-            Returns a copy to the element at position `pos`.
+            Returns reference to element at specified location `pos`.
 
             Examples:
                 --------------------
-                Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3, 4, 5, 6);
+                auto vec = Vector!(int, 10).build(1, 2, 3);
 
-                assert(vec[3] == 4);
-                assert(vec[$-1] == 6);
+                assert(vec[1] == 2);
                 --------------------
         */
-        public GetElementType!This opIndex(this This)(const size_t pos)scope{
+        public ref inout(ElementType) opIndex(const size_t pos)inout scope pure nothrow @system @nogc{
             this._bounds_check(pos);
 
-            return *(()@trusted => this.ptr + pos )();
+            return *(this.ptr + pos);
         }
 
 
@@ -1492,9 +1527,26 @@ template Vector(
                 --------------------
         */
         public ref inout(ElementType) at(const size_t pos)inout scope pure nothrow @system @nogc{
+            return this.opIndex(pos);
+        }
+
+
+
+        /**
+            Returns a copy to the element at position `pos`.
+
+            Examples:
+                --------------------
+                Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3, 4, 5, 6);
+
+                assert(vec.atCopy(3) == 4);
+                assert(vec.atCopy(vec.length-1) == 6);
+                --------------------
+        */
+        public GetElementType!This atCopy(this This)(const size_t pos)scope{
             this._bounds_check(pos);
 
-            return *(this.ptr + pos);
+            return *(()@trusted => this.ptr + pos )();
         }
 
 
@@ -3696,10 +3748,25 @@ version(unittest){
 
         //Vector.opIndex
         pure nothrow @nogc @system unittest{
+            auto vec = Vector!(int, 10).build(1, 2, 3);
+
+            assert(vec[1] == 2);
+        }
+
+        //Vector.at
+        pure nothrow @nogc @system unittest{
+            auto vec = Vector!(int, 10).build(1, 2, 3);
+
+            assert(vec.at(1) == 2);
+        }
+
+        //Vector.atCopy
+        pure nothrow @nogc @safe unittest{
             Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3, 4, 5, 6);
 
-            assert(vec[3] == 4);
-            assert(vec[$-1] == 6);
+            assert(vec.atCopy(3) == 4);
+            assert(vec.atCopy(vec.length-1) == 6);
+
         }
 
         //Vector.proxySwap
@@ -4071,14 +4138,38 @@ version(unittest){
             }
         }
 
-        //Vector.at
+        //Vector.owns
         pure nothrow @nogc @system unittest{
-            auto vec = Vector!(int, 10).build(1, 2, 3);
+            Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3, 4, 5, 6);
 
-            assert(vec.at(1) == 2);
+            {
+                assert(vec.owns(vec.ptr + 3));
+                assert(!vec.owns(cast(int*)null));
+                assert(!vec.owns(vec.ptr + 100));
+            }
+
+            {
+                assert(vec.owns(&vec[$-1]));
+                assert(!vec.owns(cast(long*)&vec[$-1]));
+            }
         }
 
+        //Vector.ownsElement
+        pure nothrow @nogc @system unittest{
+                Vector!(int, 6) vec = Vector!(int, 6).build(1, 2, 3, 4, 5, 6);
 
+                {
+                    assert(vec.ownsElement(vec.ptr + 3));
+                    assert(!vec.ownsElement(cast(int*)null));
+                    assert(!vec.ownsElement(vec.ptr + 100));
+                }
+
+                {
+                    const int* p = cast(int*)((cast(byte*)vec.ptr) + 1);
+                    assert(vec.owns(p));
+                    assert(!vec.ownsElement(p));
+                }
+        }
 
         //Vector.build
         pure nothrow @nogc @safe unittest{
