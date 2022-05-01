@@ -272,6 +272,7 @@ var symbols = [
 {name: 'btl.vector.Vector.allowHeap', kind: "aliasdeclaration", path: './btl/vector/Vector.allowHeap.html', attributes: []},
 {name: 'btl.vector.Vector.append', kind: "functiondeclaration", path: './btl/vector/Vector.append.html', attributes: ["scope"]},
 {name: 'btl.vector.Vector.at', kind: "functiondeclaration", path: './btl/vector/Vector.at.html', attributes: ["inout", "pure", "nothrow", "nogc", "ref", "scope", "system"]},
+{name: 'btl.vector.Vector.atCopy', kind: "functiondeclaration", path: './btl/vector/Vector.atCopy.html', attributes: ["scope"]},
 {name: 'btl.vector.Vector.back', kind: "functiondeclaration", path: './btl/vector/Vector.back.html', attributes: ["inout", "pure", "nothrow", "nogc", "ref", "system"]},
 {name: 'btl.vector.Vector.backCopy', kind: "functiondeclaration", path: './btl/vector/Vector.backCopy.html', attributes: ["auto", "scope"]},
 {name: 'btl.vector.Vector.begin', kind: "functiondeclaration", path: './btl/vector/Vector.begin.html', attributes: ["inout", "pure", "nothrow", "nogc", "property", "system"]},
