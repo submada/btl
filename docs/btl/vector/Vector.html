@@ -220,10 +220,28 @@ $('#symbolSearchPane').show();</script>
 					</tr>
 					<tr>
 						<td>
+							<a href="../../btl/vector/Vector.begin.html" class="public property"><code>begin</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">inout</span><span class="pun">(</span><a href="../../btl/vector/Vector.ElementType.html"><span class="typ">Vector<wbr/></span><span class="pun">.<wbr/></span><span class="typ">ElementType</span></a><span class="pun">)</span><span class="pun">*</span></code></td><td></td>
+					</tr>
+					<tr>
+						<td>
 							<a href="../../btl/vector/Vector.capacity.html" class="public property"><code>capacity</code></a><span class="tableEntryAnnotation">[get]</span>
 						</td>
 						<td class="typecol"><code class="prettyprint lang-d"><span class="pln">size_t</span></code></td><td>Returns the size of the storage space currently allocated for the <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code>.
 </td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.cbegin.html" class="public property"><code>cbegin</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">const</span><span class="pun">(</span><a href="../../btl/vector/Vector.ElementType.html"><span class="typ">Vector<wbr/></span><span class="pun">.<wbr/></span><span class="typ">ElementType</span></a><span class="pun">)</span><span class="pun">*</span></code></td><td></td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.cend.html" class="public property"><code>cend</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">const</span><span class="pun">(</span><a href="../../btl/vector/Vector.ElementType.html"><span class="typ">Vector<wbr/></span><span class="pun">.<wbr/></span><span class="typ">ElementType</span></a><span class="pun">)</span><span class="pun">*</span></code></td><td></td>
 					</tr>
 					<tr>
 						<td>
@@ -238,6 +256,12 @@ $('#symbolSearchPane').show();</script>
 						</td>
 						<td class="typecol"><code class="prettyprint lang-d"><span class="typ">bool</span></code></td><td>Returns whether the vector is empty (i.e. whether its length is 0).
 </td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.end.html" class="public property"><code>end</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">inout</span><span class="pun">(</span><a href="../../btl/vector/Vector.ElementType.html"><span class="typ">Vector<wbr/></span><span class="pun">.<wbr/></span><span class="typ">ElementType</span></a><span class="pun">)</span><span class="pun">*</span></code></td><td></td>
 					</tr>
 					<tr>
 						<td>
@@ -544,6 +568,24 @@ $('#symbolSearchPane').show();</script>
 						</td>
 						<td>Returns a slice [begin .. end]. If the requested slice extends past the end of the vector, the returned slice is invalid.
 </td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.owns.html" class="public">
+								<code>owns</code>
+							</a>
+							<span class="tableEntryAnnotation">(p)</span>
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/vector/Vector.ownsElement.html" class="public">
+								<code>ownsElement</code>
+							</a>
+							<span class="tableEntryAnnotation">(p)</span>
+						</td>
+						<td></td>
 					</tr>
 					<tr>
 						<td>

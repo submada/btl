@@ -380,9 +380,12 @@
 <url><loc>http://127.0.0.1/btl/vector/Vector.at.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.back.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.backCopy.html</loc></url>
+<url><loc>http://127.0.0.1/btl/vector/Vector.begin.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.build.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.build.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.capacity.html</loc></url>
+<url><loc>http://127.0.0.1/btl/vector/Vector.cbegin.html</loc></url>
+<url><loc>http://127.0.0.1/btl/vector/Vector.cend.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.clear.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.contains.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.downsize.html</loc></url>
@@ -393,6 +396,7 @@
 <url><loc>http://127.0.0.1/btl/vector/Vector.emplace.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.emplaceBack.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.empty.html</loc></url>
+<url><loc>http://127.0.0.1/btl/vector/Vector.end.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.erase.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.erase.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.erase.html</loc></url>
@@ -431,6 +435,8 @@
 <url><loc>http://127.0.0.1/btl/vector/Vector.opIndexOpAssign.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.opOpAssign.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.opSlice.html</loc></url>
+<url><loc>http://127.0.0.1/btl/vector/Vector.owns.html</loc></url>
+<url><loc>http://127.0.0.1/btl/vector/Vector.ownsElement.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.pop.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.popBack.html</loc></url>
 <url><loc>http://127.0.0.1/btl/vector/Vector.popBack.html</loc></url>

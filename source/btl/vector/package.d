@@ -275,6 +275,38 @@ template Vector(
 
 
         /**
+        */
+        public @property inout(ElementType)* begin()inout return pure nothrow @system @nogc{
+            return this.ptr;
+        }
+
+
+
+        /**
+        */
+        public @property const(ElementType)* cbegin()const return pure nothrow @system @nogc{
+            return this.ptr;
+        }
+
+
+
+        /**
+        */
+        public @property inout(ElementType)* end()inout return pure nothrow @system @nogc{
+            return (this.ptr + this.length);
+        }
+
+
+
+        /**
+        */
+        public @property const(ElementType)* cend()const return pure nothrow @system @nogc{
+            return (this.ptr + this.length);
+        }
+
+
+
+        /**
             Return slice of all elements (same as `opSlice()`).
 
             The slice returned may be invalidated by further calls to other member functions that modify the object.
@@ -969,6 +1001,24 @@ template Vector(
                     this._deallocate_heap(this.storage.heap);
                 }
         }
+
+
+
+        /**
+        */
+        public bool owns(T)(scope const T* p)scope const pure nothrow @trusted @nogc{
+            return this.ptr <= p && (p + 1) <= (this.ptr + length);
+        }
+
+
+        /**
+        */
+        public bool ownsElement(scope const ElementType* p)scope const pure nothrow @trusted @nogc{
+            return this.owns(p)
+                && (cast(size_t)this.ptr % ElementType.sizeof) == (cast(size_t)p % ElementType.sizeof) ;
+        }
+
+
 
 
 
