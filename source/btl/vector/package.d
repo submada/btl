@@ -2721,7 +2721,7 @@ template Vector(
 
 
         /**
-            Move of the first element in the vector and return it.
+            Move of the last element in the vector and return it.
 
             Examples:
                 --------------------
