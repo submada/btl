@@ -2,7 +2,7 @@
     Implementation of unique pointer `UniquePtr` (alias to `btl.autoptr.rc_ptr.RcPtr` with immutable control block).
 
     License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
-    Authors:   $(HTTP github.com/submada/basic_string, Adam Búš)
+    Authors:   $(HTTP github.com/submada/btl, Adam Búš)
 */
 module btl.autoptr.unique_ptr;
 

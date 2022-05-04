@@ -1,3 +1,9 @@
+/**
+    Implementation of pointer to static/GC data `GlobalPtr`.
+
+    License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
+    Authors:   $(HTTP github.com/submada/btl, Adam Búš)
+*/
 module btl.autoptr.global_ptr;
 
 import btl.internal.traits;
