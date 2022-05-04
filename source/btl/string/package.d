@@ -789,7 +789,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				}
 				--------------------
 		*/
-		public this(typeof(null) nil)scope pure nothrow @safe @nogc{
+		public this(typeof(null) nil, Forward fw = Forward.init)scope pure nothrow @safe @nogc{
 		}
 
 
@@ -835,7 +835,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				}
 				--------------------
 		*/
-		public this(C)(const C character)scope
+		public this(C)(const C character, Forward fw = Forward.init)scope
 		if(isSomeChar!C){
 			this._ctor(character);
 		}
@@ -891,12 +891,12 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				}
 				--------------------
 		*/
-		public this(this This)(scope const CharType[] slice)scope{
+		public this(this This)(scope const CharType[] slice, Forward fw = Forward.init)scope{
 			this._ctor(slice);
 		}
 
 		/// ditto
-		public this(this This, C)(scope const C[] slice)scope
+		public this(this This, C)(scope const C[] slice, Forward fw = Forward.init)scope
 		if(isSomeChar!C && !is(immutable C == immutable CharType)){
 			this._ctor(slice);
 		}
@@ -965,7 +965,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				}
 				--------------------
 		*/
-		public this(I)(I integer)scope
+		public this(I)(I integer, Forward fw = Forward.init)scope
 		if(isIntegral!I){
 			this._ctor(integer);
 		}
