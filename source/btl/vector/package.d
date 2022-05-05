@@ -1058,8 +1058,6 @@ template Vector(
 
 
 
-
-
         /**
             Requests that the vector capacity be adapted to a planned change in size to a length of up to `n` elements.
 
@@ -3173,7 +3171,7 @@ if(N > 0){
 
 public alias hasCopyConstructor_SP = hasCopyConstructor;
 //local traits:
-private{
+package{
 
     enum bool safeAllcoate(A) = __traits(compiles, (ref A allcoator)@safe{
         const size_t size;

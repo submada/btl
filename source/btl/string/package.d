@@ -2166,13 +2166,13 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				}
 				--------------------
 		*/
-		public ref typeof(this) replace(const size_t pos, const size_t len, scope const CharType[] val, const size_t count = 1)return scope{
+		public ref typeof(this) replace(const size_t pos, const size_t len, scope const CharType[] val, const size_t count = 1)return{
 			this._replace(pos, len, val, count);
 			return this;
 		}
 
 		/// ditto
-		public ref typeof(this) replace(Val)(const size_t pos, const size_t len, scope auto ref const Val val, const size_t count = 1)return scope
+		public ref typeof(this) replace(Val)(const size_t pos, const size_t len, scope auto ref const Val val, const size_t count = 1)return
 		if(isBasicString!Val || isSomeChar!Val || isSomeString!Val || isIntegral!Val || isCharArray!Val){
 
 			static if(isBasicString!Val || isSomeString!Val || isCharArray!Val){
@@ -2189,13 +2189,13 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		}
 
 		/// ditto
-		public ref typeof(this) replace(scope const CharType[] slice, scope const CharType[] val, const size_t count = 1)return scope{
+		public ref typeof(this) replace(scope const CharType[] slice, scope const CharType[] val, const size_t count = 1)return{
 			this._replace(slice, val, count);
 			return this;
 		}
 
 		/// ditto
-		public ref typeof(this) replace(Val)(scope const CharType[] slice, scope auto ref const Val val, const size_t count = 1)return scope
+		public ref typeof(this) replace(Val)(scope const CharType[] slice, scope auto ref const Val val, const size_t count = 1)return
 		if(isBasicString!Val || isSomeChar!Val || isSomeString!Val || isIntegral!Val || isCharArray!Val){
 
 			static if(isBasicString!Val || isSomeString!Val || isCharArray!Val){
@@ -2212,7 +2212,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		}
 
 		//
-		private void _replace(Val)(scope const CharType[] slice, scope const Val val, const size_t count)return scope
+		private void _replace(Val)(scope const CharType[] slice, scope const Val val, const size_t count)scope
 		if(isSomeChar!Val || isSomeString!Val || isIntegral!Val){
 			const chars = this.storage.chars;
 
@@ -2235,7 +2235,7 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 		}
 
 		//
-		private void _replace(Val)(const size_t pos, const size_t len, scope const Val val, const size_t count)return scope
+		private void _replace(Val)(const size_t pos, const size_t len, scope const Val val, const size_t count)scope
 		if(isSomeChar!Val || isSomeString!Val || isIntegral!Val){
 
 			const size_t new_count = count * encodedLength!CharType(val);

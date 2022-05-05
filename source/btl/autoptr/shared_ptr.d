@@ -742,9 +742,19 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 				}
 				--------------------
 		*/
+
+
 		public static auto make(AllocatorType = DefaultAllocator, bool supportGC = platformSupportGC, Args...)(auto ref Args args)
 		if(!isDynamicArray!ElementType){
 			check_dtor();
+
+            ()@trusted{
+                (ref Args a)@system{
+                    if(false){
+                        auto tmp = a;
+                    }
+                }(args);
+            }();
 
 			alias ReturnType = SharedPtr!(
 				ElementType,
