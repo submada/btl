@@ -629,6 +629,16 @@ private struct Pair(_Key, _Value){
 
     public KeyType key;
     public ValueType value;
+
+    this(ref typeof(this) rhs)scope{
+        this.key = rhs.key;
+        this.value = rhs.value;
+    }
+
+    void opAssign(Rhs : typeof(this))(auto ref Rhs rhs){
+        this.key = rhs.key;
+        this.value = rhs.value;
+    }
 }
 
 //local traits:

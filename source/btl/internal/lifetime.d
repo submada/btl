@@ -1,7 +1,9 @@
 module btl.internal.lifetime;
 
+
 import std.meta : AliasSeq;
 
+import core.lifetime : forward, move;
 import std.range : isInputRange, ElementEncodingType;
 import std.traits : isDynamicArray;
 
@@ -339,7 +341,7 @@ private{
         static if (hasElaborateAssign!T){
             for (size_t i = 0; i < length; i++){
                 static if(move)
-                    *(()@trusted => target + i )() = move(*(()@trusted => source + i )());
+                    *(()@trusted => target + i )() = .move(*(()@trusted => source + i )());
                 else
                     *(()@trusted => target + i )() = *(()@trusted => source + i )();
 
