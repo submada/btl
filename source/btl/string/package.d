@@ -656,16 +656,74 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				assert(str == "12");
 				--------------------
 		*/
-		public void resize(const size_t n, const CharType ch = '_')scope{
-			const size_t old_length = this.length;
+        public void resize(const size_t n, const CharType ch = '_')scope{
+            const size_t old_length = this.length;
 
-			if(old_length > n){
-				this.storage.length = n;
-			}
-			else if(old_length < n){
-				this.append(ch, n - old_length);
-			}
-		}
+            if(old_length > n){
+                this.storage.length = n;
+            }
+            else if(old_length < n){
+                this.append(ch, n - old_length);
+            }
+        }
+
+
+
+        /**
+            Downsizes the string to a length of `n` characters (utf code units).
+
+            If `n` is smaller than the current string length, the current value is shortened to its first `n` character, removing the characters beyond the nth.
+
+            If `n` is greater or equal than the current string length, the nothing happend.
+
+            Examples:
+                --------------------
+                BasicString!char str = "123";
+
+                str.downsize(5);
+                assert(str == "123");
+
+                str.downsize(2);
+                assert(str == "12");
+                --------------------
+        */
+        public void downsize(const size_t n)scope pure nothrow @safe @nogc{
+            const size_t old_length = this.length;
+
+            if(old_length > n){
+                this.storage.length = n;
+            }
+        }
+
+
+
+        /**
+            Upsizes the string to a length of `n` characters (utf code units).
+
+            If `n` is smaller or equal than the current string length, the current value doesn't change.
+
+            If `n` is greater than the current string length, the current content is extended by inserting at the end as many characters as needed to reach a size of n.
+
+            If `ch` is specified, the new elements are initialized as copies of `ch`, otherwise, they are `_`.
+
+            Examples:
+                --------------------
+                BasicString!char str = "123";
+
+                str.upsize(5, 'x');
+                assert(str == "123xx");
+
+                str.upsize(2);
+                assert(str == "123xx");
+                --------------------
+        */
+        public void upsize(const size_t n, const CharType ch = '_')scope{
+            const size_t old_length = this.length;
+
+            if(old_length < n){
+                this.append(ch, n - old_length);
+            }
+        }
 
 
 
@@ -3263,8 +3321,29 @@ version(unittest){
 
 		str.resize(2);
 		assert(str == "12");
-
 	}
+
+    //doc.downsize:
+    pure nothrow @safe @nogc unittest{
+        BasicString!char str = "123";
+
+        str.downsize(5);
+        assert(str == "123");
+
+        str.downsize(2);
+        assert(str == "12");
+    }
+
+    //doc.upsize:
+    pure nothrow @safe @nogc unittest{
+        BasicString!char str = "123";
+
+        str.upsize(5, 'x');
+        assert(str == "123xx");
+
+        str.upsize(2);
+        assert(str == "123xx");
+    }
 
 	//doc.shrinkToFit:
 	pure nothrow @safe @nogc unittest{
