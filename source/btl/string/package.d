@@ -2415,8 +2415,10 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 					new_length += encodedLength!CharType(args[I].storage.chars);
 				else static if(isArray!Arg &&  isSomeChar!(ElementEncodingType!Arg))
 					new_length += encodedLength!CharType(args[I][]);
-				else static if(isSomeChar!Arg)
-					new_length += encodedLength!CharType(args[I]);
+                else static if(isSomeChar!Arg)
+                    new_length += encodedLength!CharType(args[I]);
+                else static if(isIntegral!Arg)
+                    new_length += encodedLength!CharType(args[I]);
 				else static assert(0, "wrong type '" ~ typeof(args[I]).stringof ~ "'");
 			}
 
@@ -2435,8 +2437,10 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 					data = data[args[I].storage.chars.encodeTo(data) .. $];
 				else static if(isArray!Arg)
 					data = data[args[I][].encodeTo(data) .. $];
-				else static if(isSomeChar!Arg)
-					data = data[args[I].encodeTo(data) .. $];
+                else static if(isSomeChar!Arg)
+                    data = data[args[I].encodeTo(data) .. $];
+                else static if(isIntegral!Arg)
+                    data = data[args[I].encodeTo(data) .. $];
 				else static assert(0, "wrong type '" ~ Arg.stringof ~ "'");
 			}
 
