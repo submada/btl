@@ -60,6 +60,18 @@ $('#symbolSearchPane').show();</script>
 				</li>
 			</ul>
 				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../btl/vector.html">vector</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/vector/flat_map.html">flat_map</a>
+					</div>
+				</li>
+			</ul>
+				</li>
 				<li>
 					<div class="module ">
 						<a href="../../btl/list.html">list</a>
@@ -68,11 +80,6 @@ $('#symbolSearchPane').show();</script>
 				<li>
 					<div class="module selected">
 						<a href="../../btl/string.html">string</a>
-					</div>
-				</li>
-				<li>
-					<div class="module ">
-						<a href="../../btl/vector.html">vector</a>
 					</div>
 				</li>
 			</ul>
@@ -137,7 +144,7 @@ $('#symbolSearchPane').show();</script>
 							<a href="../../btl/string/BasicString.this.html" class="public">
 								<code>this</code>
 							</a>
-							<span class="tableEntryAnnotation">(nil)</span>
+							<span class="tableEntryAnnotation">(nil, fw)</span>
 						</td>
 						<td>Constructs a empty <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object.
 </td>
@@ -157,7 +164,7 @@ $('#symbolSearchPane').show();</script>
 							<a href="../../btl/string/BasicString.this.html" class="public">
 								<code>this</code>
 							</a>
-							<span class="tableEntryAnnotation">(character)</span>
+							<span class="tableEntryAnnotation">(character, fw)</span>
 						</td>
 						<td>Constructs a <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object, initializing its value to char value <code class="lang-d"><a href="../../btl/string/BasicString.this.html#character"><span class="pln">character</span></a></code>.
 </td>
@@ -177,7 +184,7 @@ $('#symbolSearchPane').show();</script>
 							<a href="../../btl/string/BasicString.this.html" class="public">
 								<code>this</code>
 							</a>
-							<span class="tableEntryAnnotation">(slice)</span>
+							<span class="tableEntryAnnotation">(slice, fw)</span>
 						</td>
 						<td>Constructs a <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object from char slice <code class="lang-d"><a href="../../btl/string/BasicString.this.html#slice"><span class="pln">slice</span></a></code>.
 </td>
@@ -197,7 +204,7 @@ $('#symbolSearchPane').show();</script>
 							<a href="../../btl/string/BasicString.this.html" class="public">
 								<code>this</code>
 							</a>
-							<span class="tableEntryAnnotation">(integer)</span>
+							<span class="tableEntryAnnotation">(integer, fw)</span>
 						</td>
 						<td>Constructs a <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object, initializing its value from integer <code class="lang-d"><a href="../../btl/string/BasicString.this.html#integer"><span class="pln">integer</span></a></code>.
 </td>
@@ -383,6 +390,16 @@ $('#symbolSearchPane').show();</script>
 							<span class="tableEntryAnnotation">(elm)</span>
 						</td>
 						<td>Same as operator <code class="lang-d"><span class="kwd">in</span></code>
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.downsize.html" class="public">
+								<code>downsize</code>
+							</a>
+							<span class="tableEntryAnnotation">(n)</span>
+						</td>
+						<td>Downsizes the string to a length of <code class="lang-d"><a href="../../btl/string/BasicString.downsize.html#n"><span class="pln">n</span></a></code> characters (utf code units).
 </td>
 					</tr>
 					<tr>
@@ -613,6 +630,16 @@ $('#symbolSearchPane').show();</script>
 							<span class="tableEntryAnnotation">()</span>
 						</td>
 						<td>Calculates the hash value of string.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.upsize.html" class="public">
+								<code>upsize</code>
+							</a>
+							<span class="tableEntryAnnotation">(n, ch)</span>
+						</td>
+						<td>Upsizes the string to a length of <code class="lang-d"><a href="../../btl/string/BasicString.upsize.html#n"><span class="pln">n</span></a></code> characters (utf code units).
 </td>
 					</tr>
 				</table>
