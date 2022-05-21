@@ -6,6 +6,8 @@
 */
 module btl.autoptr.rc_ptr;
 
+import btl.traits.common;
+
 import btl.internal.allocator;
 import btl.internal.traits;
 import btl.internal.gc;

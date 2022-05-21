@@ -1,4 +1,10 @@
-module btl.internal.lifetime;
+/*
+    TODO
+
+    License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
+    Authors:   $(HTTP github.com/submada/btl, Adam Búš)
+*/
+module btl.lifetime;
 
 
 import std.meta : AliasSeq;
@@ -7,7 +13,7 @@ import core.lifetime : forward, move;
 import std.range : isInputRange, ElementEncodingType;
 import std.traits : isDynamicArray;
 
-import btl.internal.traits : isBtlInputRange;
+import btl.traits.range : isBtlInputRange;
 
 /*
     Type used as parameter for function pointer returned from `DestructorType`.
@@ -185,7 +191,7 @@ public{
     void destructImpl(bool initialize, DestructorType, T)(ref T obj)
     if(isDtorType!DestructorType){
         import std.traits : Unqual;
-        import btl.internal.traits;
+        import btl.traits.assume;
 
         if(false){
             DestructorType dt;
@@ -236,7 +242,7 @@ public{
     void destructClassImpl(bool initialize, DestructorType, T)(T obj)
     if(is(T == class) && isDtorType!DestructorType){
         import std.traits : Unqual;
-        import btl.internal.traits;
+        import btl.traits.assume;
 
         if(false){
             DestructorType dt;

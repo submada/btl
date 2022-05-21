@@ -10,9 +10,10 @@ module btl.string;
 import std.traits : Unqual, Unconst, CopyTypeQualifiers, isSomeChar, isSomeString, isIntegral;
 import std.meta : AliasSeq;
 
+import btl.traits.common;
+
 import btl.internal.allocator;
 import btl.internal.traits;
-import btl.internal.forward;
 
 import btl.string.encoding;
 import btl.string.storage;
@@ -22,7 +23,7 @@ import btl.string.storage;
 /**
 	Type used in forward constructors.
 */
-alias Forward = btl.internal.forward.Forward;
+alias Forward = btl.traits.common.Forward;
 
 
 /**

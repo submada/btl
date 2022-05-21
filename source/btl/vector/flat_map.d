@@ -6,11 +6,10 @@
 */
 module btl.vector.flat_map;
 
+import btl.traits.common;
+
 import btl.internal.traits;
 import btl.internal.allocator;
-import btl.internal.forward;
-import btl.internal.gc;
-import btl.internal.lifetime;
 
 import btl.vector;
 
@@ -18,7 +17,7 @@ import btl.vector;
 /**
     Type used in forward constructors.
 */
-alias Forward = btl.internal.forward.Forward;
+alias Forward = btl.traits.common.Forward;
 
 
 /**

@@ -8,24 +8,27 @@ module btl.autoptr.common;
 
 import std.meta : AliasSeq;
 
+import btl.traits.common;
+import btl.traits.assume;
+
+import btl.lifetime;
+
 import btl.internal.traits;
 import btl.internal.allocator;
-import btl.internal.forward;
 import btl.internal.gc;
-import btl.internal.lifetime;
 
 
 
 /**
 	Type used as parameter for function pointer returned from `DestructorType`.
 */
-public alias Evoid = btl.internal.lifetime.Evoid;
+public alias Evoid = btl.lifetime.Evoid;
 
 
 /**
 	Type used in forward constructors.
 */
-alias Forward = btl.internal.forward.Forward;
+alias Forward = btl.traits.common.Forward;
 
 
 
@@ -61,7 +64,7 @@ public alias DefaultAllocator = Mallocator;
 /**
 	Check if type `Type` is of type destructor type (is(void function(Evoid* )pure nothrow @safe @nogc : Type))
 */
-alias isDestructorType = btl.internal.lifetime.isDtorType;
+alias isDestructorType = btl.lifetime.isDtorType;
 
 
 ///

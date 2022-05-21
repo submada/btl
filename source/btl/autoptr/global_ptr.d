@@ -6,6 +6,8 @@
 */
 module btl.autoptr.global_ptr;
 
+import btl.traits.common;
+
 import btl.internal.traits;
 
 import btl.autoptr.common;

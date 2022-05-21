@@ -1,22 +1,10 @@
+/*
+    License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
+    Authors:   $(HTTP github.com/submada/btl, Adam Búš)
+*/
 module btl.internal.gc;
 
 
-
-version(D_BetterC){
-    public enum bool platformSupportGC = false;
-}
-else{
-    public enum bool platformSupportGC = true;
-}
-
-
-template shouldAddGCRange(T){
-	import std.traits;
-	
-	enum shouldAddGCRange = true
-		&& platformSupportGC
-		&& hasIndirections!T;
-}
 
 
 version(D_BetterC){
@@ -53,7 +41,7 @@ public void gcAddRange(const void* data, const size_t length)pure nothrow @trust
     version(D_BetterC){
     }
     else{
-        import btl.internal.traits;
+        import btl.traits.assume;
 
         assumePure(function void(const void* ptr, const size_t len){
             import core.memory: GC;
@@ -107,7 +95,7 @@ public void gcRemoveRange(const void* data)pure nothrow @trusted @nogc{
     version(D_BetterC){
     }
     else{
-        import btl.internal.traits;
+        import btl.traits.assume;
 
         assumePure(function void(const void* ptr){
             import core.memory: GC;

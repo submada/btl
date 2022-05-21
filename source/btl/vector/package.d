@@ -10,11 +10,13 @@ import std.traits : Unqual, Unconst, isSomeChar, isSomeString, CopyTypeQualifier
 import std.meta : AliasSeq;
 import std.traits : Select;
 
+import btl.traits.common;
+import btl.traits.range;
+import btl.lifetime;
+
 import btl.internal.traits;
 import btl.internal.allocator;
-import btl.internal.forward;
 import btl.internal.gc;
-import btl.internal.lifetime;
 
 import btl.vector.storage;
 
@@ -22,7 +24,7 @@ import btl.vector.storage;
 /**
     Type used in forward constructors.
 */
-alias Forward = btl.internal.forward.Forward;
+alias Forward = btl.traits.common.Forward;
 
 
 /**

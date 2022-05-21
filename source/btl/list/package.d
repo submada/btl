@@ -6,21 +6,25 @@
 */
 module btl.list;
 
+import btl.traits.common;
+
 import std.traits : Unqual, Unconst, isSomeChar, isSomeString, CopyTypeQualifiers;
 import std.meta : AliasSeq;
 import std.traits : Select;
 
+import btl.traits.range;
+
+import btl.lifetime;
+
 import btl.internal.traits;
 import btl.internal.allocator;
-import btl.internal.forward;
 import btl.internal.gc;
-import btl.internal.lifetime;
 
 
 /**
     Type used in forward constructors.
 */
-alias Forward = btl.internal.forward.Forward;
+alias Forward = btl.traits.common.Forward;
 
 
 /**

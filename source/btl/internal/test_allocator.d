@@ -1,8 +1,12 @@
+/*
+    License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
+    Authors:   $(HTTP github.com/submada/btl, Adam Búš)
+*/
 module btl.internal.test_allocator;
 
 import std.experimental.allocator.common : platformAlignment, stateSize;
 
-import btl.internal.traits;
+import btl.traits.assume;
 struct TestAllocator{
     static assert(stateSize!TestAllocator > 0);
 
