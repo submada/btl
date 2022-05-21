@@ -1,122 +1,162 @@
 {
-	"name" : "btl",
-	"description" : "Basic Template Library",
-	"copyright" : "Copyright © 2022, Adam Búš",
-	"license" : "Boost Software License - Version 1.0",
-	"authors" : [
-		"Adam Búš"
-	],
-	"dependencies" : {
-		"btl:autoptr" : "*",
-		"btl:string" : "*",
-		"btl:vector" : "*",
-		"btl:list" : "*"
-	},
-	"sourceFiles" : [
-		"source/btl/package.d"
-	],
-	"subPackages" : [
-		{
-			"name" : "autoptr",
-			"description" : "Smart pointers.",
-			"targetType" : "sourceLibrary",
-			"importPaths" : [
-				"source/"
-			],
-			"sourcePaths" : [
-				"source/btl/autoptr",
-				"source/btl/internal"
-			],
-			"configurations" : [
-				{
-					"name": "default"
-				},
-				{
-					"name": "unittest",
-					"versions": [
-						"BTL_GC_RANGE_COUNT", 
-						"BTL_GC_RANGE_TRACK",
-						"BTL_AUTOPTR_COUNT_CONSTRUCTIONS",
-						"BTL_AUTOPTR_COUNT_ALLOCATIONS",
-					]
-				}
-			]
-		},
-		{
-			"name" : "string",
-			"description" : "Mutable @nogc string struct using `std.experimental.allocator` for allocations.",
-			"targetType" : "sourceLibrary",
-			"importPaths" : [
-				"source/"
-			],
-			"sourcePaths" : [
-				"source/btl/string",
-				"source/btl/internal"
-			],
-			"configurations" : [
-				{
-					"name": "default"
-				},
-				{
-					"name": "unittest",
-					"versions": [
-						"__BTL_BASIC_STRING_TESTS",
-						"BTL_STRING_BOUNDS_CHECK",
-					]
-				}
-			]
-		},
-		{
-			"name" : "vector",
-			"description" : "Dynamic array supporting custom allcoators.",
-			"targetType" : "sourceLibrary",
-			"importPaths" : [
-				"source/"
-			],
-			"sourcePaths" : [
-				"source/btl/vector",
-				"source/btl/internal"
-			],
-			"configurations" : [
-				{
-					"name": "default"
-				},
-				{
-					"name": "unittest",
-					"versions": [
-						"BTL_GC_RANGE_COUNT", 
-						"BTL_GC_RANGE_TRACK",
-						"BTL_VECTOR_BOUNDS_CHECK",
-					]
-				}
-			]
-		},
-		{
-			"name" : "list",
-			"description" : "Linked-list supporting custom allcoators.",
-			"targetType" : "sourceLibrary",
-			"importPaths" : [
-				"source/"
-			],
-			"sourcePaths" : [
-				"source/btl/list",
-				"source/btl/internal"
-			],
-			"configurations" : [
-				{
-					"name": "default"
-				},
-				{
-					"name": "unittest",
-					"versions": [
-						"BTL_GC_RANGE_COUNT", 
-						"BTL_GC_RANGE_TRACK",
-					]
-				}
-			]
-		}
-	],
-	"dflags" : [
-		""
-	]
+  "name" : "btl",
+  "description" : "Basic Template Library",
+  "copyright" : "Copyright © 2022, Adam Búš",
+  "license" : "Boost Software License - Version 1.0",
+  "authors" : [
+    "Adam Búš"
+  ],
+  "dependencies" : {
+    "btl:autoptr" : "*",
+    "btl:string" : "*",
+    "btl:vector" : "*",
+    "btl:list" : "*",
+	"btl:traits" : "*",
+	"btl:lifetime" : "*"
+  },
+  "sourceFiles" : [
+    "source/btl/package.d"
+  ],
+  "subPackages" : [
+    {
+      "name" : "traits",
+      "description" : "traits",
+      "targetType" : "sourceLibrary",
+      "importPaths" : [
+        "source/"
+      ],
+      "sourcePaths" : [
+        "source/btl/traits"
+      ]
+    },
+    {
+      "name" : "lifetime",
+      "description" : "lifetime",
+      "targetType" : "sourceLibrary",
+      "importPaths" : [
+        "source/"
+      ],
+      "sourcePaths" : [
+        "source/btl/lifetime"
+      ]
+    },
+    {
+      "name" : "autoptr",
+      "description" : "Smart pointers.",
+      "targetType" : "library",
+      "importPaths" : [
+        "source/"
+      ],
+      "sourcePaths" : [
+        "source/btl/autoptr",
+        "source/btl/internal"
+      ],
+      "dependencies" : {
+		"btl:traits" : "*",
+		"btl:lifetime" : "*"
+	  },
+      "configurations" : [
+        {
+          "name" : "default"
+        },
+        {
+          "name" : "unittest",
+          "versions" : [
+            "BTL_GC_RANGE_COUNT",
+            "BTL_GC_RANGE_TRACK",
+            "BTL_AUTOPTR_COUNT_CONSTRUCTIONS",
+            "BTL_AUTOPTR_COUNT_ALLOCATIONS"
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "string",
+      "description" : "Mutable @nogc string struct using `std.experimental.allocator` for allocations.",
+      "targetType" : "library",
+      "importPaths" : [
+        "source/"
+      ],
+      "sourcePaths" : [
+        "source/btl/string",
+        "source/btl/internal"
+      ],
+      "dependencies" : {
+		"btl:traits" : "*"
+	  },
+      "configurations" : [
+        {
+          "name" : "default"
+        },
+        {
+          "name" : "unittest",
+          "versions" : [
+            "__BTL_BASIC_STRING_TESTS",
+            "BTL_STRING_BOUNDS_CHECK"
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "vector",
+      "description" : "Dynamic array supporting custom allcoators.",
+      "targetType" : "sourceLibrary",
+      "importPaths" : [
+        "source/"
+      ],
+      "sourcePaths" : [
+        "source/btl/vector",
+        "source/btl/internal"
+      ],
+      "dependencies" : {
+		"btl:traits" : "*",
+		"btl:lifetime" : "*"
+	  },
+      "configurations" : [
+        {
+          "name" : "default"
+        },
+        {
+          "name" : "unittest",
+          "versions" : [
+            "BTL_GC_RANGE_COUNT",
+            "BTL_GC_RANGE_TRACK",
+            "BTL_VECTOR_BOUNDS_CHECK"
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "list",
+      "description" : "List supporting custom allcoators.",
+      "targetType" : "library",
+      "importPaths" : [
+        "source/"
+      ],
+      "sourcePaths" : [
+        "source/btl/list",
+        "source/btl/internal"
+      ],
+      "dependencies" : {
+		"btl:traits" : "*",
+		"btl:lifetime" : "*"
+	  },
+      "configurations" : [
+        {
+          "name" : "default"
+        },
+        {
+          "name" : "unittest",
+          "versions" : [
+            "BTL_GC_RANGE_COUNT",
+            "BTL_GC_RANGE_TRACK"
+          ]
+        }
+      ]
+    }
+  ],
+  "dflags" : [
+    "",
+    ""
+  ]
 }
