@@ -10,7 +10,6 @@ import std.meta : AliasSeq;
 
 import btl.traits.common;
 import btl.traits.assume;
-
 import btl.lifetime;
 
 import btl.internal.traits;

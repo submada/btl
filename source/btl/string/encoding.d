@@ -21,7 +21,7 @@ public bool isValidDchar(dchar c) pure nothrow @safe @nogc{
     Same as std.utf.codeLength.
 */
 public ubyte codeLength(C)(dchar c) @safe pure nothrow @nogc
-if (isSomeChar!C){
+if(isSomeChar!C){
     static if (C.sizeof == 1)
     {
         if (c <= 0x7F) return 1;

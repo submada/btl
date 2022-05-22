@@ -239,9 +239,14 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 				--------------------
 
 		*/
-		public @property inout(CharType)* ptr()inout return pure nothrow @system @nogc{
-			return this.storage.ptr;
-		}
+        static if(allowHeap)
+		    public @property inout(CharType)* ptr()inout return pure nothrow @system @nogc{
+			    return this.storage.ptr;
+		    }
+        else
+            public @property inout(CharType)* ptr()inout return pure nothrow @trusted @nogc{
+                return this.storage.ptr;
+            }
 
 
 
@@ -1688,20 +1693,36 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 			Examples:
 				--------------------
-				BasicString!char str = "123";
+                ()@system{
+                    BasicString!char str = "123";
 
-				char[] slice = str[];
-				assert(slice.length == str.length);
-				assert(slice.ptr is str.ptr);
+                    char[] slice = str[];
+                    assert(slice.length == str.length);
+                    assert(slice.ptr is str.ptr);
 
-				str.reserve(str.capacity * 2);
-				assert(slice.length == str.length);
-				assert(slice.ptr !is str.ptr);  // slice contains dangling pointer.
+                    str.reserve(str.capacity * 2);
+                    assert(slice.length == str.length);
+                    assert(slice.ptr !is str.ptr);  // slice contains dangling pointer.
+                }();
+                ()@safe{
+                    FixedString!(char, 20) str = "123";
+
+                    char[] slice = str[];
+                    assert(slice.length == str.length);
+                    assert(slice.ptr is str.ptr);
+
+                    assert(slice == "123");
+                }();
 				--------------------
 		*/
-		public inout(CharType)[] opSlice()inout return pure nothrow @system @nogc{
-			return this.storage.chars;
-		}
+        static if(allowHeap)
+		    public inout(CharType)[] opIndex()inout return pure nothrow @system @nogc{
+			    return this.storage.chars;
+		    }
+        else
+            public inout(CharType)[] opIndex()inout return pure nothrow @trusted @nogc{
+                return this.storage.chars;
+            }
 
 
 
@@ -1730,17 +1751,30 @@ if(isSomeChar!_Char && is(Unqual!_Char == _Char)){
 
 			Examples:
 				--------------------
-				BasicString!char str = "123456";
-
-				assert(str[1 .. $-1] == "2345");
+                ()@system{
+                    BasicString!char str = "123456";
+                    assert(str[1 .. $-1] == "2345");
+                }();
+                ()@safe{
+                    FixedString!(char, 20) str = "123456";
+                    assert(str[1 .. $-1] == "2345");
+                }();
 				--------------------
 		*/
-		public inout(CharType)[] opSlice(const size_t begin, const size_t end)inout return pure nothrow @system @nogc{
-			this._bounds_check([begin, end]);
-			const len = this.length;
+        static if(allowHeap)
+		    public inout(CharType)[] opSlice(const size_t begin, const size_t end)inout return pure nothrow @system @nogc{
+			    this._bounds_check([begin, end]);
+			    const len = this.length;
 
-			return this.ptr[min(len, begin) .. min(len, end)];
-		}
+			    return this.ptr[min(len, begin) .. min(len, end)];
+		    }
+        else
+            public inout(CharType)[] opSlice(const size_t begin, const size_t end)inout return pure nothrow @trusted @nogc{
+                this._bounds_check([begin, end]);
+                const len = this.length;
+
+                return this.ptr[min(len, begin) .. min(len, end)];
+            }
 
 
 
@@ -3594,16 +3628,26 @@ version(unittest){
 
 	//doc.opIndex():
 	pure nothrow @system @nogc unittest{
-		BasicString!char str = "123";
+        ()@system{
+		    BasicString!char str = "123";
 
-		char[] slice = str[];
-		assert(slice.length == str.length);
-		assert(slice.ptr is str.ptr);
+		    char[] slice = str[];
+		    assert(slice.length == str.length);
+		    assert(slice.ptr is str.ptr);
 
-		str.reserve(str.capacity * 2);
-		assert(slice.length == str.length);
-		assert(slice.ptr !is str.ptr);  // slice contains dangling pointer.
+		    str.reserve(str.capacity * 2);
+		    assert(slice.length == str.length);
+		    assert(slice.ptr !is str.ptr);  // slice contains dangling pointer.
+        }();
+        ()@safe{
+            FixedString!(char, 20) str = "123";
 
+            char[] slice = str[];
+            assert(slice.length == str.length);
+            assert(slice.ptr is str.ptr);
+
+            assert(slice == "123");
+        }();
 	}
 
 	//doc.opIndex(pos):
@@ -3615,9 +3659,14 @@ version(unittest){
 
 	//doc.opSlice(begin, end):
 	pure nothrow @system @nogc unittest{
-		BasicString!char str = "123456";
-
-		assert(str[1 .. $-1] == "2345");
+        ()@system{
+            BasicString!char str = "123456";
+            assert(str[1 .. $-1] == "2345");
+        }();
+        ()@safe{
+            FixedString!(char, 20) str = "123456";
+            assert(str[1 .. $-1] == "2345");
+        }();
 	}
 
 	//doc.opIndexAssign(begin, end):

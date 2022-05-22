@@ -9,6 +9,7 @@ module btl.traits.assume;
 import std.traits : isFunctionPointer, isDelegate;
 
 
+
 /**
     TODO
 */

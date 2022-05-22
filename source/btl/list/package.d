@@ -13,7 +13,6 @@ import std.meta : AliasSeq;
 import std.traits : Select;
 
 import btl.traits.range;
-
 import btl.lifetime;
 
 import btl.internal.traits;

@@ -52,6 +52,7 @@ public enum bool isBtlBidirectionalRange(R) = isBtlForwardRange!R
     && is(ReturnType!((R r) => r.back) == ElementType!R);
 
 
+
 /**
     Same as std.range.isRandomAccessRange but support non copyable elements.
 */
