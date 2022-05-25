@@ -2,7 +2,7 @@
     Implementation of associative container that supports unique keys `FlatMap` (similar to c++ `boost::flat_map`).
 
     License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
-    Authors:   $(HTTP github.com/submada/btl, Adam Búš)
+    Authors:   Adam Búš
 */
 module btl.vector.flat_map;
 

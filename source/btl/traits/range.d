@@ -2,7 +2,7 @@
     Ranges with non copyable elements.
 
     License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
-    Authors:   $(HTTP github.com/submada/btl, Adam Búš)
+    Authors:   Adam Búš
 */
 module btl.traits.range;
 

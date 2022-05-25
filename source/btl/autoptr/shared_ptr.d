@@ -2,7 +2,7 @@
 	Implementation of reference counted pointer `SharedPtr` (similar to c++ `std::shared_ptr`).
 
 	License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
-	Authors:   $(HTTP github.com/submada/btl, Adam Búš)
+	Authors:   Adam Búš
 */
 module btl.autoptr.shared_ptr;
 
