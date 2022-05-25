@@ -8,12 +8,12 @@
 pages:
   stage: deploy
   script:
-    - mkdir .docs
-    - cp -r ./* .docs
-    - rm -rf docs
-    - mv .docs docs
+    - mkdir .public
+    - cp -r ./* .public
+    - rm -rf public
+    - mv .public public
   artifacts:
     paths:
-      - docs
+      - public
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
