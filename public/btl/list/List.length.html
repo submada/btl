@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Function List.length</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">btl
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">autoptr
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/global_ptr.html">global_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">traits
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/assume.html">assume</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../btl/vector.html">vector</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/vector/flat_map.html">flat_map</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../btl/list.html">list</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/string.html">string</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Function List.length</h1><p>Returns the length of the list, in terms of number of elements.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="pln">size_t</span> <span class="pln">length</span><span class="pun">(</span><span class="pun">)</span><span class="pln"> </span><span class="kwd">const pure nothrow @nogc @property scope @safe</span><span class="pun">;</span>
+					</div>
+				</code>
+			</div>
+			<section></section>
+
+			<section><h2>Examples</h2>
+<pre class="code"><code class="lang-d"><a href="../../btl/list/List.html"><span class="typ">List</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">) </span><span class="pln">list </span><span class="pun">= </span><span class="kwd">null</span><span class="pun">;
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">list<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">0</span><span class="pun">);
+
+</span><span class="pln">list<wbr/></span><span class="pun">.</span><span class="pln">append</span><span class="pun">(</span><span class="lit">42</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">list<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+
+</span><span class="pln">list<wbr/></span><span class="pun">.</span><span class="pln">append</span><span class="pun">(</span><span class="lit">123</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">list<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
+
+</span><span class="pln">list<wbr/></span><span class="pun">.</span><span class="pln">clear</span><span class="pun">();
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">list<wbr/></span><span class="pun">.</span><span class="pln">length </span><span class="pun">== </span><span class="lit">0</span><span class="pun">);</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Template apply</title>
+		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">btl
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">autoptr
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module selected">
+						<a href="../../../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/global_ptr.html">global_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">traits
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../btl/traits/assume.html">assume</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/traits/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/traits/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../../btl/vector.html">vector</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../btl/vector/flat_map.html">flat_map</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/list.html">list</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/string.html">string</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Template apply</h1><p>Sefly dereference all <code class="lang-d"><span class="pln">args</span></code> of types <code class="lang-d"><a href="../../../btl/autoptr/shared_ptr/SharedPtr.html" title="btl.autoptr.shared_ptr.SharedPtr"><span class="typ">SharedPtr</span></a></code>, <code class="lang-d"><a href="../../../btl/autoptr/rc_ptr/RcPtr.html" title="btl.autoptr.rc_ptr.RcPtr"><span class="typ">RcPtr</span></a></code> and <code class="lang-d"><a href="../../../btl/autoptr/intrusive_ptr/IntrusivePtr.html" title="btl.autoptr.intrusive_ptr.IntrusivePtr"><span class="typ">IntrusivePtr</span></a></code> and forward them to callable alias <code class="lang-d"><span class="pln">fn</span></code>.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">template</span> <span class="pln">apply</span>(alias fn)
+			;
+					</div>
+				</code>
+			</div>
+			<section><p>Ref args are copyied and non ref args are moved.
+</p>
+</section>
+
+			<section><h2>Contained Functions</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../../btl/autoptr/common/apply.apply.html">apply</a>
+						</td>
+						<td></td>
+					</tr>
+				</table>
+			</section>
+			<section><h2>Example</h2>
+
+<pre class="code"><code class="lang-d"><span class="kwd">import <a href="../../../btl/autoptr/shared_ptr.html"></span><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">autoptr<wbr/></span><span class="pun">.</span><span class="pln">shared_ptr</span></a><span class="pun">;
+</span><span class="kwd">import <a href="../../../btl/autoptr/rc_ptr.html"></span><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">autoptr<wbr/></span><span class="pun">.</span><span class="pln">rc_ptr</span></a><span class="pun">;
+</span><span class="kwd">import <a href="../../../btl/autoptr/intrusive_ptr.html"></span><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">autoptr<wbr/></span><span class="pun">.</span><span class="pln">intrusive_ptr</span></a><span class="pun">;
+
+</span><span class="kwd">import </span><span class="pln">core<wbr/></span><span class="pun">.</span><span class="pln">lifetime </span><span class="pun">: </span><span class="pln">move</span><span class="pun">;
+
+</span><span class="kwd">static class </span><span class="typ">Foo</span><span class="pun">{
+	<a href="../../../btl/autoptr/common/ControlBlock.html"></span><span class="typ">ControlBlock</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="typ">int</span><span class="pun">) </span><span class="pln">c</span><span class="pun">;
+	</span><span class="typ">int </span><span class="pln">i</span><span class="pun">;
+
+	</span><span class="kwd">this</span><span class="pun">(</span><span class="typ">int </span><span class="pln">i</span><span class="pun">)</span><span class="kwd">pure nothrow @safe @nogc</span><span class="pun">{
+		</span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">= </span><span class="pln">i</span><span class="pun">;
+	}
+
+	~</span><span class="kwd">this</span><span class="pun">()</span><span class="kwd">pure nothrow @safe @nogc</span><span class="pun">{
+		</span><span class="pln">i </span><span class="pun">= -</span><span class="lit">1</span><span class="pun">;
+	}
+}
+
+()</span><span class="kwd">@safe</span><span class="pun">{
+	</span><span class="kwd">auto </span><span class="pln">a </span><span class="pun">= </span><span class="typ">SharedPtr</span><span class="pun">!</span><span class="typ">long<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">42</span><span class="pun">);
+	</span><span class="kwd">auto </span><span class="pln">b </span><span class="pun">= </span><span class="typ">RcPtr</span><span class="pun">!</span><span class="typ">float<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">3.14</span><span class="pun">);
+	</span><span class="kwd">auto </span><span class="pln">c </span><span class="pun">= </span><span class="typ">IntrusivePtr</span><span class="pun">!</span><span class="typ">Foo<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">123</span><span class="pun">);
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">b<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">c<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+
+	</span><span class="typ">int </span><span class="pln">i </span><span class="pun">= <a href="../../../btl/autoptr/common/apply.apply.html"></span><span class="pln">apply</span></a><span class="pun">!((</span><span class="kwd">scope </span><span class="typ">long</span><span class="pun">* </span><span class="pln">x</span><span class="pun">, </span><span class="kwd">scope </span><span class="typ">float</span><span class="pun">* </span><span class="pln">y</span><span class="pun">, </span><span class="kwd">scope </span><span class="typ">Foo </span><span class="pln">z</span><span class="pun">){
+		</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">a<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
+		</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">b<wbr/></span><span class="pun">.</span><span class="pln">useCount </span><span class="pun">== </span><span class="lit">2</span><span class="pun">);
+
+		</span><span class="pln">a </span><span class="pun">= </span><span class="kwd">null</span><span class="pun">;
+		</span><span class="pln">b </span><span class="pun">= </span><span class="kwd">null</span><span class="pun">;
+		</span><span class="pln">c </span><span class="pun">= </span><span class="kwd">null</span><span class="pun">;
+
+		</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">z<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">!= -</span><span class="lit">1</span><span class="pun">);
+		</span><span class="com">//x, y, z are still valid until end of the scope.
+
+		</span><span class="kwd">return </span><span class="pln">z<wbr/></span><span class="pun">.</span><span class="pln">i</span><span class="pun">;
+	})(</span><span class="pln">a</span><span class="pun">, </span><span class="pln">b</span><span class="pun">, </span><span class="pln">move</span><span class="pun">(</span><span class="pln">c</span><span class="pun">));
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">i </span><span class="pun">== </span><span class="lit">123</span><span class="pun">);
+}();
+
+</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

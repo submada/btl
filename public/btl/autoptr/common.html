@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Module btl.autoptr.common</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">btl
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">autoptr
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module selected">
+						<a href="../../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/global_ptr.html">global_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">traits
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/assume.html">assume</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../btl/vector.html">vector</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/vector/flat_map.html">flat_map</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/list.html">list</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/string.html">string</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Module btl.autoptr.common</h1><p>Common code shared with other <code class="lang-d"><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">autoptr</span></code> modules .
+</p><section></section>
+
+			<section></section>
+			<section>
+				<h2>Structs</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="ControlBlock" class="public" href="../../btl/autoptr/common/ControlBlock.html">ControlBlock</a>
+							</code>
+						</td>
+						<td>Control block for <code class="lang-d"><span class="typ">SharedPtr</span></code>, <code class="lang-d"><span class="typ">RcPtr</span></code>, <code class="lang-d"><span class="typ">UniquePtr</span></code> and <code class="lang-d"><span class="typ">IntrusivePtr</span></code>.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Templates</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="apply" class="public" href="../../btl/autoptr/common/apply.html">apply</a>
+							</code>
+						</td>
+						<td>Sefly dereference all <code class="lang-d"><span class="pln">args</span></code> of types <code class="lang-d"><a href="../../btl/autoptr/shared_ptr/SharedPtr.html" title="btl.autoptr.shared_ptr.SharedPtr"><span class="typ">SharedPtr</span></a></code>, <code class="lang-d"><a href="../../btl/autoptr/rc_ptr/RcPtr.html" title="btl.autoptr.rc_ptr.RcPtr"><span class="typ">RcPtr</span></a></code> and <code class="lang-d"><a href="../../btl/autoptr/intrusive_ptr/IntrusivePtr.html" title="btl.autoptr.intrusive_ptr.IntrusivePtr"><span class="typ">IntrusivePtr</span></a></code> and forward them to callable alias <code class="lang-d"><span class="pln">fn</span></code>.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Manifest constants</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a id="isControlBlock" class="public" href="../../btl/autoptr/common/isControlBlock.html">
+								<code>isControlBlock</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Check if type <code class="lang-d"><span class="pln">T</span></code> is of type <code class="lang-d"><a href="../../btl/autoptr/common/ControlBlock.html"><span class="typ">ControlBlock</span></a><span class="pun">!(...)</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="isIntrusive" class="public" href="../../btl/autoptr/common/isIntrusive.html">
+								<code>isIntrusive</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Return number of <code class="lang-d"><a href="../../btl/autoptr/common/ControlBlock.html"><span class="typ">ControlBlock</span></a></code>s in type <code class="lang-d"><span class="typ">Type</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="isSmartPtr" class="public" href="../../btl/autoptr/common/isSmartPtr.html">
+								<code>isSmartPtr</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Check if <code class="lang-d"><span class="pln">T</span></code> is smart pointer of type <code class="lang-d"><a href="../../btl/autoptr/shared_ptr/SharedPtr.html" title="btl.autoptr.shared_ptr.SharedPtr"><span class="typ">SharedPtr</span></a></code>, <code class="lang-d"><a href="../../btl/autoptr/rc_ptr/RcPtr.html" title="btl.autoptr.rc_ptr.RcPtr"><span class="typ">RcPtr</span></a></code> or <code class="lang-d"><a href="../../btl/autoptr/intrusive_ptr/IntrusivePtr.html" title="btl.autoptr.intrusive_ptr.IntrusivePtr"><span class="typ">IntrusivePtr</span></a></code>.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Aliases</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a id="ControlBlockDeduction" class="public" href="../../btl/autoptr/common/ControlBlockDeduction.html">
+								<code>ControlBlockDeduction</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><span class="pln">impl</span></code>
+						</td>
+						<td>This template deduce <code class="lang-d"><span class="typ">ControlType</span></code> shared qualifier in <code class="lang-d"><span class="typ">SharedPtr</span></code>, <code class="lang-d"><span class="typ">RcPtr</span></code> and <code class="lang-d"><span class="typ">UniquePtr</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="DefaultAllocator" class="public" href="../../btl/autoptr/common/DefaultAllocator.html">
+								<code>DefaultAllocator</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">experimental<wbr/></span><span class="pun">.</span><span class="pln">allocator<wbr/></span><span class="pun">.</span><span class="pln">mallocator<wbr/></span><span class="pun">.</span><span class="typ">Mallocator</span></code>
+						</td>
+						<td>Default allcoator for <code class="lang-d"><span class="typ">SharedPtr<wbr/></span><span class="pun">.</span><span class="pln">make</span></code>, <code class="lang-d"><span class="typ">RcPtr<wbr/></span><span class="pun">.</span><span class="pln">make</span></code>, <code class="lang-d"><span class="typ">UniquePtr<wbr/></span><span class="pun">.</span><span class="pln">make</span></code> and <code class="lang-d"><span class="typ">IntrusivePtr<wbr/></span><span class="pun">.</span><span class="pln">make</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="DestructorAllocatorType" class="public" href="../../btl/autoptr/common/DestructorAllocatorType.html">
+								<code>DestructorAllocatorType</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><span class="kwd">typeof</span><span class="pun">(&amp;</span><span class="pln">impl</span><span class="pun">!())</span></code>
+						</td>
+						<td>Similiar to <code class="lang-d"><a href="../../btl/autoptr/common/DestructorType.html"><span class="typ">DestructorType</span></a></code> but returns destructor attributes of type <code class="lang-d"><span class="typ">Allocator</span></code> and attributes of methods <code class="lang-d"><span class="typ">void</span><span class="pun">[] </span><span class="pln">allocate</span><span class="pun">(</span><span class="pln">size_t</span><span class="pun">)</span></code> and <code class="lang-d"><span class="typ">void </span><span class="pln">deallocate</span><span class="pun">(</span><span class="typ">void</span><span class="pun">[])</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="DestructorDeleterType" class="public" href="../../btl/autoptr/common/DestructorDeleterType.html">
+								<code>DestructorDeleterType</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><span class="kwd">typeof</span><span class="pun">(&amp;</span><span class="pln">impl</span><span class="pun">!())</span></code>
+						</td>
+						<td>Similiar to <code class="lang-d"><a href="../../btl/autoptr/common/DestructorType.html"><span class="typ">DestructorType</span></a></code> but returns destructor attributes of type <code class="lang-d"><span class="typ">Deleter</span></code> and attributes necessary to call variable of type <code class="lang-d"><span class="typ">Deleter</span></code> with parameter of type <code class="lang-d"><span class="pln">T</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="DestructorType" class="public" href="../../btl/autoptr/common/DestructorType.html">
+								<code>DestructorType</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><span class="kwd">typeof</span><span class="pun">(&amp;</span><span class="pln">impl</span><span class="pun">!())</span></code>
+						</td>
+						<td>Destructor type of destructors of types <code class="lang-d"><span class="typ">Types</span></code> ( void function(Evoid*)@destructor_attributes ).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="Evoid" class="public" href="../../btl/autoptr/common/Evoid.html">
+								<code>Evoid</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">lifetime<wbr/></span><span class="pun">.</span><span class="typ">Evoid</span></code>
+						</td>
+						<td>Type used as parameter for function pointer returned from <code class="lang-d"><a href="../../btl/autoptr/common/DestructorType.html"><span class="typ">DestructorType</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="Forward" class="public" href="../../btl/autoptr/common/Forward.html">
+								<code>Forward</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><a href="../../btl/traits/common/Forward.html"><span class="typ">Forward</span></a></code>
+						</td>
+						<td>Type used in forward constructors.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="IntrusiveControlBlock" class="public" href="../../btl/autoptr/common/IntrusiveControlBlock.html">
+								<code>IntrusiveControlBlock</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><span class="pln">impl</span></code>
+						</td>
+						<td>Alias to <code class="lang-d"><a href="../../btl/autoptr/common/ControlBlock.html"><span class="typ">ControlBlock</span></a></code> including qualifiers contained by <code class="lang-d"><span class="typ">Type</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="isDestructorType" class="public" href="../../btl/autoptr/common/isDestructorType.html">
+								<code>isDestructorType</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><span class="pln">btl<wbr/></span><span class="pun">.</span><span class="pln">lifetime<wbr/></span><span class="pun">.</span><span class="pln">isDtorType</span></code>
+						</td>
+						<td>Check if type <code class="lang-d"><span class="typ">Type</span></code> is of type destructor type (is(void function(Evoid* )pure nothrow @safe @nogc : Type))
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="SharedControlBlock" class="public" href="../../btl/autoptr/common/SharedControlBlock.html">
+								<code>SharedControlBlock</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><a href="../../btl/autoptr/common/ControlBlock.html"><span class="typ">ControlBlock</span></a>!(int,int)</code>
+						</td>
+						<td>Default <code class="lang-d"><a href="../../btl/autoptr/common/ControlBlock.html"><span class="typ">ControlBlock</span></a></code> for <code class="lang-d"><span class="typ">SharedPtr</span></code> and <code class="lang-d"><span class="typ">RcPtr</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="UniqueControlBlock" class="public" href="../../btl/autoptr/common/UniqueControlBlock.html">
+								<code>UniqueControlBlock</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><a href="../../btl/autoptr/common/ControlBlock.html"><span class="typ">ControlBlock</span></a>!(void,void)</code>
+						</td>
+						<td>Default <code class="lang-d"><a href="../../btl/autoptr/common/ControlBlock.html"><span class="typ">ControlBlock</span></a></code> for <code class="lang-d"><span class="typ">UniquePtr</span></code>.
+</td>
+					</tr>
+				</table>
+			</section>
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

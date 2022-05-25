@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Function BasicString.opBinary</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">btl
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">autoptr
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/global_ptr.html">global_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">traits
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/assume.html">assume</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../btl/vector.html">vector</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/vector/flat_map.html">flat_map</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/list.html">list</a>
+					</div>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../btl/string.html">string</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Function BasicString.opBinary</h1><p>Returns a newly constructed <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object with its value being the concatenation of the characters in <code class="lang-d"><span class="kwd">this</span></code> followed by those of <code class="lang-d"><a href="../../btl/string/BasicString.opBinary.html#rhs"><span class="pln">rhs</span></a></code>.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)</span> <span class="pln">opBinary</span>(<span class="typ">string</span> op)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">scope const </span><a href="../../btl/string/BasicString.CharType.html"><span class="typ">BasicString<wbr/></span><span class="pun">.<wbr/></span><span class="typ">CharType</span></a><span class="pun">[]</span> <span class="pln">rhs</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">op </span><span class="pun">== </span><span class="str">"+" </span><span class="pun">|| </span><span class="pln">op </span><span class="pun">== </span><span class="str">"~"</span><span class="pun">);</span>
+			<br/>
+			<br/>
+			<span class="kwd">typeof</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)</span> <span class="pln">opBinary</span>(<span class="typ">string</span> op, Rhs)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">auto scope const ref </span><span class="typ">Rhs</span> <span class="pln">rhs</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pun">(</span><span class="pln">op </span><span class="pun">== </span><span class="str">"+" </span><span class="pun">|| </span><span class="pln">op </span><span class="pun">== </span><span class="str">"~"</span><span class="pun">) &amp;&amp; (</span><span class="pln">isBasicString</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">|| </span><span class="pln">isSomeChar</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">|| </span><span class="pln">isSomeString</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">|| </span><span class="pln">isCharArray</span><span class="pun">!</span><span class="typ">Rhs </span><span class="pun">|| </span><span class="pln">isIntegral</span><span class="pun">!</span><span class="typ">Rhs</span><span class="pun">)</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			<section><p>Parameter <code class="lang-d"><a href="../../btl/string/BasicString.opBinary.html#rhs"><span class="pln">rhs</span></a></code> can by type of <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a><span class="pun">!(...)</span></code>, <code class="lang-d"><span class="typ">char</span><span class="pun">|</span><span class="typ">wchar</span><span class="pun">|</span><span class="typ">dchar</span></code> array/slice/character.
+</p>
+</section>
+
+			<section><h2>Examples</h2>
+<pre class="code"><code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">char </span><span class="pln">str </span><span class="pun">= </span><span class="kwd">null</span><span class="pun">;
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">empty</span><span class="pun">);
+
+</span><span class="pln">str </span><span class="pun">= </span><span class="pln">str </span><span class="pun">+ </span><span class="str">'1'</span><span class="pun">;
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"1"</span><span class="pun">);
+
+</span><span class="pln">str </span><span class="pun">= </span><span class="pln">str </span><span class="pun">+ </span><span class="str">"23"d</span><span class="pun">;
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"123"</span><span class="pun">);
+
+</span><span class="pln">str </span><span class="pun">= </span><span class="pln">str </span><span class="pun">+ <a href="../../btl/string/BasicString.html"></span><span class="typ">BasicString</span></a><span class="pun">!</span><span class="typ">dchar</span><span class="pun">(</span><span class="str">"456"</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"123456"</span><span class="pun">);</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

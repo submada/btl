@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Function Vector.resize</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">btl
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">autoptr
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/global_ptr.html">global_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">traits
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/assume.html">assume</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view ">
+					<div class="package selected">
+						<a href="../../btl/vector.html">vector</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/vector/flat_map.html">flat_map</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/list.html">list</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/string.html">string</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Function Vector.resize</h1><p>Resizes the vector to a length of <code class="lang-d"><a href="../../btl/vector/Vector.resize.html#n"><span class="pln">n</span></a></code> elements.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="typ">void</span> <span class="pln">resize</span>(Args...)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">size_t</span> <span class="pln">n</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">auto ref </span><span class="typ">Args</span> <span class="pln">args</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span><span class="pun">;</span>
+					</div>
+				</code>
+			</div>
+			<section><p>If <code class="lang-d"><a href="../../btl/vector/Vector.resize.html#n"><span class="pln">n</span></a></code> is smaller than the current vector length, the current value is shortened to its first <code class="lang-d"><a href="../../btl/vector/Vector.resize.html#n"><span class="pln">n</span></a></code> character, removing the characters beyond the nth.
+</p>
+
+<p>            If <code class="lang-d"><a href="../../btl/vector/Vector.resize.html#n"><span class="pln">n</span></a></code> is greater than the current vector length, the current content is extended by inserting at the end as many elements as needed to reach a size of <code class="lang-d"><a href="../../btl/vector/Vector.resize.html#n"><span class="pln">n</span></a></code>.
+</p>
+
+<p>            If <code class="lang-d"><a href="../../btl/vector/Vector.resize.html#args"><span class="pln">args</span></a></code> are specified, the new elements are emplaced with parameters <code class="lang-d"><a href="../../btl/vector/Vector.resize.html#args"><span class="pln">args</span></a></code>, otherwise, they are <code class="lang-d"><span class="typ">ElementType<wbr/></span><span class="pun">.</span><span class="pln">init</span></code>.
+</p>
+</section>
+
+			<section><h2>Examples</h2>
+<pre class="code"><code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">6</span><span class="pun">) </span><span class="pln">vec </span><span class="pun">= <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">6</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">);
+
+</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">resize</span><span class="pun">(</span><span class="lit">5</span><span class="pun">, </span><span class="lit">0</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec </span><span class="pun">== [</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">, </span><span class="lit">0</span><span class="pun">, </span><span class="lit">0</span><span class="pun">]);
+
+</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">resize</span><span class="pun">(</span><span class="lit">2</span><span class="pun">);
+</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">vec </span><span class="pun">== [</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">]);</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

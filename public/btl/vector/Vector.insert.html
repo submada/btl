@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Function Vector.insert</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">btl
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">autoptr
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/global_ptr.html">global_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">traits
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/assume.html">assume</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view ">
+					<div class="package selected">
+						<a href="../../btl/vector.html">vector</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/vector/flat_map.html">flat_map</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/list.html">list</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/string.html">string</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Function Vector.insert</h1><p>Inserts additional elements into the <code class="lang-d"><a href="../../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> right before the element indicated by <code class="lang-d"><a href="../../btl/vector/Vector.insert.html#pos"><span class="pln">pos</span></a></code> or <code class="lang-d"><a href="../../btl/vector/Vector.ptr.html"><span class="pln">ptr</span></a></code>.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="pln">size_t</span> <span class="pln">insert</span>(R)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">size_t</span> <span class="pln">pos</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="pln">R</span> <span class="pln">range</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">hasLength</span><span class="pun">!</span><span class="pln">R </span><span class="pun">&amp;&amp; </span><span class="pln">isBtlInputRange</span><span class="pun">!</span><span class="pln">R </span><span class="pun">&amp;&amp; </span><span class="kwd">is</span><span class="pun">(</span><span class="typ">ElementEncodingType</span><span class="pun">!</span><span class="pln">R </span><span class="pun">: </span><span class="typ">ElementType</span><span class="pun">)</span><span class="pun">);</span>
+			<br/>
+			<br/>
+			<span class="pln">size_t</span> <span class="pln">insert</span>(Vec)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">size_t</span> <span class="pln">pos</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">auto scope ref </span><span class="typ">Vec</span> <span class="pln">vec</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isVector</span><span class="pun">!</span><span class="typ">Vec </span><span class="pun">&amp;&amp; </span><span class="kwd">is</span><span class="pun">(</span><span class="typ">GetElementType</span><span class="pun">!</span><span class="typ">Vec </span><span class="pun">: </span><span class="typ">ElementType</span><span class="pun">)</span><span class="pun">);</span>
+			<br/>
+			<br/>
+			<span class="pln">size_t</span> <span class="pln">insert</span>(Val)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">size_t</span> <span class="pln">pos</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">auto ref </span><span class="typ">Val</span> <span class="pln">val</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">size_t</span> <span class="pln">count</span> <span class="pun">=</span> <span class="lit">1</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Val </span><span class="pun">: </span><span class="typ">ElementType</span><span class="pun">)</span><span class="pun">);</span>
+			<br/>
+			<br/>
+			<span class="pln">size_t</span> <span class="pln">insert</span>(R)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">scope const </span><a href="../../btl/vector/Vector.ElementType.html"><span class="typ">Vector<wbr/></span><span class="pun">.<wbr/></span><span class="typ">ElementType</span></a><span class="pun">*</span> <span class="pln">ptr</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="pln">R</span> <span class="pln">range</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isBtlInputRange</span><span class="pun">!</span><span class="pln">R </span><span class="pun">&amp;&amp; </span><span class="kwd">is</span><span class="pun">(</span><span class="typ">ElementEncodingType</span><span class="pun">!</span><span class="pln">R </span><span class="pun">: </span><span class="typ">ElementType</span><span class="pun">)</span><span class="pun">);</span>
+			<br/>
+			<br/>
+			<span class="pln">size_t</span> <span class="pln">insert</span>(Vec)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">scope const </span><a href="../../btl/vector/Vector.ElementType.html"><span class="typ">Vector<wbr/></span><span class="pun">.<wbr/></span><span class="typ">ElementType</span></a><span class="pun">*</span> <span class="pln">ptr</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">auto scope ref </span><span class="typ">Vec</span> <span class="pln">vec</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isVector</span><span class="pun">!</span><span class="typ">Vec </span><span class="pun">&amp;&amp; </span><span class="kwd">is</span><span class="pun">(</span><span class="typ">GetElementType</span><span class="pun">!</span><span class="typ">Vec </span><span class="pun">: </span><span class="typ">ElementType</span><span class="pun">)</span><span class="pun">);</span>
+			<br/>
+			<br/>
+			<span class="pln">size_t</span> <span class="pln">insert</span>(Val)
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">scope const </span><a href="../../btl/vector/Vector.ElementType.html"><span class="typ">Vector<wbr/></span><span class="pun">.<wbr/></span><span class="typ">ElementType</span></a><span class="pun">*</span> <span class="pln">ptr</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">auto ref </span><span class="typ">Val</span> <span class="pln">val</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="kwd">const </span><span class="pln">size_t</span> <span class="pln">count</span> <span class="pun">=</span> <span class="lit">1</span>
+			<br/>
+			<span class="pun">)</span><span class="pln"> </span><span class="kwd">scope</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Val </span><span class="pun">: </span><span class="typ">ElementType</span><span class="pun">)</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			<section><p>Return index of first inserted element.
+</p>
+</section>
+
+			<section><h2>Parameters</h2>
+<p><code class="lang-d"><a href="../../btl/vector/Vector.insert.html#pos"><span class="pln">pos</span></a></code> Insertion point, the new contents are inserted before the element at position <code class="lang-d"><a href="../../btl/vector/Vector.insert.html#pos"><span class="pln">pos</span></a></code>.
+</p>
+
+<p>                <code class="lang-d"><a href="../../btl/vector/Vector.ptr.html"><span class="pln">ptr</span></a></code> Pointer pointing to the insertion point, the new contents are inserted before the element pointed by ptr.
+</p>
+
+<p>                <code class="lang-d"><a href="../../btl/vector/Vector.insert.html#val"><span class="pln">val</span></a></code> Value inserted before insertion point <code class="lang-d"><a href="../../btl/vector/Vector.insert.html#pos"><span class="pln">pos</span></a></code> or <code class="lang-d"><a href="../../btl/vector/Vector.ptr.html"><span class="pln">ptr</span></a></code>.
+</p>
+
+<p>                <code class="lang-d"><a href="../../btl/vector/Vector.insert.html#vec"><span class="pln">vec</span></a></code> appended vector.
+</p>
+
+<p>                <code class="lang-d"><a href="../../btl/vector/Vector.insert.html#range"><span class="pln">range</span></a></code> appended input renge.
+</p>
+
+<p>                <code class="lang-d"><a href="../../btl/vector/Vector.insert.html#count"><span class="pln">count</span></a></code> Number of times <code class="lang-d"><a href="../../btl/vector/Vector.insert.html#val"><span class="pln">val</span></a></code> is inserted.
+</p>
+</section>
+<section><h2>Examples</h2>
+<pre class="code"><code class="lang-d"><span class="com">//pos:
+</span><span class="pun">{
+    </span><span class="kwd">auto <a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">= <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">3</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">);
+
+    </span><span class="pln">size_t pos </span><span class="pun">= </span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="lit">42</span><span class="pun">, </span><span class="lit">2</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">== [</span><span class="lit">1</span><span class="pun">, </span><span class="lit">42</span><span class="pun">, </span><span class="lit">42</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">]);
+
+    <a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">= </span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="lit">100</span><span class="pun">, </span><span class="lit">4</span><span class="pun">, </span><span class="lit">3</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">== </span><span class="lit">5</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">== [</span><span class="lit">1</span><span class="pun">, </span><span class="lit">42</span><span class="pun">, </span><span class="lit">42</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">, </span><span class="lit">4</span><span class="pun">, </span><span class="lit">4</span><span class="pun">, </span><span class="lit">4</span><span class="pun">]);
+}
+
+{
+    </span><span class="kwd">auto <a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">= <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">3</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">);
+
+    </span><span class="pln">size_t pos </span><span class="pun">= </span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, [</span><span class="lit">20</span><span class="pun">, </span><span class="lit">30</span><span class="pun">, </span><span class="lit">40</span><span class="pun">]);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">== [</span><span class="lit">1</span><span class="pun">, </span><span class="lit">20</span><span class="pun">, </span><span class="lit">30</span><span class="pun">, </span><span class="lit">40</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">]);
+
+    <a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">= </span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="lit">100</span><span class="pun">, [</span><span class="lit">4</span><span class="pun">, </span><span class="lit">5</span><span class="pun">, </span><span class="lit">6</span><span class="pun">]);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">== </span><span class="lit">6</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">== [</span><span class="lit">1</span><span class="pun">, </span><span class="lit">20</span><span class="pun">, </span><span class="lit">30</span><span class="pun">, </span><span class="lit">40</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">, </span><span class="lit">4</span><span class="pun">, </span><span class="lit">5</span><span class="pun">, </span><span class="lit">6</span><span class="pun">]);
+}
+
+{
+    </span><span class="kwd">auto <a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">= <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">3</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">);
+    </span><span class="kwd">auto </span><span class="pln">tmp </span><span class="pun">= <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">10</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(-</span><span class="lit">1</span><span class="pun">, -</span><span class="lit">2</span><span class="pun">, -</span><span class="lit">3</span><span class="pun">);
+
+    </span><span class="pln">size_t pos </span><span class="pun">= </span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="pln">tmp</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">== [</span><span class="lit">1</span><span class="pun">, -</span><span class="lit">1</span><span class="pun">, -</span><span class="lit">2</span><span class="pun">, -</span><span class="lit">3</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">]);
+
+    <a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">= </span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="lit">100</span><span class="pun">, <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">10</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="lit">40</span><span class="pun">, </span><span class="lit">50</span><span class="pun">, </span><span class="lit">60</span><span class="pun">));
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">== </span><span class="lit">6</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">== [</span><span class="lit">1</span><span class="pun">, -</span><span class="lit">1</span><span class="pun">, -</span><span class="lit">2</span><span class="pun">, -</span><span class="lit">3</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">, </span><span class="lit">40</span><span class="pun">, </span><span class="lit">50</span><span class="pun">, </span><span class="lit">60</span><span class="pun">]);
+}
+
+</span><span class="com">//ptr:
+</span><span class="pun">{
+    </span><span class="kwd">auto <a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">= <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">3</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">);
+
+    </span><span class="pln">size_t pos </span><span class="pun">= </span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="pun">+ </span><span class="lit">1</span><span class="pun">, </span><span class="lit">42</span><span class="pun">, </span><span class="lit">2</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">== [</span><span class="lit">1</span><span class="pun">, </span><span class="lit">42</span><span class="pun">, </span><span class="lit">42</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">]);
+
+    <a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">= </span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="pun">+ </span><span class="lit">100</span><span class="pun">, </span><span class="lit">4</span><span class="pun">, </span><span class="lit">3</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">== </span><span class="lit">5</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">== [</span><span class="lit">1</span><span class="pun">, </span><span class="lit">42</span><span class="pun">, </span><span class="lit">42</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">, </span><span class="lit">4</span><span class="pun">, </span><span class="lit">4</span><span class="pun">, </span><span class="lit">4</span><span class="pun">]);
+}
+
+{
+    </span><span class="kwd">auto <a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">= <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">3</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">);
+
+    </span><span class="pln">size_t pos </span><span class="pun">= </span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="pun">+ </span><span class="lit">1</span><span class="pun">, [</span><span class="lit">20</span><span class="pun">, </span><span class="lit">30</span><span class="pun">, </span><span class="lit">40</span><span class="pun">]);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">== [</span><span class="lit">1</span><span class="pun">, </span><span class="lit">20</span><span class="pun">, </span><span class="lit">30</span><span class="pun">, </span><span class="lit">40</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">]);
+
+    <a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">= </span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="pun">+ </span><span class="lit">100</span><span class="pun">, [</span><span class="lit">4</span><span class="pun">, </span><span class="lit">5</span><span class="pun">, </span><span class="lit">6</span><span class="pun">]);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">== </span><span class="lit">6</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">== [</span><span class="lit">1</span><span class="pun">, </span><span class="lit">20</span><span class="pun">, </span><span class="lit">30</span><span class="pun">, </span><span class="lit">40</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">, </span><span class="lit">4</span><span class="pun">, </span><span class="lit">5</span><span class="pun">, </span><span class="lit">6</span><span class="pun">]);
+}
+
+{
+    </span><span class="kwd">auto <a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">= <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">3</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">);
+    </span><span class="kwd">auto </span><span class="pln">tmp </span><span class="pun">= <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">10</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(-</span><span class="lit">1</span><span class="pun">, -</span><span class="lit">2</span><span class="pun">, -</span><span class="lit">3</span><span class="pun">);
+
+    </span><span class="pln">size_t pos </span><span class="pun">= </span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="pun">+ </span><span class="lit">1</span><span class="pun">, </span><span class="pln">tmp</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">== </span><span class="lit">1</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">== [</span><span class="lit">1</span><span class="pun">, -</span><span class="lit">1</span><span class="pun">, -</span><span class="lit">2</span><span class="pun">, -</span><span class="lit">3</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">]);
+
+    <a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">= </span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="pln">vec<wbr/></span><span class="pun">.</span><span class="pln">ptr </span><span class="pun">+ </span><span class="lit">100</span><span class="pun">, <a href="../../btl/vector/Vector.html"></span><span class="typ">Vector</span></a><span class="pun">!(</span><span class="typ">int</span><span class="pun">, </span><span class="lit">10</span><span class="pun">)<wbr/>.</span><span class="pln">build</span><span class="pun">(</span><span class="lit">40</span><span class="pun">, </span><span class="lit">50</span><span class="pun">, </span><span class="lit">60</span><span class="pun">));
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#pos"></span><span class="pln">pos</span></a><span class="pln"> </span><span class="pun">== </span><span class="lit">6</span><span class="pun">);
+    </span><span class="kwd">assert</span><span class="pun">(<a href="../../btl/vector/Vector.insert.html#vec"></span><span class="pln">vec</span></a><span class="pln"> </span><span class="pun">== [</span><span class="lit">1</span><span class="pun">, -</span><span class="lit">1</span><span class="pun">, -</span><span class="lit">2</span><span class="pun">, -</span><span class="lit">3</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">, </span><span class="lit">40</span><span class="pun">, </span><span class="lit">50</span><span class="pun">, </span><span class="lit">60</span><span class="pun">]);
+}</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

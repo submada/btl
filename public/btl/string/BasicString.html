@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>BasicString - multiple declarations</title>
+		<link rel="stylesheet" type="text/css" href="../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">btl
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">autoptr
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/global_ptr.html">global_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">traits
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/assume.html">assume</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/traits/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../btl/vector.html">vector</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../btl/vector/flat_map.html">flat_map</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../btl/list.html">list</a>
+					</div>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../btl/string.html">string</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>BasicString - multiple declarations</h1>
+			<nav class="page-nav">
+				<ul>
+					<li>
+						<a href="#0">
+							Struct <code>BasicString</code>
+						</a>
+					</li>
+					<li>
+						<a href="#1">
+							Alias <code>BasicString</code>
+						</a>
+					</li>
+				</ul>
+			</nav><h2 id="0">Struct BasicString</h2><p>The <code class="lang-d"><span class="typ">BasicString</span></code> is the generalization of struct string for character of type <code class="lang-d"><span class="typ">char</span></code>, <code class="lang-d"><span class="typ">wchar</span></code> or <code class="lang-d"><span class="typ">dchar</span></code>.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">struct</span> <span class="typ">BasicString</span>(_Char, <span class="typ">ulong</span> N<span class="pln"> </span><span class="pun">= </span><span class="lit">1</span>, _Allocator)
+			<br/>
+			&nbsp;&nbsp;
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isSomeChar</span><span class="pun">!</span><span class="pln">_Char </span><span class="pun">&amp;&amp; </span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Unqual</span><span class="pun">!</span><span class="pln">_Char </span><span class="pun">== </span><span class="pln">_Char</span><span class="pun">)</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			<section><p><code class="lang-d"><span class="typ">BasicString</span></code> use utf-8, utf-16 or utf-32 encoding.
+</p>
+
+<p>	<code class="lang-d"><span class="typ">BasicString</span></code> use SSO (Small String Optimization).
+</p>
+
+<p>	Template parameters:
+</p>
+
+<p>		<code class="lang-d"><span class="pln">_Char</span></code> Character type. (<code class="lang-d"><span class="typ">char</span></code>, <code class="lang-d"><span class="typ">wchar</span></code> or <code class="lang-d"><span class="typ">dchar</span></code>).
+</p>
+
+<p>		<code class="lang-d"><span class="pln">_Allocator</span></code> Type of the allocator object used to define the storage allocation model. By default <code class="lang-d"><a href="../../btl/string/DefaultAllocator.html"><span class="typ">DefaultAllocator</span></a></code> is used.
+</p>
+
+<p>		<code class="lang-d"><span class="pln">N</span></code> Minimal capacity of <code class="lang-d"><span class="typ">BasicString</span></code> (increase max length of small string).
+</p>
+</section>
+
+			<section><h3>Constructors</h3>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(nil, fw)</span>
+						</td>
+						<td>Constructs a empty <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(allocator)</span>
+						</td>
+						<td>Constructs a empty <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object with <code class="lang-d"><a href="../../btl/string/BasicString.this.html#allocator"><span class="pln">allocator</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(character, fw)</span>
+						</td>
+						<td>Constructs a <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object, initializing its value to char value <code class="lang-d"><a href="../../btl/string/BasicString.this.html#character"><span class="pln">character</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(character, allocator)</span>
+						</td>
+						<td>Constructs a <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object, initializing its value to char value <code class="lang-d"><a href="../../btl/string/BasicString.this.html#character"><span class="pln">character</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(slice, fw)</span>
+						</td>
+						<td>Constructs a <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object from char slice <code class="lang-d"><a href="../../btl/string/BasicString.this.html#slice"><span class="pln">slice</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(slice, allocator)</span>
+						</td>
+						<td>Constructs a <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object from char slice <code class="lang-d"><a href="../../btl/string/BasicString.this.html#slice"><span class="pln">slice</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(integer, fw)</span>
+						</td>
+						<td>Constructs a <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object, initializing its value from integer <code class="lang-d"><a href="../../btl/string/BasicString.this.html#integer"><span class="pln">integer</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(integer, allocator)</span>
+						</td>
+						<td>Constructs a <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object, initializing its value from integer <code class="lang-d"><a href="../../btl/string/BasicString.this.html#integer"><span class="pln">integer</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(rhs)</span>
+						</td>
+						<td>Constructs a <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object from other <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(rhs, )</span>
+						</td>
+						<td>Forward constructor.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(rhs)</span>
+						</td>
+						<td>Copy constructor if <code class="lang-d"><a href="../../btl/string/BasicString.AllocatorType.html"><span class="typ">AllocatorType</span></a></code> is statless.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(rhs)</span>
+						</td>
+						<td>Copy constructor if <code class="lang-d"><a href="../../btl/string/BasicString.AllocatorType.html"><span class="typ">AllocatorType</span></a></code> has state.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section><h3>Properties</h3>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.backCodePoint.html" class="public property"><code>backCodePoint</code></a><span class="tableEntryAnnotation">[get, set]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="typ">dchar</span></code></td><td>Returns last utf code point(<code class="lang-d"><span class="typ">dchar</span></code>) of the <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.backCodeUnit.html" class="public property"><code>backCodeUnit</code></a><span class="tableEntryAnnotation">[get, set]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><a href="../../btl/string/BasicString.CharType.html"><span class="typ">BasicString<wbr/></span><span class="pun">.<wbr/></span><span class="typ">CharType</span></a></code></td><td>Returns the last character(utf8: <code class="lang-d"><span class="typ">char</span></code>, utf16: <code class="lang-d"><span class="typ">wchar</span></code>, utf32: <code class="lang-d"><span class="typ">dchar</span></code>) of the <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.capacity.html" class="public property"><code>capacity</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="pln">size_t</span></code></td><td>Returns the size of the storage space currently allocated for the <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code>, expressed in terms of characters (utf code units).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.empty.html" class="public property"><code>empty</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="typ">bool</span></code></td><td>Returns whether the string is empty (i.e. whether its length is 0).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.frontCodePoint.html" class="public property"><code>frontCodePoint</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="typ">dchar</span></code></td><td>Returns first utf code point(<code class="lang-d"><span class="typ">dchar</span></code>) of the <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.frontCodeUnit.html" class="public property"><code>frontCodeUnit</code></a><span class="tableEntryAnnotation">[get, set]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><a href="../../btl/string/BasicString.CharType.html"><span class="typ">BasicString<wbr/></span><span class="pun">.<wbr/></span><span class="typ">CharType</span></a></code></td><td>Returns the first character(utf8: <code class="lang-d"><span class="typ">char</span></code>, utf16: <code class="lang-d"><span class="typ">wchar</span></code>, utf32: <code class="lang-d"><span class="typ">dchar</span></code>) of the <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.full.html" class="public property"><code>full</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="typ">bool</span></code></td><td>Returns whether the string is full (i.e. whether its length is equal to maximalCapacity).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.length.html" class="public property"><code>length</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="pln">size_t</span></code></td><td>Returns the length of the string, in terms of number of characters (utf code units).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.ptr.html" class="public property"><code>ptr</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">inout</span><span class="pun">(</span><a href="../../btl/string/BasicString.CharType.html"><span class="typ">BasicString<wbr/></span><span class="pun">.<wbr/></span><span class="typ">CharType</span></a><span class="pun">)</span><span class="pun">*</span></code></td><td>Return pointer to the first element.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.small.html" class="public property"><code>small</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="typ">bool</span></code></td><td>Return <code class="lang-d"><span class="kwd">true</span></code> if string is small (Small String Optimization)
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.valid.html" class="public property"><code>valid</code></a><span class="tableEntryAnnotation">[get]</span>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="typ">bool</span></code></td><td>Return <code class="lang-d"><span class="kwd">true</span></code> if string is valid utf string.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section><h3>Methods</h3>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.append.html" class="public">
+								<code>append</code>
+							</a>
+							<span class="tableEntryAnnotation">(val, count)</span>
+						</td>
+						<td>Extends the <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> by appending additional characters at the end of string.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.build.html" class="public">
+								<code>build</code>
+							</a>
+							<span class="tableEntryAnnotation">(args)</span>
+						</td>
+						<td>Static function which return <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> construct from arguments <code class="lang-d"><a href="../../btl/string/BasicString.build.html#args"><span class="pln">args</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.clear.html" class="public">
+								<code>clear</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Erases the contents of the <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code>, which becomes an empty string (with a length of 0 characters).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.contains.html" class="public">
+								<code>contains</code>
+							</a>
+							<span class="tableEntryAnnotation">(elm)</span>
+						</td>
+						<td>Same as operator <code class="lang-d"><span class="kwd">in</span></code>
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.downsize.html" class="public">
+								<code>downsize</code>
+							</a>
+							<span class="tableEntryAnnotation">(n)</span>
+						</td>
+						<td>Downsizes the string to a length of <code class="lang-d"><a href="../../btl/string/BasicString.downsize.html#n"><span class="pln">n</span></a></code> characters (utf code units).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.erase.html" class="public">
+								<code>erase</code>
+							</a>
+							<span class="tableEntryAnnotation">(pos)</span>
+						</td>
+						<td>Removes specified characters from the string.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.insert.html" class="public">
+								<code>insert</code>
+							</a>
+							<span class="tableEntryAnnotation">(pos, val, count)</span>
+						</td>
+						<td>Inserts additional characters into the <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> right before the character indicated by <code class="lang-d"><a href="../../btl/string/BasicString.insert.html#pos"><span class="pln">pos</span></a></code> or <code class="lang-d"><a href="../../btl/string/BasicString.ptr.html"><span class="pln">ptr</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.opAssign.html" class="public">
+								<code>opAssign</code>
+							</a>
+							<span class="tableEntryAnnotation">(nil)</span>
+						</td>
+						<td>Assigns a new value <code class="lang-d"><a href="../../btl/string/BasicString.opAssign.html#rhs"><span class="pln">rhs</span></a></code> to the string, replacing its current contents.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.opBinary.html" class="public">
+								<code>opBinary</code>
+							</a>
+							<span class="tableEntryAnnotation">(rhs)</span>
+						</td>
+						<td>Returns a newly constructed <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object with its value being the concatenation of the characters in <code class="lang-d"><span class="kwd">this</span></code> followed by those of <code class="lang-d"><a href="../../btl/string/BasicString.opBinary.html#rhs"><span class="pln">rhs</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.opBinaryRight.html" class="public">
+								<code>opBinaryRight</code>
+							</a>
+							<span class="tableEntryAnnotation">(lhs)</span>
+						</td>
+						<td>Returns a newly constructed <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> object with its value being the concatenation of the characters in <code class="lang-d"><a href="../../btl/string/BasicString.opBinaryRight.html#lhs"><span class="pln">lhs</span></a></code> followed by those of <code class="lang-d"><span class="kwd">this</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.opBinaryRight.html" class="public">
+								<code>opBinaryRight</code>
+							</a>
+							<span class="tableEntryAnnotation">(elm)</span>
+						</td>
+						<td>Operator <code class="lang-d"><span class="kwd">in</span></code>
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.opCast.html" class="public">
+								<code>opCast</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Support for quelifier cast.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.opCmp.html" class="public">
+								<code>opCmp</code>
+							</a>
+							<span class="tableEntryAnnotation">(rhs)</span>
+						</td>
+						<td>Compares the contents of a string with another string, range, char/wchar/dchar or integer.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.opDollar.html" class="public">
+								<code>opDollar</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Returns the length of the string, in terms of number of characters.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.opEquals.html" class="public">
+								<code>opEquals</code>
+							</a>
+							<span class="tableEntryAnnotation">(rhs)</span>
+						</td>
+						<td>Compares the contents of a string with another string, range, char/wchar/dchar or integer.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.opIndex.html" class="public">
+								<code>opIndex</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Return slice of all character.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.opIndex.html" class="public">
+								<code>opIndex</code>
+							</a>
+							<span class="tableEntryAnnotation">(pos)</span>
+						</td>
+						<td>Returns character at specified location <code class="lang-d"><a href="../../btl/string/BasicString.opIndex.html#pos"><span class="pln">pos</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.opIndexAssign.html" class="public">
+								<code>opIndexAssign</code>
+							</a>
+							<span class="tableEntryAnnotation">(val, pos)</span>
+						</td>
+						<td>Assign character at specified location <code class="lang-d"><a href="../../btl/string/BasicString.opIndexAssign.html#pos"><span class="pln">pos</span></a></code> to value <code class="lang-d"><a href="../../btl/string/BasicString.opIndexAssign.html#val"><span class="pln">val</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.opSlice.html" class="public">
+								<code>opSlice</code>
+							</a>
+							<span class="tableEntryAnnotation">(begin, end)</span>
+						</td>
+						<td>Returns a slice [begin .. end]. If the requested substring extends past the end of the string, the returned slice is [begin .. length()].
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.popBackCodePoint.html" class="public">
+								<code>popBackCodePoint</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Erases the last utf code point of the <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code>, effectively reducing its length by code point length.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.popBackCodeUnit.html" class="public">
+								<code>popBackCodeUnit</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Erases the last code unit of the <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code>, effectively reducing its length by 1.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.proxySwap.html" class="public">
+								<code>proxySwap</code>
+							</a>
+							<span class="tableEntryAnnotation">(rhs)</span>
+						</td>
+						<td>Swaps the contents of <code class="lang-d"><span class="kwd">this</span></code> and <code class="lang-d"><a href="../../btl/string/BasicString.proxySwap.html#rhs"><span class="pln">rhs</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.release.html" class="public">
+								<code>release</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Erases and deallocate the contents of the <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code>, which becomes an empty string (with a length of 0 characters).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.replace.html" class="public">
+								<code>replace</code>
+							</a>
+							<span class="tableEntryAnnotation">(pos, len, val, count)</span>
+						</td>
+						<td>Replaces the portion of the string that begins at character <code class="lang-d"><a href="../../btl/string/BasicString.replace.html#pos"><span class="pln">pos</span></a></code> and spans <code class="lang-d"><a href="../../btl/string/BasicString.replace.html#len"><span class="pln">len</span></a></code> characters (or the part of the string in the slice <code class="lang-d"><a href="../../btl/string/BasicString.replace.html#slice"><span class="pln">slice</span></a></code>) by new contents.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.reserve.html" class="public">
+								<code>reserve</code>
+							</a>
+							<span class="tableEntryAnnotation">(n)</span>
+						</td>
+						<td>Requests that the string capacity be adapted to a planned change in size to a length of up to n characters (utf code units).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.resize.html" class="public">
+								<code>resize</code>
+							</a>
+							<span class="tableEntryAnnotation">(n, ch)</span>
+						</td>
+						<td>Resizes the string to a length of <code class="lang-d"><a href="../../btl/string/BasicString.resize.html#n"><span class="pln">n</span></a></code> characters (utf code units).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.shrinkToFit.html" class="public">
+								<code>shrinkToFit</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Requests the <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> to reduce its capacity to fit its length.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.toHash.html" class="public">
+								<code>toHash</code>
+							</a>
+							<span class="tableEntryAnnotation">()</span>
+						</td>
+						<td>Calculates the hash value of string.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.upsize.html" class="public">
+								<code>upsize</code>
+							</a>
+							<span class="tableEntryAnnotation">(n, ch)</span>
+						</td>
+						<td>Upsizes the string to a length of <code class="lang-d"><a href="../../btl/string/BasicString.upsize.html#n"><span class="pln">n</span></a></code> characters (utf code units).
+</td>
+					</tr>
+				</table>
+			</section>
+			<section><h3>Aliases</h3>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.allocator.html" class="public">
+								<code>allocator</code>
+							</a>
+						</td>
+						<td>Returns allocator.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.AllocatorType.html" class="public">
+								<code>AllocatorType</code>
+							</a>
+						</td>
+						<td>Type of the allocator object used to define the storage allocation model. By default <code class="lang-d"><a href="../../btl/string/DefaultAllocator.html"><span class="typ">DefaultAllocator</span></a></code> is used.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.allowHeap.html" class="public">
+								<code>allowHeap</code>
+							</a>
+						</td>
+						<td>Allow heap (<code class="lang-d"><span class="kwd">false</span></code> only if <code class="lang-d"><span class="typ">Allcoator</span></code> is void)
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.back.html" class="public">
+								<code>back</code>
+							</a>
+						</td>
+						<td>Alias to <code class="lang-d"><a href="../../btl/string/BasicString.backCodeUnit.html"><span class="pln">backCodeUnit</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.CharType.html" class="public">
+								<code>CharType</code>
+							</a>
+						</td>
+						<td>Character type. (<code class="lang-d"><span class="typ">char</span></code>, <code class="lang-d"><span class="typ">wchar</span></code> or  <code class="lang-d"><span class="typ">dchar</span></code>).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.front.html" class="public">
+								<code>front</code>
+							</a>
+						</td>
+						<td>Alias to <code class="lang-d"><a href="../../btl/string/BasicString.frontCodeUnit.html"><span class="pln">frontCodeUnit</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.maximalCapacity.html" class="public">
+								<code>maximalCapacity</code>
+							</a>
+						</td>
+						<td>Maximal capacity of string, in terms of number of characters (utf code units).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.minimalCapacity.html" class="public">
+								<code>minimalCapacity</code>
+							</a>
+						</td>
+						<td>Minimal capacity of string (same as maximum capacity of small string), in terms of number of characters (utf code units).
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.opOpAssign.html" class="public">
+								<code>opOpAssign</code>
+							</a>
+						</td>
+						<td>Extends the <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> by appending additional characters at the end of its current value.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.popBack.html" class="public">
+								<code>popBack</code>
+							</a>
+						</td>
+						<td>Alias to <code class="lang-d"><a href="../../btl/string/BasicString.popBackCodeUnit.html"><span class="pln">popBackCodeUnit</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../btl/string/BasicString.put.html" class="public">
+								<code>put</code>
+							</a>
+						</td>
+						<td>Alias to append.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section><h3>Example</h3>
+
+<pre class="code"><code class="lang-d"><span class="kwd">alias <a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> </span><span class="pun">= </span><span class="typ">BasicString</span><span class="pun">!(
+	</span><span class="typ">char</span><span class="pun">,               </span><span class="com">//character type
+	</span><span class="lit">32</span><span class="pun">,                 </span><span class="com">//additional padding to increas max size of small string (small string does not allocate memory).
+	<a href="../../btl/string/DefaultAllocator.html"></span><span class="typ">DefaultAllocator</span></a><span class="pln">    </span><span class="com">//allocator type (can be stateless or with state)
+</span><span class="pun">);
+
+
+</span><span class="com">//copy:
+</span><span class="pun">{
+	<a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> a </span><span class="pun">= </span><span class="str">"123"</span><span class="pun">;
+	<a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> b </span><span class="pun">= </span><span class="pln">a</span><span class="pun">;
+
+	</span><span class="pln">a </span><span class="pun">= </span><span class="str">"456"d</span><span class="pun">;
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">a </span><span class="pun">== </span><span class="str">"456"</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">b </span><span class="pun">== </span><span class="str">"123"</span><span class="pun">);
+}
+
+
+</span><span class="com">//append:
+</span><span class="pun">{
+	<a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> str </span><span class="pun">= </span><span class="str">"12"</span><span class="pun">;
+
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">append</span><span class="pun">(</span><span class="str">"34"</span><span class="pun">);   </span><span class="com">//same as str += "34"
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">append</span><span class="pun">(</span><span class="str">"56"w</span><span class="pun">);  </span><span class="com">//same as str += "56"w
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">append</span><span class="pun">(</span><span class="lit">7</span><span class="pun">);      </span><span class="com">//same as str += 7;
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">append</span><span class="pun">(</span><span class="str">'8'</span><span class="pun">);
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"12345678"</span><span class="pun">);
+
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">clear</span><span class="pun">();
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">empty</span><span class="pun">);
+}
+
+</span><span class="com">//erase:
+</span><span class="pun">{
+	<a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> str </span><span class="pun">= </span><span class="str">"123456789"</span><span class="pun">;
+
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">erase</span><span class="pun">(</span><span class="lit">2</span><span class="pun">, </span><span class="lit">2</span><span class="pun">);
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"1256789"</span><span class="pun">);
+}
+
+</span><span class="com">//insert:
+</span><span class="pun">{
+	<a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> str </span><span class="pun">= </span><span class="str">"123456789"</span><span class="pun">;
+
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">insert</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="str">"xyz"</span><span class="pun">);
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"1xyz23456789"</span><span class="pun">);
+}
+
+</span><span class="com">//replace:
+</span><span class="pun">{
+	<a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> str </span><span class="pun">= </span><span class="str">"123456789"</span><span class="pun">;
+
+	</span><span class="pln">str<wbr/></span><span class="pun">.</span><span class="pln">replace</span><span class="pun">(</span><span class="lit">1</span><span class="pun">, </span><span class="lit">2</span><span class="pun">, </span><span class="str">"xyz"</span><span class="pun">);
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="str">"1xyz456789"</span><span class="pun">);
+}
+
+</span><span class="com">//slice to string:
+</span><span class="pun">()</span><span class="kwd">@trusted</span><span class="pun">{
+	<a href="../../btl/string/String.html"></span><span class="typ">String</span></a><span class="pln"> str </span><span class="pun">= </span><span class="str">"123456789"</span><span class="pun">;
+
+	</span><span class="kwd">const</span><span class="pun">(</span><span class="typ">char</span><span class="pun">)[] </span><span class="pln">dstr </span><span class="pun">= </span><span class="pln">str</span><span class="pun">[];
+
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">str </span><span class="pun">== </span><span class="pln">dstr</span><span class="pun">);
+}();
+</span></code></pre>
+</section>
+<h2 id="1">Alias BasicString</h2><p>Alias to <code class="lang-d"><a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a></code> with different order of template parameters
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">alias</span> <span class="pln">BasicString</span>(_Char, _Allocator, <span class="typ">ulong</span> N<span class="pln"> </span><span class="pun">= </span><span class="lit">1</span>)
+			 <span class="pun">=</span> <a href="../../btl/string/BasicString.html"><span class="typ">BasicString</span></a>!(_Char,N,_Allocator)<span class="pun">;</span>
+					</div>
+				</code>
+			</div>
+			
+			
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

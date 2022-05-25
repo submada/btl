@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Function dynCast</title>
+		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">btl
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">autoptr
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/global_ptr.html">global_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module selected">
+						<a href="../../../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">traits
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../btl/traits/assume.html">assume</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/traits/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/traits/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../../../btl/vector.html">vector</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../../../btl/vector/flat_map.html">flat_map</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/list.html">list</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../btl/string.html">string</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Function dynCast</h1><p>Dynamic cast for shared pointers if <code class="lang-d"><span class="typ">ElementType</span></code> is class with D linkage.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			{null} <span class="pln">dynCast</span>(T, Ptr)<span class="pun">(</span><span class="pun">)</span>
+			<br/>
+			<span class="kwd">if</span> <span class="pun">(</span><span class="pln">isSharedPtr</span><span class="pun">!</span><span class="typ">Ptr </span><span class="pun">&amp;&amp; !</span><span class="kwd">is</span><span class="pun">(</span><span class="typ">Ptr </span><span class="pun">== </span><span class="kwd">shared</span><span class="pun">) &amp;&amp; !</span><span class="typ">Ptr<wbr/></span><span class="pun">.</span><span class="pln">isWeak </span><span class="pun">&amp;&amp; </span><span class="pln">isClassOrInterface</span><span class="pun">!</span><span class="pln">T </span><span class="pun">&amp;&amp; (</span><span class="kwd">__traits</span><span class="pun">(</span><span class="pln">getLinkage</span><span class="pun">, </span><span class="pln">T</span><span class="pun">) == </span><span class="str">"D"</span><span class="pun">) &amp;&amp; </span><span class="pln">isClassOrInterface</span><span class="pun">!(</span><span class="typ">Ptr<wbr/></span><span class="pun">.</span><span class="typ">ElementType</span><span class="pun">) &amp;&amp; (</span><span class="kwd">__traits</span><span class="pun">(</span><span class="pln">getLinkage</span><span class="pun">, </span><span class="typ">Ptr<wbr/></span><span class="pun">.</span><span class="typ">ElementType</span><span class="pun">) == </span><span class="str">"D"</span><span class="pun">)</span><span class="pun">);</span>
+					</div>
+				</code>
+			</div>
+			<section><p>Creates a new instance of <code class="lang-d"><a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"><span class="typ">SharedPtr</span></a></code> whose stored pointer is obtained from <code class="lang-d"><span class="pln">ptr</span></code>'s stored pointer using a dynaic cast expression.
+</p>
+
+<p>	If <code class="lang-d"><span class="pln">ptr</span></code> is null or dynamic cast fail then result <code class="lang-d"><a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"><span class="typ">SharedPtr</span></a></code> is null.
+	Otherwise, the new <code class="lang-d"><a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"><span class="typ">SharedPtr</span></a></code> will share ownership with the initial value of <code class="lang-d"><span class="pln">ptr</span></code>.
+</p>
+</section>
+
+			<section><h2>Example</h2>
+
+<pre class="code"><code class="lang-d"><span class="kwd">static class </span><span class="typ">Foo</span><span class="pun">{
+	</span><span class="typ">int </span><span class="pln">i</span><span class="pun">;
+
+	</span><span class="kwd">this</span><span class="pun">(</span><span class="typ">int </span><span class="pln">i</span><span class="pun">)</span><span class="kwd">pure nothrow @safe @nogc</span><span class="pun">{
+		</span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">= </span><span class="pln">i</span><span class="pun">;
+	}
+}
+
+</span><span class="kwd">static class </span><span class="typ">Bar </span><span class="pun">: </span><span class="typ">Foo</span><span class="pun">{
+	</span><span class="typ">double </span><span class="pln">d</span><span class="pun">;
+
+	</span><span class="kwd">this</span><span class="pun">(</span><span class="typ">int </span><span class="pln">i</span><span class="pun">, </span><span class="typ">double </span><span class="pln">d</span><span class="pun">)</span><span class="kwd">pure nothrow @safe @nogc</span><span class="pun">{
+		</span><span class="kwd">super</span><span class="pun">(</span><span class="pln">i</span><span class="pun">);
+		</span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">d </span><span class="pun">= </span><span class="pln">d</span><span class="pun">;
+	}
+}
+
+</span><span class="kwd">static class </span><span class="typ">Zee</span><span class="pun">{
+}
+
+{
+	<a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!(</span><span class="kwd">const </span><span class="typ">Foo</span><span class="pun">) </span><span class="pln">foo </span><span class="pun">= <a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!</span><span class="typ">Bar<wbr/></span><span class="pun">.</span><span class="pln">make</span><span class="pun">(</span><span class="lit">42</span><span class="pun">, </span><span class="lit">3.14</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">foo<wbr/></span><span class="pun">.</span><span class="pln">get<wbr/></span><span class="pun">.</span><span class="pln">i </span><span class="pun">== </span><span class="lit">42</span><span class="pun">);
+
+	</span><span class="kwd">auto </span><span class="pln">bar </span><span class="pun">= </span><span class="pln">dynCast</span><span class="pun">!</span><span class="typ">Bar</span><span class="pun">(</span><span class="pln">foo</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">bar </span><span class="pun">!= </span><span class="kwd">null</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">bar<wbr/></span><span class="pun">.</span><span class="pln">get<wbr/></span><span class="pun">.</span><span class="pln">d </span><span class="pun">== </span><span class="lit">3.14</span><span class="pun">);
+	</span><span class="kwd">static assert</span><span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">bar</span><span class="pun">) == <a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!(</span><span class="kwd">const </span><span class="typ">Bar</span><span class="pun">)));
+
+	</span><span class="kwd">auto </span><span class="pln">zee </span><span class="pun">= </span><span class="pln">dynCast</span><span class="pun">!</span><span class="typ">Zee</span><span class="pun">(</span><span class="pln">foo</span><span class="pun">);
+	</span><span class="kwd">assert</span><span class="pun">(</span><span class="pln">zee </span><span class="pun">== </span><span class="kwd">null</span><span class="pun">);
+	</span><span class="kwd">static assert</span><span class="pun">(</span><span class="kwd">is</span><span class="pun">(</span><span class="kwd">typeof</span><span class="pun">(</span><span class="pln">zee</span><span class="pun">) == <a href="../../../btl/autoptr/shared_ptr/SharedPtr.html"></span><span class="typ">SharedPtr</span></a><span class="pun">!(</span><span class="kwd">const </span><span class="typ">Zee</span><span class="pun">)));
+}
+</span></code></pre>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>

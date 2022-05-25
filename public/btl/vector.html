@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Module btl.vector</title>
+		<link rel="stylesheet" type="text/css" href="../styles/ddox.css"/>
+		<link rel="stylesheet" href="../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../scripts/jquery.js">/**/</script><script type="text/javascript" src="../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+		<nav id="main-nav">
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package ">btl
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">autoptr
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../btl/autoptr/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../btl/autoptr/global_ptr.html">global_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../btl/autoptr/intrusive_ptr.html">intrusive_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../btl/autoptr/rc_ptr.html">rc_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../btl/autoptr/shared_ptr.html">shared_ptr</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../btl/autoptr/unique_ptr.html">unique_ptr</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view collapsed">
+					<div class="package ">traits
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../btl/traits/assume.html">assume</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../btl/traits/common.html">common</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../btl/traits/range.html">range</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li class="tree-view ">
+					<div class="package selected">
+						<a href="../btl/vector.html">vector</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../btl/vector/flat_map.html">flat_map</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../btl/list.html">list</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../btl/string.html">string</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Module btl.vector</h1><p>Implementation of dynamic array <code class="lang-d"><a href="../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> (similar to c++ <code class="lang-d"><span class="pln">std</span><span class="pun">::</span><span class="pln">vector</span></code> and <code class="lang-d"><span class="pln">folly</span><span class="pun">::</span><span class="pln">small_vector</span></code>).
+</p><section></section>
+
+			<section></section>
+			<section>
+				<h2>Structs</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="Vector" class="public" href="../btl/vector/Vector.html">Vector</a>
+							</code>
+						</td>
+						<td><code class="lang-d"><span class="typ">Vector</span></code>s are sequence containers representing arrays that can change in size.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Manifest constants</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a id="isVector" class="public" href="../btl/vector/isVector.html">
+								<code>isVector</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>True if <code class="lang-d"><span class="pln">T</span></code> is a <code class="lang-d"><a href="../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> or implicitly converts to one, otherwise false.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Aliases</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a id="DefaultAllocator" class="public" href="../btl/vector/DefaultAllocator.html">
+								<code>DefaultAllocator</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><span class="pln">std<wbr/></span><span class="pun">.</span><span class="pln">experimental<wbr/></span><span class="pun">.</span><span class="pln">allocator<wbr/></span><span class="pun">.</span><span class="pln">mallocator<wbr/></span><span class="pun">.</span><span class="typ">Mallocator</span></code>
+						</td>
+						<td>Default allcoator for <code class="lang-d"><a href="../btl/vector/Vector.html"><span class="typ">Vector</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="FixedVector" class="public" href="../btl/vector/FixedVector.html">
+								<code>FixedVector</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><a href="../btl/vector/Vector.html"><span class="typ">Vector</span></a>!(_Type,N,void,_supportGC)</code>
+						</td>
+						<td>Alias to <code class="lang-d"><a href="../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> with <code class="lang-d"><span class="typ">void</span></code> allcoator
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="Forward" class="public" href="../btl/vector/Forward.html">
+								<code>Forward</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><a href="../btl/traits/common/Forward.html"><span class="typ">Forward</span></a></code>
+						</td>
+						<td>Type used in forward constructors.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="SmallVector" class="public" href="../btl/vector/SmallVector.html">
+								<code>SmallVector</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><a href="../btl/vector/Vector.html"><span class="typ">Vector</span></a>!(_Type,N,_Allocator,_supportGC)</code>
+						</td>
+						<td>Alias to <code class="lang-d"><a href="../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> with with <code class="lang-d"><span class="pln">N </span><span class="pun">&gt; </span><span class="lit">0</span></code>
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="Vector" class="public" href="../btl/vector/Vector.html">
+								<code>Vector</code>
+							</a>
+						</td>
+						<td>
+							<code class="prettyprint lang-d"><a href="../btl/vector/Vector.html"><span class="typ">Vector</span></a>!(_Type,0,_Allocator,_supportGC)</code>
+						</td>
+						<td>Alias to <code class="lang-d"><a href="../btl/vector/Vector.html"><span class="typ">Vector</span></a></code> with different order of template parameters
+</td>
+					</tr>
+				</table>
+			</section>
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>Adam Búš
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p>www.boost.org/LICENSE_1_0.txt, Boost License 1.0.
+</p>
+
+						</td>
+					</tr>
+				</table>
+				<p class="faint">Generated using the DDOX documentation generator</p>
+			</footer>
+		</div>
+	</body>
+</html>
