@@ -1,0 +1,97 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "dub",
+			"run": false,
+			"cwd": "${workspaceFolder}",
+			"compiler": "$current",
+			"archType": "$current",
+			"buildType": "release",
+			"configuration": "$current",
+			"problemMatcher": [
+				"$dmd"
+			],
+			"group": "build",
+			"label": "dub: Release(Build)",
+			"detail": "release build"
+		},
+		{
+			"type": "dub",
+			"run": true,
+			"cwd": "${workspaceFolder}",
+			"compiler": "$current",
+			"archType": "$current",
+			"buildType": "release",
+			"configuration": "$current",
+			"problemMatcher": [
+				"$dmd"
+			],
+			"group": "build",
+			"label": "dub: Release(Run)",
+			"detail": "release run"
+		},
+
+		{
+			"type": "dub",
+			"run": false,
+			"cwd": "${workspaceFolder}",
+			"compiler": "$current",
+			"archType": "$current",
+			"buildType": "debug",
+			"configuration": "$current",
+			"problemMatcher": [
+				"$dmd"
+			],
+			"group": "build",
+			"label": "dub: Debug(Build)",
+			"detail": "debug build"
+		},
+		{
+			"type": "dub",
+			"run": true,
+			"cwd": "${workspaceFolder}",
+			"compiler": "$current",
+			"archType": "$current",
+			"buildType": "debug",
+			"configuration": "$current",
+			"problemMatcher": [
+				"$dmd"
+			],
+			"group": "build",
+			"label": "dub: Debug(Run)",
+			"detail": "debug run"
+		},
+
+		{
+			"type": "dub",
+			"run": false,
+			"cwd": "${workspaceFolder}",
+			"compiler": "$current",
+			"archType": "$current",
+			"buildType": "unittest",
+			"configuration": "$current",
+			"problemMatcher": [
+				"$dmd"
+			],
+			"group": "build",
+			"label": "dub: Unittest(Build)",
+			"detail": "unittest build"
+		},
+		{
+			"type": "dub",
+			"run": true,
+			"cwd": "${workspaceFolder}",
+			"compiler": "$current",
+			"archType": "$current",
+			"buildType": "unittest",
+			"configuration": "$current",
+			"problemMatcher": [
+				"$dmd"
+			],
+			"group": "build",
+			"label": "dub: Unittest(Run)",
+			"detail": "unittest run"
+		}
+	]
+}
