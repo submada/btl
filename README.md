@@ -34,4 +34,4 @@ https://submada.github.io/btl
 - https://code.dlang.org/packages/btl
 
 ## History
-This repository was in past divided into 3 repositories: **`autoptr`**, **`small-vector`** and **`basic-string`** but they shared many internal parts so I unite them under one.
+This repository was in past divided into 3 repositories: **`autoptr`**, **`small-vector`** and **`basic-string`** but they shared many internal parts so I unite them under one. 
