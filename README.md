@@ -4,7 +4,7 @@
 This is colection of packages:
 
 - **btl:autoptr**: smart pointers like c++ `std::shared_ptr`, `std::weak_ptr`, `std::enable_shared_from_this` and more.
-  - [SharedPtr](https://submada.github.io/btl/btl/autoptr/shared_ptr/SharedPtr.html) reference counted pointer with support for aliasing and optional weak pointer support
+  - [SharedPtr](https://submada.github.io/btl/btl/autoptr/shared_ptr/SharedPtr.html) reference counted pointer with support for aliasing and optional weak pointer support.
   - [RcPtr](https://submada.github.io/btl/btl/autoptr/rc_ptr/RcPtr.html) reference counted pointer with limited support for aliasing (but small size and lock free manipulation of pointer) and optional weak pointer support.
   - [IntrusivePtr](https://submada.github.io/btl/btl/autoptr/intrusive_ptr/IntrusivePtr.html) reference counted pointer with reference counting inside of managed object with limited support for aliasing (but small size and lock free manipulation of pointer) and optional weak pointer support.
   - [UniquePtr](https://submada.github.io/btl/btl/autoptr/unique_ptr/UniquePtr.html) non copyable owning pointer that owns and manages object through a pointer and disposes of that object when goes out of scope.
