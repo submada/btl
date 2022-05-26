@@ -1,5 +1,5 @@
 /**
-    Implementation of pointer to static/GC data `GlobalPtr`.
+    Implementation of non-owning pointer `GlobalPtr`.
 
     License:   $(HTTP www.boost.org/LICENSE_1_0.txt, Boost License 1.0).
     Authors:   Adam Búš
@@ -33,14 +33,13 @@ unittest{
 
 
 /**
-	Implementation of a pointer to global data (static, gc, ...).
+	Implementation of non-owning pointer to global data (static, gc, ...).
     
-    scope global ptr can be assigned/initialized with non-scoped raw pointer/reference or with other scope GlobalPtr.
+    `scope` global ptr can be assigned/initialized with non-scoped raw pointer/reference or with other scope GlobalPtr.
     
 	Template parameters:
 
 		`_Type` type of managed object
-
 */
 public template GlobalPtr(_Type){
     import std.traits : CopyTypeQualifiers, Unqual, isDynamicArray;

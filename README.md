@@ -8,7 +8,7 @@ This is colection of packages:
   - [RcPtr](https://submada.github.io/btl/btl/autoptr/rc_ptr/RcPtr.html) reference counted pointer with limited support for aliasing (but small size and lock free manipulation of pointer) and optional weak pointer support.
   - [IntrusivePtr](https://submada.github.io/btl/btl/autoptr/intrusive_ptr/IntrusivePtr.html) reference counted pointer with reference counting inside of managed object with limited support for aliasing (but small size and lock free manipulation of pointer) and optional weak pointer support.
   - [UniquePtr](https://submada.github.io/btl/btl/autoptr/unique_ptr/UniquePtr.html) non copyable owning pointer that owns and manages object through a pointer and disposes of that object when goes out of scope.
-  - [GlobalPtr (beta)](https://submada.github.io/btl/btl/autoptr/global_ptr/GlobalPtr.html)
+  - [GlobalPtr (beta)](https://submada.github.io/btl/btl/autoptr/global_ptr/GlobalPtr.html) non-owning pointer `GlobalPtr` to global data (static, gc, ...).
 - **btl:string** mutable string with small string optimization like c++ `std::basic_string` and `std::string`
   - [BasicString](https://submada.github.io/btl/btl/string/BasicString.html) Generalization of struct string with optional small string optimization for min `N` characters of type char, wchar and dchar.
   - [SmallString](https://submada.github.io/btl/btl/string/SmallString.html) Generalization of struct string with small string optimization for min `N` characters of type char, wchar and dchar.
