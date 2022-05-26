@@ -262,7 +262,9 @@ public template GlobalPtr(_Type){
             && isAssignable!(Rhs, This)
             && !is(Rhs == shared)
         ){
-            this._set_element(desired._element);
+            ()@trusted{
+                this._set_element(desired._element);
+            }();
         }
 
 
@@ -599,11 +601,11 @@ public template GlobalPtr(_Type){
 
         private ElementReferenceType _element;
 
-        private void _set_element(ElementReferenceType e)pure nothrow @system @nogc{
+        private void _set_element(ElementReferenceType e)scope pure nothrow @system @nogc{
             (*cast(Unqual!ElementReferenceType*)&this._element) = cast(Unqual!ElementReferenceType)e;
         }
 
-        private void _set_element(ElementReferenceType e)shared pure nothrow @system @nogc{
+        private void _set_element(ElementReferenceType e)scope shared pure nothrow @system @nogc{
             import core.atomic : atomicStore;
             atomicStore(
                 (*cast(Unqual!ElementReferenceType*)&this._element),
@@ -619,7 +621,7 @@ nothrow @safe unittest{
 
     {
         scope GlobalPtr!long x = new long(42);
-        ptr = x;
+        ptr.opAssign(x);
     }
 
     {
