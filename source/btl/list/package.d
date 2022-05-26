@@ -355,7 +355,7 @@ public template List(
                 --------------------
 
         */
-        public this(typeof(null) nil)scope pure nothrow @safe @nogc{
+        public this(typeof(null) nil, Forward = Forward.init)scope pure nothrow @safe @nogc{
         }
 
 
@@ -477,7 +477,7 @@ public template List(
                 }
                 --------------------
         */
-        public this(R, this This)(R range)scope
+        public this(R, this This)(R range, Forward = Forward.init)scope
         if(isBtlInputRange!R && is(ElementEncodingType!R : GetElementType!This)){
             this._init_from_range(forward!range);
         }

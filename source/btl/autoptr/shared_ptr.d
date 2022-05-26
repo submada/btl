@@ -237,7 +237,7 @@ if(isControlBlock!_ControlType && isDestructorType!_DestructorType){
 				assert(x == SharedPtr!long.init);
 				--------------------
 		*/
-		public this(this This)(typeof(null) nil)pure nothrow @safe @nogc{
+		public this(this This)(typeof(null) nil, Forward = Forward.init)pure nothrow @safe @nogc{
 		}
 
 

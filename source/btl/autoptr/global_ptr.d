@@ -22,7 +22,24 @@ public template isGlobalPtr(T){
     enum bool isGlobalPtr = isInstanceOf!(GlobalPtr, T);
 }
 
+///
+unittest{
+	static assert(!isGlobalPtr!long);
+	static assert(!isGlobalPtr!(void*));
+
+	static assert(isGlobalPtr!(GlobalPtr!long));
+}
+
+
+
 /**
+	Implementation of a pointer to global data (static, gc, ...).
+    
+    scope global ptr can be assigned/initialized with non-scoped raw pointer/reference or with other scope GlobalPtr.
+    
+	Template parameters:
+
+		`_Type` type of managed object
 
 */
 public template GlobalPtr(_Type){
@@ -55,7 +72,7 @@ public template GlobalPtr(_Type){
                 assert(x == GlobalPtr!long.init);
                 --------------------
         */
-        public this(typeof(null) nil)scope pure nothrow @safe @nogc{
+        public this(typeof(null) nil, Forward = Forward.init)scope pure nothrow @safe @nogc{
         }
 
 
@@ -81,27 +98,27 @@ public template GlobalPtr(_Type){
                 }
                 --------------------
         */
-        public this(ElementReferenceType elm)scope pure nothrow @safe @nogc{
+        public this(ElementReferenceType elm, Forward = Forward.init)scope pure nothrow @safe @nogc{
             this._element = elm;
         }
 
         /// ditto
-        public this(const ElementReferenceType elm)scope const pure nothrow @safe @nogc{
+        public this(const ElementReferenceType elm, Forward = Forward.init)scope const pure nothrow @safe @nogc{
             this._element = elm;
         }
 
         /// ditto
-        public this(immutable ElementReferenceType elm)scope immutable pure nothrow @safe @nogc{
+        public this(immutable ElementReferenceType elm, Forward = Forward.init)scope immutable pure nothrow @safe @nogc{
             this._element = elm;
         }
 
         /// ditto
-        public this(shared ElementReferenceType elm)scope shared pure nothrow @safe @nogc{
+        public this(shared ElementReferenceType elm, Forward = Forward.init)scope shared pure nothrow @safe @nogc{
             this._element = elm;
         }
 
         /// ditto
-        public this(const shared ElementReferenceType elm)scope const shared pure nothrow @safe @nogc{
+        public this(const shared ElementReferenceType elm, Forward = Forward.init)scope const shared pure nothrow @safe @nogc{
             this._element = elm;
         }
 
@@ -594,6 +611,22 @@ public template GlobalPtr(_Type){
                 cast(Unqual!ElementReferenceType)e
             );
         }
+    }
+}
+
+/// 
+nothrow @safe unittest{
+    scope GlobalPtr!long ptr;
+
+    {
+        scope GlobalPtr!long x = new long(42);
+        ptr = x;
+    }
+
+    {
+        static long val = 42;
+        scope GlobalPtr!long x = &val;
+        ptr = x;
     }
 }
 

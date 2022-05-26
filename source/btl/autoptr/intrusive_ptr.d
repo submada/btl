@@ -300,7 +300,7 @@ public template IntrusivePtr(
                 }
                 --------------------
         */
-        public this(this This)(typeof(null) nil)pure nothrow @safe @nogc{
+        public this(this This)(typeof(null) nil, Forward = Forward.init)pure nothrow @safe @nogc{
         }
 
 
