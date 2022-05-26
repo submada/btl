@@ -24,7 +24,7 @@ This is colection of packages:
   - [ForwardList](https://submada.github.io/btl/btl/list/ForwardList.html) sequence container - single linked list.
 
 ## Documentation
-https://submada.github.io/btl
+- https://submada.github.io/btl
 
 ## Code
 - https://github.com/submada/btl
